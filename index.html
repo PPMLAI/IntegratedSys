@@ -37,69 +37,23 @@ label{font-size:12px;font-weight:700;margin-bottom:6px;color:#334155}input,selec
 .badge{display:inline-block;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:600}.ok{background:#dcfce7;color:#166534}.warn{background:#fef3c7;color:#92400e}.bad{background:#fee2e2;color:#991b1b}.lama{background:#7c2d12;color:#ffedd5;animation:pulse 1.5s infinite}
 
 /* STYLE STATUS KONEKSI INTERNET & DATABASE */
-.status-container {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-.status-badge.online {
-  background-color: #f0fdf4;
-  color: #15803d;
-  border: 1px solid #bbf7d0;
-}
-.status-badge.offline {
-  background-color: #fef2f2;
-  color: #b91c1c;
-  border: 1px solid #fecaca;
-}
+.status-container { display: flex; align-items: center; gap: 10px; }
+.status-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+.status-badge.online { background-color: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+.status-badge.offline { background-color: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+.pulse-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.status-badge.online .pulse-dot { background-color: #22c55e; box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); animation: pulse-green 1.6s infinite; }
+.status-badge.offline .pulse-dot { background-color: #ef4444; box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); animation: pulse-red 1.6s infinite; }
 
-/* Animasi Titik Berkedip (Pulsing Dot) */
-.pulse-dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  display: inline-block;
-}
-.status-badge.online .pulse-dot {
-  background-color: #22c55e;
-  box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
-  animation: pulse-green 1.6s infinite;
-}
-.status-badge.offline .pulse-dot {
-  background-color: #ef4444;
-  box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
-  animation: pulse-red 1.6s infinite;
-}
-
-@keyframes pulse-green {
-  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
-  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
-  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
-}
-
-@keyframes pulse-red {
-  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
-  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-}
-
+@keyframes pulse-green { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
+@keyframes pulse-red { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
 @keyframes pulse{0%{opacity:1}50%{opacity:.6}100%{opacity:1}}
+
 .footer{text-align:center;color:#64748b;font-size:11px;padding:24px}
 @media(max-width:1100px){.stats{grid-template-columns:repeat(2,1fr)}.modules{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:768px){
   .sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main{margin-left:0}.mobile-menu{display:block}.header{padding:0 16px}.header h1{font-size:16px}.header p{display:none}.datetime .time{font-size:16px}.content{padding:16px}.grid2,.grid3{grid-template-columns:1fr}.modules{grid-template-columns:1fr}
-  .status-badge span.status-text { display: none; } /* Sembunyikan teks di layar hp kecil agar rapi */
+  .status-badge span.status-text { display: none; }
 }
 
 /* Style Modul Cuti Karyawan */
@@ -113,6 +67,15 @@ label{font-size:12px;font-weight:700;margin-bottom:6px;color:#334155}input,selec
 @media(max-width:900px){
   .cuti-cards { grid-template-columns: repeat(2, 1fr); }
   .cuti-form-area { grid-template-columns: 1fr; }
+}
+
+/* Style Khusus Print Pengajuan Barang */
+@media print {
+  @page { size: landscape; margin: 1cm; }
+  .sidebar, .header, .page-head, #formPengajuanBarang, .no-print, th:last-child, td:last-child { display: none !important; }
+  .main { margin-left: 0 !important; }
+  body { background-color: white !important; }
+  tr { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
 }
 </style>
 </head>
@@ -155,13 +118,11 @@ label{font-size:12px;font-weight:700;margin-bottom:6px;color:#334155}input,selec
 <div class="d-flex align-items-center gap-3">
   <!-- Indikator Status Koneksi Internet & Database -->
   <div class="status-container">
-    <!-- Internet Status -->
     <div id="netStatus" class="status-badge online" title="Status Internet">
       <span class="pulse-dot"></span>
       <span>🌐</span>
       <span class="status-text" id="netText">Internet: Online</span>
     </div>
-    <!-- Database Status -->
     <div id="dbStatus" class="status-badge online" title="Status Database Google AppSheet/Script">
       <span class="pulse-dot"></span>
       <span>🗄️</span>
@@ -169,7 +130,6 @@ label{font-size:12px;font-weight:700;margin-bottom:6px;color:#334155}input,selec
     </div>
   </div>
 
-  <!-- Tanggal & Jam -->
   <div class="datetime">
     <div class="date" id="date"></div>
     <div class="time" id="time"></div>
@@ -395,11 +355,151 @@ label{font-size:12px;font-weight:700;margin-bottom:6px;color:#334155}input,selec
 <div class="cardx"><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Genset</th><th>Petugas</th><th>Status</th><th>Catatan</th></tr></thead><tbody id="gBody"></tbody></table></div></div>
 </div>
 
-<!-- PENGADAAN -->
+<!-- PENGADAAN (SUB NAVIGASI PENGAJUAN PEMBELIAN BARANG TERINTEGRASI PERMOHONANBARANG.HTML) -->
 <div id="pengadaan" class="page">
-<div class="page-head"><h2>🛒 Pengajuan Pembelian Barang</h2><p>Pengajuan kebutuhan barang maintenance kepada bagian pengadaan.</p></div>
-<div class="cardx"><form id="purchaseForm"><div class="grid3"><div><label>Tanggal Pengajuan</label><input type="date" id="bTanggal" required></div><div><label>Nama Pemohon</label><select id="bPemohon" required><option value="">-- Pilih --</option><option>Supriyadi</option><option>Timur Sukoco</option><option>Agus Setiawan</option><option>Julio</option><option>Joyo S.</option><option>Agus Purwanto</option></select></div><div><label>Pengajuan Untuk</label><select id="bUntuk"><option>Maintenance Gedung</option><option>Penggantian Sparepart Mesin Produksi</option><option>Alat Kerja Teknisi</option></select></div><div><label>Nama Barang</label><input id="bBarang" required></div><div><label>Digunakan Untuk</label><input id="bTujuan" required></div><div><label>Jumlah</label><input type="number" id="bJumlah" min="1" required oninput="hitungTotal()"></div><div><label>Satuan</label><input id="bSatuan" required placeholder="Pcs, Unit, Box"></div><div><label>Harga Satuan (Rp)</label><input type="number" id="bHarga" min="0" required oninput="hitungTotal()"></div><div><label>Jumlah Harga</label><input id="bTotal" readonly></div></div><button class="btnx mt-3">Kirim Pengajuan</button></form></div>
-<div class="cardx"><div class="d-flex justify-content-between mb-3"><h5>Riwayat Pengajuan</h5><button class="btnx" onclick="renderPurchase()">Refresh</button></div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Pemohon</th><th>Barang</th><th>Tujuan</th><th>Total</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="bBody"></tbody></table></div></div>
+<div class="page-head d-flex justify-content-between align-items-center">
+  <div>
+    <h2>🛒 Pengajuan Pembelian Barang</h2>
+    <p>Sistem Pengajuan Barang PPM LAI Terintegrasi Google Sheets</p>
+  </div>
+  <div class="no-print">
+    <button onclick="switchViewPengadaan('pemohon')" class="btnx">Menu Pemohon</button>
+    <button onclick="switchViewPengadaan('admin')" class="btnx secondary">Menu Admin PPM</button>
+  </div>
+</div>
+
+<!-- MENU PEMOHON -->
+<div id="view-pemohon-barang">
+  <!-- FORM PENGAJUAN -->
+  <div class="cardx" id="formPengajuanBarang">
+    <h4 style="color:#0d47a1; margin-bottom:15px; font-weight:700;">Form Pengajuan Barang</h4>
+    <form onsubmit="simpanPengajuan(event)">
+      <div class="grid3">
+        <div>
+          <label>Tanggal Pengajuan</label>
+          <input type="date" id="tglPengajuan" required>
+        </div>
+        <div>
+          <label>Nama Pemohon</label>
+          <select id="namaPemohon" required>
+            <option value="" disabled selected>-- Pilih Nama Pemohon --</option>
+            <option value="Supriyadi">Supriyadi</option>
+            <option value="Timur Sukoco">Timur Sukoco</option>
+            <option value="Agus Setiawan">Agus Setiawan</option>
+            <option value="Julio">Julio</option>
+            <option value="Joyo S.">Joyo S.</option>
+            <option value="Agus Purwanto">Agus Purwanto</option>
+          </select>
+        </div>
+        <div>
+          <label>Pengajuan Untuk</label>
+          <select id="pengajuanUntuk" required>
+            <option value="" disabled selected>-- Pilih Peruntukan --</option>
+            <option value="Maintenance Gedung">Maintenance Gedung</option>
+            <option value="Penggantian Sparepart Mesin Produksi">Penggantian Sparepart Mesin Produksi</option>
+            <option value="Alat Kerja Teknisi">Alat Kerja Teknisi</option>
+          </select>
+        </div>
+        <div>
+          <label>Nama Barang</label>
+          <input type="text" id="namaBarang" required placeholder="Nama barang yang diminta">
+        </div>
+        <div>
+          <label>Jumlah</label>
+          <input type="number" id="jumlah" min="1" required oninput="hitungTotalPengadaan()">
+        </div>
+        <div>
+          <label>Satuan</label>
+          <input type="text" id="satuan" required placeholder="Pcs, Unit, Box">
+        </div>
+        <div>
+          <label>Harga Satuan (Rp)</label>
+          <input type="number" id="hargaSatuan" min="0" required oninput="hitungTotalPengadaan()">
+        </div>
+        <div>
+          <label>Jumlah Harga Barang</label>
+          <input type="text" id="jumlahHarga" readonly style="background:#f1f5f9;">
+        </div>
+      </div>
+      <div class="mt-3">
+        <label>Digunakan Untuk</label>
+        <textarea id="digunakanUntuk" required placeholder="Alasan/Tujuan keperluan" style="height:60px;"></textarea>
+      </div>
+      <button type="submit" id="btnKirim" class="btnx mt-3" style="width:100%;">Kirim Pengajuan</button>
+    </form>
+  </div>
+
+  <!-- DASHBOARD/TABEL PEMOHON -->
+  <div class="cardx">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="m-0">Dashboard Pengajuan Saya</h5>
+      <button onclick="window.print()" class="btnx secondary no-print">🖨️ Cetak / Simpan PDF</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Tanggal</th>
+            <th>Pemohon / Unit</th>
+            <th>Barang (Qty)</th>
+            <th>Total Harga</th>
+            <th class="text-center">Status Persetujuan</th>
+            <th class="text-center">Proses Pengadaan</th>
+          </tr>
+        </thead>
+        <tbody id="tabelPemohonBarang">
+          <tr><td colspan="6" class="text-center">Memuat data pengajuan...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN ADMIN PENGADAAN -->
+<div id="view-login-admin-barang" class="cardx style-login-admin" style="display:none; max-width:400px; margin: 20px auto; text-align:center;">
+  <h4 style="color:#0d47a1; margin-bottom:15px; font-weight:700;">Login Admin PPM</h4>
+  <form onsubmit="prosesLoginAdmin(event)">
+    <div class="mb-3">
+      <label>Masukkan Password Admin</label>
+      <input type="password" id="passwordAdmin" required placeholder="••••••••" style="text-align:center; font-size:16px;">
+    </div>
+    <div id="pesanError" style="color:red; display:none; margin-bottom:10px; font-weight:600;">Password yang Anda masukkan salah!</div>
+    <button type="submit" class="btnx" style="width:100%;">Masuk ke Panel Admin</button>
+  </form>
+</div>
+
+<!-- PANEL ADMIN PENGADAAN -->
+<div id="view-admin-barang" style="display:none;">
+  <div class="cardx">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="m-0">Halaman Persetujuan Admin PPM</h5>
+      <div class="no-print">
+        <button onclick="window.print()" class="btnx secondary me-2">🖨️ Cetak / Simpan PDF</button>
+        <button onclick="logoutAdmin()" class="btnx danger">Keluar (Lock Admin)</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Tanggal</th>
+            <th>Pemohon (Unit)</th>
+            <th>Detail Barang</th>
+            <th>Keperluan</th>
+            <th>Total Harga</th>
+            <th>Status Persetujuan</th>
+            <th class="text-center">Proses Pengadaan</th>
+            <th class="text-center no-print">Aksi Admin</th>
+          </tr>
+        </thead>
+        <tbody id="tabelAdminBarang">
+          <tr><td colspan="8" class="text-center">Memuat data...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 </div>
 
 <!-- INVENTORY -->
@@ -420,6 +520,7 @@ const API_GENSET="https://script.google.com/macros/s/AKfycbz-WtZP0o35kurFGhHM8Ep
 const API_INVENTORY="https://script.google.com/macros/s/AKfycbynKH0xyqe8_7QwIObrtWL6Xh6oYvfkLgzwoK_KfbKXWoGu6hHhjoyhl7gHY9G2k7sn/exec";
 const API_LEMBUR="https://script.google.com/macros/s/AKfycbxKzNC1DiAQGnoBYuMHCGC649mNbBZjvMlUwEPiTP8CBEGFIbevBm1YGpcLhdVZ1Ecz8Q/exec";
 const SCRIPT_URL_CUTI="https://script.google.com/macros/s/AKfycbzhdJKBJPBp135sMvsyZBMZUgzGN9ayFM_gorfpwx5g-jLPdzKPv5RjKi-NCBRHn_PREw/exec";
+const API_URL_PENGADAAN = "https://script.google.com/macros/s/AKfycbxYrmz02a1_o_PQbq_NArYE1HzG5AHb9te9OuzpEnRByDV_A5vz8PwoB7hjVPPEay4Y/exec";
 
 /* PENGECEKAN STATUS KONEKSI INTERNET & DATABASE */
 function setBadgeState(elementId, textId, isOnline, onlineText, offlineText) {
@@ -437,8 +538,6 @@ function setBadgeState(elementId, textId, isOnline, onlineText, offlineText) {
 function checkInternetStatus() {
   const isOnline = navigator.onLine;
   setBadgeState('netStatus', 'netText', isOnline, 'Internet: Online', 'Internet: Offline');
-  
-  // Jika internet offline, otomatis database juga di-set error/disconnected
   if (!isOnline) {
     setBadgeState('dbStatus', 'dbText', false, 'DB: Connected', 'DB: Disconnected');
   }
@@ -451,7 +550,6 @@ async function checkDatabaseConnection() {
   }
   
   try {
-    // Ping ringan ke salah satu endpoint Apps Script
     const response = await fetch(API_HISTORI, { method: 'GET', mode: 'cors' });
     if (response.ok || response.type === 'opaque') {
       setBadgeState('dbStatus', 'dbText', true, 'DB: Connected', 'DB: Disconnected');
@@ -459,15 +557,13 @@ async function checkDatabaseConnection() {
       setBadgeState('dbStatus', 'dbText', false, 'DB: Connected', 'DB: Error');
     }
   } catch (err) {
-    // Mode fallback jika CORS opaque atau fetch terhalang tetap menganggap terhubung selama internet OK
     setBadgeState('dbStatus', 'dbText', navigator.onLine, 'DB: Connected', 'DB: Disconnected');
   }
 }
 
-// Event Listeners Koneksi
 window.addEventListener('online', () => { checkInternetStatus(); checkDatabaseConnection(); });
 window.addEventListener('offline', () => { checkInternetStatus(); });
-setInterval(checkDatabaseConnection, 30000); // Cek ulang DB setiap 30 detik
+setInterval(checkDatabaseConnection, 30000);
 checkInternetStatus();
 checkDatabaseConnection();
 
@@ -481,7 +577,6 @@ function toggleSidebar(){document.getElementById('sidebar').classList.toggle('op
 function toggleMenu(btn){btn.classList.toggle('open');btn.nextElementSibling.classList.toggle('show')}
 const titles={home:'Dashboard PPM',cuti:'Cuti Karyawan',lembur:'Lemburan',histori:'Histori Card',mesin:'Perbaikan Mesin',penerangan:'Pemeriksaan Rutin Penerangan',genset:'Pemeriksaan Genset Rutin',pengadaan:'Pengajuan Pembelian Barang',inventory:'Inventory Stock Barang Maintenance'};
 
-/* SHOW PAGE DENGAN PROTEKSI PASSWORD ADMIN UNTUK CUTI */
 function showPage(id,btn){
   if(id === 'cuti') {
     const pw = prompt("Masukkan Kata Sandi Admin untuk Mengakses Cuti Karyawan:");
@@ -504,19 +599,16 @@ function showPage(id,btn){
   if(id==='genset')loadGenset();
   if(id==='inventory')loadInventory();
   if(id==='lembur')loadOvertime();
+  if(id==='pengadaan')muatDataPengadaan();
 }
 
 function fillMachines(){['historyMesin','repairMesin'].forEach(id=>{const e=document.getElementById(id);e.innerHTML=mesinList.map(x=>`<option>${x}</option>`).join('')})}
 function safe(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 function fmtDate(v){if(!v)return'-';const d=new Date(v);return isNaN(d)?v:d.toLocaleDateString('id-ID')}
-function statusBadge(s){const c=String(s).toLowerCase();return `<span class="badge ${c.includes('normal')||c.includes('siap')||c.includes('selesai')||c.includes('approved')?'ok':c.includes('rusak')||c.includes('tidak')?'bad':'warn'}">${safe(s||'-')}</span>`}
+function statusBadge(s){const c=String(s).toLowerCase();return `<span class="badge ${c.includes('normal')||c.includes('siap')||c.includes('selesai')||c.includes('approved')||c.includes('disetujui')?'ok':c.includes('rusak')||c.includes('tidak')||c.includes('ditolak')?'bad':'warn'}">${safe(s||'-')}</span>`}
 
 /* LOGIKA MODUL CUTI KARYAWAN */
-let sisaCutiKaryawan = {
-    "Sylvester Seno": 12,
-    "Timur Sukoco": 12,
-    "Supriyadi": 12
-};
+let sisaCutiKaryawan = { "Sylvester Seno": 12, "Timur Sukoco": 12, "Supriyadi": 12 };
 
 function formatTanggalIndo(tanggalString) {
     if (!tanggalString || tanggalString === "-") return "-";
@@ -662,30 +754,19 @@ function simpan(){
         sisa:document.getElementById("sisa").value
     };
 
-    if(data.nama==""){
-        alert("Pilih nama terlebih dahulu.");
-        return;
-    }
-    if(data.mulai=="" || data.sampai==""){
-        alert("Isi rentang tanggal cuti dengan benar.");
-        return;
-    }
+    if(data.nama==""){ alert("Pilih nama terlebih dahulu."); return; }
+    if(data.mulai=="" || data.sampai==""){ alert("Isi rentang tanggal cuti dengan benar."); return; }
 
     let hari = parseInt(data.lama);
-
     if (data.jenis === "Cuti Tahunan" && (sisaCutiKaryawan[data.nama] - hari) < 0) {
         alert("Gagal menyimpan! Jumlah hari cuti melebihi jatah " + data.nama);
         return;
     }
-
     if (data.jenis === "Cuti Tahunan") {
         sisaCutiKaryawan[data.nama] -= hari;
     }
 
-    fetch(SCRIPT_URL_CUTI,{
-        method:"POST",
-        body:JSON.stringify(data)
-    })
+    fetch(SCRIPT_URL_CUTI,{ method:"POST", body:JSON.stringify(data) })
     .then(res=>res.text())
     .then(r=>{
         alert("Pengajuan cuti berhasil disimpan.");
@@ -718,13 +799,9 @@ function resetForm() {
 
 function tambahTabelCuti(data){
     const tbody=document.getElementById("tbody");
-
-    if(tbody.innerHTML.includes("Belum ada data") || tbody.innerHTML.includes("Memuat data")){
-        tbody.innerHTML="";
-    }
+    if(tbody.innerHTML.includes("Belum ada data") || tbody.innerHTML.includes("Memuat data")){ tbody.innerHTML=""; }
 
     let no=tbody.rows.length+1;
-
     let tglMulaiFormatted = formatTanggalIndo(data.mulai);
     let tglSelesaiFormatted = formatTanggalIndo(data.sampai);
 
@@ -737,23 +814,17 @@ function tambahTabelCuti(data){
         <td>${safe(data.lama)}</td>
         <td>${safe(data.jenis)}</td>
         <td>${safe(data.sisa)}</td>
-    </tr>
-    `;
-
+    </tr>`;
     tbody.innerHTML+=row;
 
     document.getElementById("totalPengajuan").innerHTML=no;
     document.getElementById("totalData").innerHTML=no;
 
     let totalHari=0;
-    for(let i=0;i<tbody.rows.length;i++){
-        totalHari+=parseInt(tbody.rows[i].cells[4].innerHTML) || 0;
-    }
+    for(let i=0;i<tbody.rows.length;i++){ totalHari+=parseInt(tbody.rows[i].cells[4].innerHTML) || 0; }
     document.getElementById("totalHari").innerHTML=totalHari;
 
-    let tahunan=0;
-    let besar=0;
-
+    let tahunan=0, besar=0;
     for(let i=0;i<tbody.rows.length;i++){
         let jenis=tbody.rows[i].cells[5].innerHTML;
         if(jenis=="Cuti Tahunan") tahunan++;
@@ -769,16 +840,11 @@ function tambahTabelCuti(data){
 function cariData(){
     let input=document.getElementById("cari").value.toUpperCase();
     let tr=document.getElementById("tbody").getElementsByTagName("tr");
-
     for(let i=0;i<tr.length;i++){
         let td=tr[i].getElementsByTagName("td")[1];
         if(td){
             let txt=td.innerHTML.toUpperCase();
-            if(txt.indexOf(input)>-1){
-                tr[i].style.display="";
-            }else{
-                tr[i].style.display="none";
-            }
+            if(txt.indexOf(input)>-1){ tr[i].style.display=""; }else{ tr[i].style.display="none"; }
         }
     }
 }
@@ -803,87 +869,238 @@ async function loadGenset(){try{const r=await fetch(API_GENSET);gensetData=await
 function renderGenset(){gBody.innerHTML=gensetData.map(x=>`<tr><td>${fmtDate(x.Tanggal||x.tanggal)}</td><td>${safe(x.Genset||x.genset)}</td><td>${safe(x.Petugas||x.petugas)}</td><td>${statusBadge(x.Status||x.status)}</td><td>${safe(x.Catatan||x.catatan)}</td></tr>`).join('')||'<tr><td colspan="5">Belum ada data.</td></tr>'}
 gensetForm.addEventListener('submit',async e=>{e.preventDefault();const p={genset:gUnit.value,petugas:gPetugas.value,tanggal:gTanggal.value,jamMulai:gMulai.value,jamSelesai:gSelesai.value,durasi:'',kondisiSolar:gSolar.value,oliMesin:gOli.value,airRadiatorAki:gAir.value,teganganAki:gAki.value,outputTegangan:gOutput.value,suhuMesin:gSuhu.value,frekuensi:gFrekuensi.value,status:gStatus.value,catatan:gCatatan.value};try{await fetch(API_GENSET,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});alert('Data pemeriksaan genset berhasil dikirim');e.target.reset();setToday('gTanggal');loadGenset()}catch(e){alert('Gagal koneksi')}})
 
-/* PENGADAAN (DENGAN WARNING & APPROVAL ADMIN) */
-let purchases=JSON.parse(localStorage.getItem('ppmPurchases')||'[]');
-function hitungTotal(){bTotal.value=new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format((+bJumlah.value||0)*(+bHarga.value||0))}
+/* LOGIKA MODUL PENGAJUAN PEMBELIAN BARANG (INTEGRASI PERMOHONANBARANG.HTML) */
+const PASSWORD_ADMIN_BENAR = "admin123";
+let isAdminLoggedIn = false; 
+let databasePengajuanBarang = [];
 
-purchaseForm.addEventListener('submit',e=>{
-  e.preventDefault();
-  const q={
-    id:Date.now(),
-    tanggal:bTanggal.value,
-    nama:bPemohon.value,
-    untuk:bUntuk.value,
-    barang:bBarang.value,
-    tujuan:bTujuan.value,
-    jumlah:+bJumlah.value,
-    satuan:bSatuan.value,
-    hargaSatuan:+bHarga.value,
-    totalHarga:(+bJumlah.value||0)*(+bHarga.value||0),
-    status:'Pending'
-  };
-  purchases.unshift(q);
-  localStorage.setItem('ppmPurchases',JSON.stringify(purchases));
-  renderPurchase();
-  e.target.reset();
-  setToday('bTanggal');
-  alert('Pengajuan berhasil dikirim');
-});
+async function muatDataPengadaan() {
+    try {
+        const res = await fetch(API_URL_PENGADAAN);
+        const data = await res.json();
+        if (Array.isArray(data)) {
+            databasePengajuanBarang = data;
+            renderDataPengadaan();
+        }
+    } catch (err) {
+        console.error("Gagal mengambil data pengadaan:", err);
+    }
+}
 
-function renderPurchase(){
-  const now = new Date();
-  bBody.innerHTML = purchases.map(x => {
-    const tglPengajuan = new Date(x.tanggal);
-    const selisihHari = Math.floor((now - tglPengajuan) / (1000 * 60 * 60 * 24));
+function switchViewPengadaan(view) {
+    document.getElementById('view-pemohon-barang').style.display = 'none';
+    document.getElementById('view-login-admin-barang').style.display = 'none';
+    document.getElementById('view-admin-barang').style.display = 'none';
+
+    if (view === 'pemohon') {
+        document.getElementById('view-pemohon-barang').style.display = 'block';
+    } else if (view === 'admin') {
+        if (isAdminLoggedIn) {
+            document.getElementById('view-admin-barang').style.display = 'block';
+        } else {
+            document.getElementById('view-login-admin-barang').style.display = 'block';
+            document.getElementById('passwordAdmin').value = "";
+            document.getElementById('pesanError').style.display = 'none';
+        }
+    }
+    muatDataPengadaan();
+}
+
+function prosesLoginAdmin(e) {
+    e.preventDefault();
+    const inputPass = document.getElementById('passwordAdmin').value;
+    const pesanError = document.getElementById('pesanError');
+
+    if (inputPass === PASSWORD_ADMIN_BENAR) {
+        isAdminLoggedIn = true;
+        pesanError.style.display = 'none';
+        switchViewPengadaan('admin');
+    } else {
+        isAdminLoggedIn = false;
+        pesanError.style.display = 'block';
+    }
+}
+
+function logoutAdmin() {
+    isAdminLoggedIn = false;
+    switchViewPengadaan('pemohon');
+    alert('Anda telah keluar dari panel Admin.');
+}
+
+function hitungTotalPengadaan() {
+    const jumlah = parseFloat(document.getElementById('jumlah').value) || 0;
+    const hargaSatuan = parseFloat(document.getElementById('hargaSatuan').value) || 0;
+    const total = jumlah * hargaSatuan;
+    document.getElementById('jumlahHarga').value = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(total);
+}
+
+async function simpanPengajuan(e) {
+    e.preventDefault();
+    const btnKirim = document.getElementById('btnKirim');
+    btnKirim.innerText = "Mengirim...";
+    btnKirim.disabled = true;
+
+    const jumlah = parseFloat(document.getElementById('jumlah').value);
+    const hargaSatuan = parseFloat(document.getElementById('hargaSatuan').value);
+
+    const pengajuanBaru = {
+        action: "create",
+        tanggal: document.getElementById('tglPengajuan').value,
+        nama: document.getElementById('namaPemohon').value,
+        untuk: document.getElementById('pengajuanUntuk').value,
+        barang: document.getElementById('namaBarang').value,
+        tujuan: document.getElementById('digunakanUntuk').value,
+        jumlah: jumlah,
+        satuan: document.getElementById('satuan').value,
+        hargaSatuan: hargaSatuan,
+        totalHarga: jumlah * hargaSatuan,
+        status: 'Pending',
+        statusPengadaan: 'none'
+    };
+
+    try {
+        await fetch(API_URL_PENGADAAN, {
+            method: "POST",
+            body: JSON.stringify(pengajuanBaru)
+        });
+        
+        document.getElementById('formPengajuanBarang').querySelector('form').reset();
+        setToday('tglPengajuan');
+        document.getElementById('jumlahHarga').value = '';
+        alert('Pengajuan berhasil dikirim!');
+        muatDataPengadaan();
+    } catch(err) {
+        alert('Gagal mengirim pengajuan: ' + err.toString());
+    } finally {
+        btnKirim.innerText = "Kirim Pengajuan";
+        btnKirim.disabled = false;
+    }
+}
+
+async function updateStatusPengadaanAdmin(id, statusBaru) {
+    const payload = {
+        action: "updateStatus",
+        id: id,
+        status: statusBaru,
+        statusPengadaan: statusBaru === 'Disetujui' ? 'belum' : 'none'
+    };
+
+    try {
+        await fetch(API_URL_PENGADAAN, { method: "POST", body: JSON.stringify(payload) });
+        muatDataPengadaan();
+    } catch(err) {
+        alert('Gagal mengubah status: ' + err.toString());
+    }
+}
+
+async function updateStatusProsesPengadaan(id, statusPengadaanBaru) {
+    const payload = {
+        action: "updatePengadaan",
+        id: id,
+        statusPengadaan: statusPengadaanBaru
+    };
+
+    try {
+        await fetch(API_URL_PENGADAAN, { method: "POST", body: JSON.stringify(payload) });
+        muatDataPengadaan();
+    } catch(err) {
+        alert('Gagal mengubah status pengadaan: ' + err.toString());
+    }
+}
+
+function formatRupiah(angka) {
+    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(angka || 0);
+}
+
+function getPengadaanBadge(statusPengadaan) {
+    if (statusPengadaan === 'belum' || statusPengadaan === 'Belum Diajukan') {
+        return `<span class="badge warn">Belum Diajukan</span>`;
+    } else if (statusPengadaan === 'proses' || statusPengadaan === 'Diajukan ke Pengadaan') {
+        return `<span class="badge ok">Diajukan ke Pengadaan</span>`;
+    } else if (statusPengadaan === 'sudah' || statusPengadaan === 'Barang Sudah dibelikan') {
+        return `<span class="badge ok">Barang Sudah Dibelikan</span>`;
+    } else {
+        return `<span class="text-muted italic">-</span>`;
+    }
+}
+
+function hitungWarningTerlaluLama(item) {
+    if (!item.tanggal) return '';
+    const tglPengajuan = new Date(item.tanggal);
+    const tglHariIni = new Date();
     
-    // Status Display & Check Terlalu Lama Kumenanti
-    let badgeStatus = statusBadge(x.status);
-    if(x.status === 'Pending' && selisihHari > 3){
-      badgeStatus += `<br><span class="badge lama mt-1">⚠️ Terlalu Lama Kumenanti</span>`;
-    }
+    tglHariIni.setHours(0, 0, 0, 0);
+    tglPengajuan.setHours(0, 0, 0, 0);
+    
+    const selisihHari = Math.floor((tglHariIni - tglPengajuan) / (1000 * 60 * 60 * 24));
+    
+    const belumDisetujui = item.status === 'Pending';
+    const belumSelesaiPengadaan = item.status === 'Disetujui' && item.statusPengadaan !== 'sudah';
 
-    // Tombol Aksi
-    let approveBtn = '';
-    if(x.status === 'Pending'){
-      approveBtn = `<button class="btnx success me-1" onclick="approvePurchase(${x.id})">Approve (Admin)</button>`;
+    if (selisihHari >= 3 && (belumDisetujui || belumSelesaiPengadaan)) {
+        return `<br><span class="badge lama">⚠️ Sudah Terlalu Lama Ku Menanti</span>`;
     }
-
-    return `<tr>
-      <td>${fmtDate(x.tanggal)}</td>
-      <td>${safe(x.nama)}</td>
-      <td>${safe(x.barang)}<br><small>${x.jumlah} ${safe(x.satuan)}</small></td>
-      <td>${safe(x.tujuan)}</td>
-      <td>${new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(x.totalHarga)}</td>
-      <td>${badgeStatus}</td>
-      <td>
-        ${approveBtn}
-        <button class="btnx danger" onclick="deletePurchase(${x.id})">Hapus</button>
-      </td>
-    </tr>`;
-  }).join('') || '<tr><td colspan="7">Belum ada pengajuan.</td></tr>';
+    return '';
 }
 
-function approvePurchase(id){
-  const pw = prompt("Masukkan Kata Sandi Admin PPM untuk Menyetujui:");
-  if (pw === "admin123") {
-    purchases = purchases.map(x => {
-      if(x.id === id) x.status = 'Approved (PPM)';
-      return x;
+function renderDataPengadaan() {
+    const tabelPemohon = document.getElementById('tabelPemohonBarang');
+    const tabelAdmin = document.getElementById('tabelAdminBarang');
+    
+    tabelPemohon.innerHTML = '';
+    tabelAdmin.innerHTML = '';
+
+    if (databasePengajuanBarang.length === 0) {
+        tabelPemohon.innerHTML = `<tr><td colspan="6" class="text-center">Belum ada data pengajuan.</td></tr>`;
+        tabelAdmin.innerHTML = `<tr><td colspan="8" class="text-center">Belum ada data pengajuan.</td></tr>`;
+        return;
+    }
+
+    databasePengajuanBarang.forEach(item => {
+        const warningHTML = hitungWarningTerlaluLama(item);
+
+        tabelPemohon.innerHTML += `
+            <tr>
+                <td>${fmtDate(item.tanggal)}${warningHTML}</td>
+                <td><b>${safe(item.nama)}</b><br><small class="text-muted">${safe(item.untuk)}</small></td>
+                <td>${safe(item.barang)} (${item.jumlah} ${safe(item.satuan)})</td>
+                <td>${formatRupiah(item.totalHarga)}</td>
+                <td class="text-center">${statusBadge(item.status)}</td>
+                <td class="text-center">${getPengadaanBadge(item.statusPengadaan)}</td>
+            </tr>
+        `;
+
+        let aksiAdmin = '';
+        if (item.status === 'Pending') {
+            aksiAdmin = `
+                <button onclick="updateStatusPengadaanAdmin(${item.id}, 'Disetujui')" class="btnx success me-1">Setujui</button>
+                <button onclick="updateStatusPengadaanAdmin(${item.id}, 'Ditolak')" class="btnx danger">Tolak</button>
+            `;
+        } else if (item.status === 'Disetujui') {
+            aksiAdmin = `
+                <select onchange="updateStatusProsesPengadaan(${item.id}, this.value)" style="padding:4px; font-size:11px;">
+                    <option value="belum" ${item.statusPengadaan === 'belum' || item.statusPengadaan === 'none' ? 'selected' : ''}>⏳ Belum Diajukan</option>
+                    <option value="proses" ${item.statusPengadaan === 'proses' ? 'selected' : ''}>🚀 Diajukan ke Pengadaan</option>
+                    <option value="sudah" ${item.statusPengadaan === 'sudah' ? 'selected' : ''}>✅ Barang Sudah Dibelikan</option>
+                </select>
+            `;
+        } else {
+            aksiAdmin = `<span class="text-muted">-</span>`;
+        }
+
+        tabelAdmin.innerHTML += `
+            <tr>
+                <td>${fmtDate(item.tanggal)}${warningHTML}</td>
+                <td><b>${safe(item.nama)}</b> (${safe(item.untuk)})</td>
+                <td>${safe(item.barang)}<br><small class="text-muted">${item.jumlah} ${safe(item.satuan)} @ ${formatRupiah(item.hargaSatuan)}</small></td>
+                <td style="max-width:200px;" title="${safe(item.tujuan)}">${safe(item.tujuan)}</td>
+                <td><b>${formatRupiah(item.totalHarga)}</b></td>
+                <td class="text-center">${statusBadge(item.status)}</td>
+                <td class="text-center">${getPengadaanBadge(item.statusPengadaan)}</td>
+                <td class="text-center no-print">${aksiAdmin}</td>
+            </tr>
+        `;
     });
-    localStorage.setItem('ppmPurchases', JSON.stringify(purchases));
-    renderPurchase();
-    alert("Pengajuan berhasil disetujui (Approved)!");
-  } else {
-    alert("Kata sandi salah! Persetujuan dibatalkan.");
-  }
-}
-
-function deletePurchase(id){
-  if(confirm('Hapus pengajuan ini?')){
-    purchases=purchases.filter(x=>x.id!==id);
-    localStorage.setItem('ppmPurchases',JSON.stringify(purchases));
-    renderPurchase();
-  }
 }
 
 /* LEMBURAN */
@@ -990,7 +1207,10 @@ inventoryForm.addEventListener('submit',async e=>{e.preventDefault();const p={id
 function editInventory(i){const d=inventoryData[i];iNama.value=d[1]||'';iTipe.value=d[2]||'';iMesin.value=d[3]||'';iAwal.value=d[4]||0;iTambah.value=d[5]||0;iKurang.value=d[6]||0;iTanggal.value=(d[7]||'').toString().slice(0,10);iEdit.value=d[0]||''}
 function resetInventory(){inventoryForm.reset();setToday('iTanggal');iEdit.value=''}
 
-fillMachines();['historyTanggal','repairTanggal','pTanggal','gTanggal','bTanggal','iTanggal','oTanggal','tgl'].forEach(setToday);renderRepair();renderPurchase();
+fillMachines();
+['historyTanggal','repairTanggal','pTanggal','gTanggal','tglPengajuan','iTanggal','oTanggal','tgl'].forEach(setToday);
+renderRepair();
+muatDataPengadaan();
 </script>
 </body>
 </html>
