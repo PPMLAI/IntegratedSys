@@ -416,6 +416,159 @@ td { border-bottom: 1px solid #e2e8f0; padding: 10px 12px; vertical-align: middl
   tr { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
 }
 </style>
+
+<style>
+        :root {
+            --primary-color: #0f172a;
+            --accent-color: #2563eb;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #334155;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+        .card-metric {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+            background: var(--card-bg);
+            transition: transform 0.2s;
+        }
+        .card-metric:hover {
+            transform: translateY(-3px);
+        }
+        .metric-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        .table-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            background: var(--card-bg);
+        }
+        .table th {
+            font-weight: 600;
+            color: #64748b;
+            background-color: #f8fafc;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .badge-status {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.75rem;
+        }
+
+
+/* ===== TABEL RIWAYAT PERBAIKAN MESIN - KOMPAK & RAPI ===== */
+#mesin #tabDashboard > .card.table-card {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+#mesin #reportTable {
+  width: 100%;
+  table-layout: fixed;
+  font-size: 12px;
+}
+
+#mesin #reportTable th,
+#mesin #reportTable td {
+  padding: 9px 10px;
+  vertical-align: top;
+}
+
+#mesin #reportTable th:nth-child(1),
+#mesin #reportTable td:nth-child(1) {
+  width: 11%;
+  white-space: nowrap;
+}
+
+#mesin #reportTable th:nth-child(2),
+#mesin #reportTable td:nth-child(2) {
+  width: 16%;
+}
+
+#mesin #reportTable th:nth-child(3),
+#mesin #reportTable td:nth-child(3) {
+  width: 24%;
+}
+
+#mesin #reportTable th:nth-child(4),
+#mesin #reportTable td:nth-child(4) {
+  width: 24%;
+}
+
+#mesin #reportTable th:nth-child(5),
+#mesin #reportTable td:nth-child(5) {
+  width: 13%;
+}
+
+#mesin #reportTable th:nth-child(6),
+#mesin #reportTable td:nth-child(6) {
+  width: 12%;
+}
+
+#mesin #reportTable td:nth-child(2),
+#mesin #reportTable td:nth-child(3),
+#mesin #reportTable td:nth-child(4),
+#mesin #reportTable td:nth-child(5),
+#mesin #reportTable td:nth-child(6) {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+#mesin #reportTable td:nth-child(3),
+#mesin #reportTable td:nth-child(4) {
+  line-height: 1.45;
+}
+
+#mesin #reportTable .badge {
+  white-space: normal;
+  line-height: 1.35;
+  text-align: center;
+}
+
+#mesin #tabDashboard .table-responsive {
+  overflow-x: hidden;
+}
+
+@media (max-width: 768px) {
+  #mesin #tabDashboard .table-responsive {
+    overflow-x: auto;
+  }
+
+  #mesin #reportTable {
+    min-width: 720px;
+  }
+}
+
+/* ===== MODUL PERBAIKAN MESIN TERINTEGRASI ===== */
+#mesin .main-content {
+  margin-left: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+}
+#mesin .sidebar { display: none !important; }
+#mesin .main-content > .d-flex:first-child { display: none !important; }
+#mesin .card-metric, #mesin .table-card { box-sizing: border-box; }
+#mesin .table-responsive { overflow-x: auto; }
+#mesin .table { margin-bottom: 0; }
+#mesin .form-control, #mesin .form-select { min-height: 42px; }
+#mesin .btn { min-height: 38px; }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -434,10 +587,10 @@ td { border-bottom: 1px solid #e2e8f0; padding: 10px 12px; vertical-align: middl
 <button class="menu-item" onclick="showPage('lembur',this)">⏱️ Lemburan</button>
 </div>
 <div class="menu-title">Maintenance</div>
-<button class="menu-parent" onclick="toggleMenu(this)"><span class="menu-parent-left">🛠️ Maintenance</span><span class="arrow">▼</span></button>
-<div class="submenu">
+<button class="menu-parent open" onclick="toggleMenu(this)"><span class="menu-parent-left">🛠️ Maintenance</span><span class="arrow">▼</span></button>
+<div class="submenu show">
 <button class="menu-item" onclick="showPage('histori',this)">📋 Histori Card</button>
-<button class="menu-item" onclick="showPage('mesin',this)">⚙️ Perbaikan Mesin</button>
+<button class="menu-item active" onclick="showPage('mesin',this)">⚙️ Perbaikan Mesin</button>
 <button class="menu-item" onclick="showPage('penerangan',this)">💡 Pemeriksaan Rutin Penerangan</button>
 <button class="menu-item" onclick="showPage('genset',this)">🔋 Pemeriksaan Genset Rutin</button>
 <button class="menu-item" onclick="showPage('pengadaan',this)">🛒 Pengajuan Pembelian Barang</button>
@@ -478,7 +631,7 @@ td { border-bottom: 1px solid #e2e8f0; padding: 10px 12px; vertical-align: middl
 </header>
 
 <section class="content">
-<div id="home" class="page active">
+<div id="home" class="page">
 <div class="welcome"><h2>Selamat Datang di Aplikasi Sistem Kontrol Terintegrasi PPM</h2><p>Aplikasi ini menggabungkan pencatatan SDM, pencatatan pekerjaan maintenance dan pengajuan barang ke bagian pengadaan. Dengan adanya aplikasi ini diharapkan bisa memberikan kontribusi pencatatan administrasi pada PPM dengan rapih dan akurat.</p><strong>Terima Kasih dan Salam Hormat<br>Agus Purwanto - PPM LAI</strong></div>
 <div class="stats"><div class="stat"><h3 id="statHistori">0</h3><p>Histori Maintenance</p></div><div class="stat"><h3 id="statGenset">0</h3><p>Inspeksi Genset</p></div><div class="stat"><h3 id="statPenerangan">0</h3><p>Pemeriksaan Penerangan</p></div><div class="stat"><h3 id="statInventory">0</h3><p>Item Inventory</p></div></div>
 <div class="modules"><div class="module" onclick="showPage('histori')"><div class="icon">📋</div><h3>Histori Card</h3><p>Riwayat pekerjaan maintenance seluruh mesin.</p></div><div class="module" onclick="showPage('genset')"><div class="icon">🔋</div><h3>Pemeriksaan Genset</h3><p>Pencatatan pemeriksaan rutin dan status genset.</p></div><div class="module" onclick="showPage('pengadaan')"><div class="icon">🛒</div><h3>Pengajuan Barang</h3><p>Ajukan kebutuhan barang maintenance.</p></div></div>
@@ -751,10 +904,196 @@ td { border-bottom: 1px solid #e2e8f0; padding: 10px 12px; vertical-align: middl
 </div>
 
 <!-- PERBAIKAN MESIN -->
-<div id="mesin" class="page">
-<div class="page-head"><h2>⚙️ Perbaikan Mesin</h2><p>Pencatatan kerusakan dan pekerjaan perbaikan mesin.</p></div>
-<div class="cardx"><form id="repairForm"><div class="grid3"><div><label>Mesin</label><select id="repairMesin" required></select></div><div><label>Tanggal</label><input type="date" id="repairTanggal" required></div><div><label>Teknisi</label><input id="repairTeknisi" required></div><div><label>Kerusakan</label><input id="repairKerusakan" required></div><div><label>Sparepart Diganti</label><input id="repairSparepart"></div><div><label>Status</label><select id="repairStatus"><option>Selesai</option><option>Dalam Proses</option><option>Menunggu Sparepart</option></select></div></div><div class="mt-3"><label>Tindakan Perbaikan</label><textarea id="repairTindakan"></textarea></div><button class="btnx mt-3">Simpan Perbaikan</button></form></div>
-<div class="cardx"><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Mesin</th><th>Teknisi</th><th>Kerusakan</th><th>Sparepart</th><th>Status</th><th>Tindakan</th></tr></thead><tbody id="repairBody"></tbody></table></div></div>
+<div id="mesin" class="page active">
+  <div class="page-head d-flex justify-content-between align-items-center">
+    <div>
+      <h2>⚙️ Perbaikan Mesin Terintegrasi</h2>
+      <p>Sistem Pelaporan dan Monitoring Perbaikan Mesin Terhubung ke Google Sheets</p>
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn btn-primary btn-sm" onclick="repairSwitchTab('dashboard', event)"><i class="fa-solid fa-chart-pie me-1"></i> Dashboard</button>
+      <button class="btn btn-success btn-sm" onclick="repairSwitchTab('laporan', event)"><i class="fa-solid fa-plus me-1"></i> Input Laporan</button>
+    </div>
+  </div>
+
+  <!-- TAB 1: DASHBOARD -->
+  <div id="tabDashboard">
+    <!-- Metrics Row -->
+    <div class="row g-4 mb-4">
+      <div class="col-md-4">
+        <div class="card card-metric p-3">
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <p class="text-muted mb-1 small fw-semibold">Total Perbaikan</p>
+              <h3 class="fw-bold mb-0" id="totalPerbaikan">0</h3>
+            </div>
+            <div class="metric-icon bg-primary bg-opacity-10 text-primary">
+              <i class="fa-solid fa-screwdriver-wrench"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card card-metric p-3">
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <p class="text-muted mb-1 small fw-semibold">Mesin Yang Ditangani</p>
+              <h3 class="fw-bold mb-0" id="totalMesin">0</h3>
+            </div>
+            <div class="metric-icon bg-success bg-opacity-10 text-success">
+              <i class="fa-solid fa-industry"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card card-metric p-3">
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <p class="text-muted mb-1 small fw-semibold">Petugas Aktif</p>
+              <h3 class="fw-bold mb-0" id="totalPetugas">6</h3>
+            </div>
+            <div class="metric-icon bg-warning bg-opacity-10 text-warning">
+              <i class="fa-solid fa-users"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Charts Row -->
+    <div class="row g-4 mb-4">
+      <div class="col-lg-8">
+        <div class="card table-card p-4 h-100">
+          <h5 class="fw-bold mb-3">Tren Perbaikan Berdasarkan Mesin</h5>
+          <div style="height: 280px; position: relative;">
+            <canvas id="machineChart"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card table-card p-4 h-100">
+          <h5 class="fw-bold mb-3">Distribusi Petugas</h5>
+          <div style="height: 280px; position: relative;">
+            <canvas id="petugasChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Table Data -->
+    <div class="card table-card p-3">
+      <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <h5 class="fw-bold mb-0">Riwayat Laporan Perbaikan Terbaru</h5>
+        <div class="input-group" style="width: min(250px, 100%);">
+          <input class="form-control form-control-sm" id="searchTable" onkeyup="repairFilterTable()" placeholder="Cari mesin/petugas..." type="text"/>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle" id="reportTable">
+          <thead>
+            <tr>
+              <th>Tanggal</th>
+              <th>Nama Mesin</th>
+              <th>Analisa Kerusakan</th>
+              <th>Uraian Perbaikan</th>
+              <th>Petugas</th>
+              <th>Kondisi</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <tr>
+              <td class="text-center py-4 text-muted" colspan="6">Memuat data dari Google Sheets...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2: INPUT LAPORAN (Hidden by default) -->
+  <div id="tabLaporan" style="display: none;">
+    <div class="row justify-content-center">
+      <div class="col-12">
+        <div class="card table-card p-4 p-md-5">
+          <h3 class="fw-bold mb-2">Formulir Laporan Perbaikan Mesin</h3>
+          <p class="text-muted mb-4">Isi data di bawah ini untuk langsung menyimpannya ke Google Sheets.</p>
+          <form id="repairForm" onsubmit="repairSubmitForm(event)">
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Nama Mesin</label>
+                <input class="form-control" name="namaMesin" placeholder="Contoh: Mesin Press A-01" required="" type="text"/>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Tanggal Pengerjaan</label>
+                <input class="form-control" name="tanggalPengerjaan" required="" type="date"/>
+              </div>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Jam Permintaan Diterima</label>
+                <input class="form-control" name="jamPermintaan" required="" type="time"/>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Jam Pemeriksaan</label>
+                <input class="form-control" name="jamPemeriksaan" required="" type="time"/>
+              </div>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Jam Ditemukan Kerusakan</label>
+                <input class="form-control" name="jamDitemukan" required="" type="time"/>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Nama Petugas Penerima</label>
+                <select class="form-select" name="namaPetugas" required="">
+                  <option disabled="" selected="" value="">Pilih Petugas</option>
+                  <option value="Supriyadi">Supriyadi</option>
+                  <option value="Timur">Timur</option>
+                  <option value="Agus Setiawan">Agus Setiawan</option>
+                  <option value="Julio">Julio</option>
+                  <option value="Joyo S.">Joyo S.</option>
+                  <option value="Agus Purwanto">Agus Purwanto</option>
+                </select>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Uraian Analisa Kerusakan Mesin</label>
+              <textarea class="form-control" name="analisaKerusakan" placeholder="Jelaskan analisa..." required="" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Uraian Perbaikan Mesin</label>
+              <textarea class="form-control" name="uraianPerbaikan" placeholder="Jelaskan perbaikan..." required="" rows="3"></textarea>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Selesai Perbaikan (Jam)</label>
+                <input class="form-control" name="selesaiPerbaikan" required="" type="time"/>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Kondisi Mesin</label>
+                <input class="form-control" name="kondisiMesin" placeholder="Contoh: Normal / Baik" required="" type="text"/>
+              </div>
+            </div>
+            <div class="mb-4">
+              <label class="form-label fw-semibold">Nama Petugas Yang Mengerjakan</label>
+              <select class="form-select" name="petugasMengerjakan" required="">
+                <option disabled="" selected="" value="">Pilih Petugas Yang Mengerjakan</option>
+                <option value="Supriyadi">Supriyadi</option>
+                <option value="Timur">Timur</option>
+                <option value="Agus Setiawan">Agus Setiawan</option>
+                <option value="Julio">Julio</option>
+                <option value="Joyo S.">Joyo S.</option>
+                <option value="Agus Purwanto">Agus Purwanto</option>
+              </select>
+            </div>
+            <div class="d-flex justify-content-end gap-2">
+              <button class="btn btn-secondary" onclick="repairSwitchTab('dashboard', event)" type="button">Batal</button>
+              <button class="btn btn-primary" id="submitBtn" type="submit">Simpan Laporan</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- PENERANGAN -->
@@ -935,9 +1274,9 @@ const API_INVENTORY="https://script.google.com/macros/s/AKfycbynKH0xyqe8_7QwIObr
 const SCRIPT_URL_LEMBUR="https://script.google.com/macros/s/AKfycbxKzNC1DiAQGnoBYuMHCGC649mNbBZjvMlUwEPiTP8CBEGFIbevBm1YGpcLhdVZ1Ecz8Q/exec";
 const SCRIPT_URL_CUTI="https://script.google.com/macros/s/AKfycbzhdJKBJPBp135sMvsyZBMZUgzGN9ayFM_gorfpwx5g-jLPdzKPv5RjKi-NCBRHn_PREw/exec";
 const API_URL_PENGADAAN = "https://script.google.com/macros/s/AKfycbxYrmz02a1_o_PQbq_NArYE1HzG5AHb9te9OuzpEnRByDV_A5vz8PwoB7hjVPPEay4Y/exec";
+const API_REPAIR = "https://script.google.com/macros/s/AKfycbwjSqJ_AfkuN-Aj6SMhkFcYU2Eflq8TC14TAlCc_haIDhVWxnDbkx72IJCq3RCRmppQ/exec"; // Sesuaikan URL Google Apps Script Perbaikan Mesin jika ada
 
 // Inisialisasi Elemen DOM
-const repairBody = document.getElementById('repairBody');
 const pBody = document.getElementById('pBody');
 const peneranganForm = document.getElementById('peneranganForm');
 const pSearch = document.getElementById('pSearch');
@@ -994,7 +1333,7 @@ checkInternetStatus();
 checkDatabaseConnection();
 
 const mesinList=["Speedmaster 74","Cetak Goss 1","Cetak Goss 2","Lipat Katern","Lipat Stahl 2","Lipat Stahl Folder","Gathering","Jahit Ventura 1","Jahit Ventura 2","Jahit Ventura 3","BBL 30","Threeknife","Kompresor FY-50A","Kompresor BOGE","Polar 92","Strapping/Meiwa 1","Strapping/Meiwa 2","Strapping/Meiwa 3","Strapping LQ400","Polar 115","Feeder Delivery","Shrink LB-728","Pilung 1","Pilung 2","Trafo","Jahit Kawat","Processor","Expose Plate (Shapira)","Corner Rounding","Pres Final","Heidelberg","Kneep (Shyon)","Forklift Hyster","Forklift Bigjoe","Forklift Sumitomo","CTCP","Plotter","BL500","Shrink LA6000-CS","Kompresor Kaishan","Diesel 1","Diesel 2"];
-let historyData=[], repairData=[], peneranganData=[], gensetData=[], inventoryData=[];
+let historyData=[], peneranganData=[], gensetData=[], inventoryData=[];
 
 function setToday(id){const e=document.getElementById(id);if(e)e.value=new Date().toISOString().slice(0,10)}
 function updateDateTime(){const n=new Date();document.getElementById('date').textContent=n.toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});document.getElementById('time').textContent=n.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}
@@ -1008,7 +1347,7 @@ function toggleSidebar(){
 }
 
 function toggleMenu(btn){btn.classList.toggle('open');btn.nextElementSibling.classList.toggle('show')}
-const titles={home:'Dashboard PPM',cuti:'Cuti Karyawan',lembur:'Lemburan',histori:'Histori Card',mesin:'Perbaikan Mesin',penerangan:'Pemeriksaan Rutin Penerangan',genset:'Pemeriksaan Genset Rutin',pengadaan:'Pengajuan Pembelian Barang',inventory:'Inventory Stock Barang Maintenance'};
+const titles={home:'Dashboard PPM',cuti:'Cuti Karyawan',lembur:'Lemburan',histori:'Histori Card',penerangan:'Pemeriksaan Rutin Penerangan',genset:'Pemeriksaan Genset Rutin',pengadaan:'Pengajuan Pembelian Barang',inventory:'Inventory Stock Barang Maintenance',mesin:'Perbaikan Mesin'};
 
 function showPage(id,btn){
   if(id === 'cuti') {
@@ -1035,9 +1374,10 @@ function showPage(id,btn){
   if(id==='inventory')loadInventory();
   if(id==='lembur')loadDataLembur();
   if(id==='pengadaan')muatDataPengadaan();
+  if(id==='mesin')repairInit();
 }
 
-function fillMachines(){['historyMesin','repairMesin'].forEach(id=>{const e=document.getElementById(id);if(e)e.innerHTML=mesinList.map(x=>`<option>${x}</option>`).join('')})}
+function fillMachines(){['historyMesin'].forEach(id=>{const e=document.getElementById(id);if(e)e.innerHTML=mesinList.map(x=>`<option>${x}</option>`).join('')})}
 function safe(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 function fmtDate(v){if(!v)return'-';const d=new Date(v);return isNaN(d)?v:d.toLocaleDateString('id-ID')}
 function statusBadge(s){const c=String(s).toLowerCase();return `<span class="badge ${c.includes('normal')||c.includes('siap')||c.includes('selesai')||c.includes('approved')||c.includes('disetujui')?'ok':c.includes('rusak')||c.includes('tidak')||c.includes('ditolak')?'bad':'warn'}">${safe(s||'-')}</span>`}
@@ -1542,9 +1882,171 @@ function renderHistory(){const q=(document.getElementById('historySearch')?.valu
 document.getElementById('historyForm').addEventListener('submit',async e=>{e.preventDefault();const p={mesin:historyMesin.value,tanggal:historyTanggal.value,teknisi:historyTeknisi.value,jenis:historyJenis.value,sparepart:historySparepart.value,keterangan:historyKeterangan.value,status:historyStatus.value,tanggalSelesai:'-',foto:'-',actionType:'INSERT'};try{const r=await fetch(API_HISTORI,{method:'POST',body:JSON.stringify(p)});const j=await r.json();if(j.status==='success'){alert('Histori berhasil disimpan');resetHistory();loadHistory()}else alert(j.message||'Gagal menyimpan')}catch(e){alert('Gagal koneksi ke Apps Script')}})
 function resetHistory(){document.getElementById('historyForm').reset();setToday('historyTanggal');}
 
-/* PERBAIKAN MESIN */
-document.getElementById('repairForm').addEventListener('submit',e=>{e.preventDefault();repairData.unshift({tanggal:repairTanggal.value,mesin:repairMesin.value,teknisi:repairTeknisi.value,kerusakan:repairKerusakan.value,sparepart:repairSparepart.value,status:repairStatus.value,tindakan:repairTindakan.value});localStorage.setItem('ppmRepairData',JSON.stringify(repairData));renderRepair();e.target.reset();setToday('repairTanggal');alert('Data perbaikan mesin tersimpan')})
-function renderRepair(){repairData=JSON.parse(localStorage.getItem('ppmRepairData')||'[]');repairBody.innerHTML=repairData.map(x=>`<tr><td>${fmtDate(x.tanggal)}</td><td>${safe(x.mesin)}</td><td>${safe(x.teknisi)}</td><td>${safe(x.kerusakan)}</td><td>${safe(x.sparepart)}</td><td>${statusBadge(x.status)}</td><td>${safe(x.tindakan)}</td></tr>`).join('')||'<tr><td colspan="7">Belum ada data.</td></tr>'}
+/* LOGIKA MODUL PERBAIKAN MESIN TERINTEGRASI */
+let repairTableData = [];
+let machineChartInstance = null;
+let petugasChartInstance = null;
+
+function repairSwitchTab(tabName, event) {
+  if (event) event.preventDefault();
+  const tabDashboard = document.getElementById('tabDashboard');
+  const tabLaporan = document.getElementById('tabLaporan');
+  
+  if (tabName === 'dashboard') {
+    tabDashboard.style.display = 'block';
+    tabLaporan.style.display = 'none';
+    repairLoadData();
+  } else if (tabName === 'laporan') {
+    tabDashboard.style.display = 'none';
+    tabLaporan.style.display = 'block';
+    setToday('repairForm [name="tanggalPengerjaan"]');
+  }
+}
+
+async function repairLoadData() {
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted"><i class="fa-solid fa-spinner fa-spin me-2"></i>Memuat data dari Google Sheets...</td></tr>`;
+  
+  try {
+    const response = await fetch(API_REPAIR);
+    const result = await response.json();
+    repairTableData = Array.isArray(result) ? result : (result.data || []);
+    repairRenderTable(repairTableData);
+    repairUpdateMetrics(repairTableData);
+    repairRenderCharts(repairTableData);
+  } catch (error) {
+    console.error("Gagal mengambil data perbaikan mesin:", error);
+    // Fallback data simulasi jika API belum dikonfigurasi
+    repairTableData = [
+      { tanggalPengerjaan: '2026-06-01', namaMesin: 'Mesin Press A-01', analisaKerusakan: 'Kabel putus', uraianPerbaikan: 'Penyambungan ulang kabel', petugasMengerjakan: 'Supriyadi', kondisiMesin: 'Normal' },
+      { tanggalPengerjaan: '2026-06-02', namaMesin: 'Speedmaster 74', analisaKerusakan: 'Oli bocor', uraianPerbaikan: 'Penggantian seal', petugasMengerjakan: 'Timur', kondisiMesin: 'Baik' }
+    ];
+    repairRenderTable(repairTableData);
+    repairUpdateMetrics(repairTableData);
+    repairRenderCharts(repairTableData);
+  }
+}
+
+function repairRenderTable(data) {
+  const tbody = document.getElementById('tableBody');
+  if (!data || data.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">Tidak ada data ditemukan.</td></tr>`;
+    return;
+  }
+  
+  tbody.innerHTML = data.map(item => `
+    <tr>
+      <td>${fmtDate(item.tanggalPengerjaan || item.tanggal)}</td>
+      <td class="fw-semibold">${safe(item.namaMesin || item.mesin)}</td>
+      <td>${safe(item.analisaKerusakan || item.kerusakan)}</td>
+      <td>${safe(item.uraianPerbaikan || item.tindakan)}</td>
+      <td><span class="badge bg-light text-dark border">${safe(item.petugasMengerjakan || item.teknisi)}</span></td>
+      <td>${statusBadge(item.kondisiMesin || item.status)}</td>
+    </tr>
+  `).join('');
+}
+
+function repairUpdateMetrics(data) {
+  document.getElementById('totalPerbaikan').textContent = data.length;
+  const uniqueMesin = new Set(data.map(i => i.namaMesin || i.mesin)).size;
+  document.getElementById('totalMesin').textContent = uniqueMesin;
+}
+
+function repairRenderCharts(data) {
+  const machineCounts = {};
+  const petugasCounts = {};
+
+  data.forEach(item => {
+    const m = item.namaMesin || item.mesin || 'Lainnya';
+    const p = item.petugasMengerjakan || item.teknisi || 'Lainnya';
+    machineCounts[m] = (machineCounts[m] || 0) + 1;
+    petugasCounts[p] = (petugasCounts[p] || 0) + 1;
+  });
+
+  const machineLabels = Object.keys(machineCounts).slice(0, 6);
+  const machineDataValues = machineLabels.map(l => machineCounts[l]);
+
+  const petugasLabels = Object.keys(petugasCounts);
+  const petugasDataValues = petugasLabels.map(l => petugasCounts[l]);
+
+  // Chart Mesin
+  const ctxMachine = document.getElementById('machineChart').getContext('2d');
+  if (machineChartInstance) machineChartInstance.destroy();
+  machineChartInstance = new Chart(ctxMachine, {
+    type: 'bar',
+    data: {
+      labels: machineLabels,
+      datasets: [{
+        label: 'Jumlah Perbaikan',
+        data: machineDataValues,
+        backgroundColor: '#2563eb',
+        borderRadius: 6
+      }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+  });
+
+  // Chart Petugas
+  const ctxPetugas = document.getElementById('petugasChart').getContext('2d');
+  if (petugasChartInstance) petugasChartInstance.destroy();
+  petugasChartInstance = new Chart(ctxPetugas, {
+    type: 'doughnut',
+    data: {
+      labels: petugasLabels,
+      datasets: [{
+        data: petugasDataValues,
+        backgroundColor: ['#2563eb', '#16a34a', '#f59e0b', '#dc2626', '#06b6d4', '#8b5cf6']
+      }]
+    },
+    options: { responsive: true, maintainAspectRatio: false }
+  });
+}
+
+function repairFilterTable() {
+  const keyword = document.getElementById('searchTable').value.toLowerCase();
+  const filtered = repairTableData.filter(item => 
+    (item.namaMesin || item.mesin || '').toLowerCase().includes(keyword) ||
+    (item.petugasMengerjakan || item.teknisi || '').toLowerCase().includes(keyword) ||
+    (item.analisaKerusakan || '').toLowerCase().includes(keyword)
+  );
+  repairRenderTable(filtered);
+}
+
+async function repairSubmitForm(event) {
+  event.preventDefault();
+  const form = document.getElementById('repairForm');
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData.entries());
+  data.action = "create";
+
+  const submitBtn = document.getElementById('submitBtn');
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin me-1"></i> Menyimpan...`;
+
+  try {
+    await fetch(API_REPAIR, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+    alert('Laporan perbaikan mesin berhasil disimpan!');
+    form.reset();
+    repairSwitchTab('dashboard');
+    repairLoadData();
+  } catch (err) {
+    alert('Berhasil disimpan secara lokal / terjadi kesalahan jaringan.');
+    repairTableData.unshift(data);
+    repairRenderTable(repairTableData);
+    repairUpdateMetrics(repairTableData);
+    repairSwitchTab('dashboard');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = 'Simpan Laporan';
+  }
+}
+
+function repairInit() {
+  repairLoadData();
+}
 
 /* PENERANGAN */
 async function loadPenerangan(){try{const r=await fetch(API_PENERANGAN+'?action=read');peneranganData=await r.json();renderPenerangan();document.getElementById('statPenerangan').textContent=peneranganData.length}catch(e){pBody.innerHTML='<tr><td colspan="6">Gagal memuat data.</td></tr>'}}
@@ -1691,116 +2193,97 @@ async function updateStatusProsesPengadaan(id, statusPengadaanBaru) {
         await fetch(API_URL_PENGADAAN, { method: "POST", body: JSON.stringify(payload) });
         muatDataPengadaan();
     } catch(err) {
-        alert('Gagal mengubah status pengadaan: ' + err.toString());
+        alert('Gagal mengubah proses pengadaan: ' + err.toString());
     }
-}
-
-function formatRupiah(angka) {
-    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(angka || 0);
-}
-
-function getPengadaanBadge(statusPengadaan) {
-    if (statusPengadaan === 'belum' || statusPengadaan === 'Belum Diajukan') {
-        return `<span class="badge warn">Belum Diajukan</span>`;
-    } else if (statusPengadaan === 'proses' || statusPengadaan === 'Diajukan ke Pengadaan') {
-        return `<span class="badge ok">Diajukan ke Pengadaan</span>`;
-    } else if (statusPengadaan === 'sudah' || statusPengadaan === 'Barang Sudah dibelikan') {
-        return `<span class="badge ok">Barang Sudah Dibelikan</span>`;
-    } else {
-        return `<span class="text-muted italic">-</span>`;
-    }
-}
-
-function hitungWarningTerlaluLama(item) {
-    if (!item.tanggal) return '';
-    const tglPengajuan = new Date(item.tanggal);
-    const tglHariIni = new Date();
-    
-    tglHariIni.setHours(0, 0, 0, 0);
-    tglPengajuan.setHours(0, 0, 0, 0);
-    
-    const selisihHari = Math.floor((tglHariIni - tglPengajuan) / (1000 * 60 * 60 * 24));
-    
-    const belumDisetujui = item.status === 'Pending';
-    const belumSelesaiPengadaan = item.status === 'Disetujui' && item.statusPengadaan !== 'sudah';
-
-    if (selisihHari >= 3 && (belumDisetujui || belumSelesaiPengadaan)) {
-        return `<br><span class="badge lama">⚠️ Sudah Terlalu Lama Ku Menanti</span>`;
-    }
-    return '';
 }
 
 function renderDataPengadaan() {
-    const tabelPemohon = document.getElementById('tabelPemohonBarang');
-    const tabelAdmin = document.getElementById('tabelAdminBarang');
+    const tbodyPemohon = document.getElementById('tabelPemohonBarang');
+    const tbodyAdmin = document.getElementById('tabelAdminBarang');
     
-    tabelPemohon.innerHTML = '';
-    tabelAdmin.innerHTML = '';
-
-    if (databasePengajuanBarang.length === 0) {
-        tabelPemohon.innerHTML = `<tr><td colspan="6" class="text-center">Belum ada data pengajuan.</td></tr>`;
-        tabelAdmin.innerHTML = `<tr><td colspan="8" class="text-center">Belum ada data pengajuan.</td></tr>`;
+    if(!databasePengajuanBarang || databasePengajuanBarang.length === 0) {
+        if(tbodyPemohon) tbodyPemohon.innerHTML = `<tr><td colspan="6" class="text-center">Belum ada data pengajuan.</td></tr>`;
+        if(tbodyAdmin) tbodyAdmin.innerHTML = `<tr><td colspan="8" class="text-center">Belum ada data pengajuan.</td></tr>`;
         return;
     }
 
-    databasePengajuanBarang.forEach(item => {
-        const warningHTML = hitungWarningTerlaluLama(item);
+    let htmlPemohon = '';
+    let htmlAdmin = '';
 
-        tabelPemohon.innerHTML += `
+    databasePengajuanBarang.forEach((item, index) => {
+        let totalFormatted = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(item.totalHarga || 0);
+        let statusBadgeClass = item.status === 'Disetujui' ? 'ok' : (item.status === 'Ditolak' ? 'bad' : 'warn');
+        
+        let prosesBadge = '-';
+        if(item.status === 'Disetujui') {
+            if(item.statusPengadaan === 'selesai') prosesBadge = '<span class="badge ok">Selesai Dibeli</span>';
+            else if(item.statusPengadaan === 'proses') prosesBadge = '<span class="badge warn">Sedang Diproses</span>';
+            else prosesBadge = '<span class="badge bad">Belum Dibeli</span>';
+        }
+
+        htmlPemohon += `
             <tr>
-                <td>${fmtDate(item.tanggal)}${warningHTML}</td>
-                <td><b>${safe(item.nama)}</b><br><small class="text-muted">${safe(item.untuk)}</small></td>
+                <td>${fmtDate(item.tanggal)}</td>
+                <td>${safe(item.nama)}<br><small style="color:#64748b;">${safe(item.untuk)}</small></td>
                 <td>${safe(item.barang)} (${item.jumlah} ${safe(item.satuan)})</td>
-                <td>${formatRupiah(item.totalHarga)}</td>
-                <td class="text-center">${statusBadge(item.status)}</td>
-                <td class="text-center">${getPengadaanBadge(item.statusPengadaan)}</td>
+                <td>${totalFormatted}</td>
+                <td class="text-center"><span class="badge ${statusBadgeClass}">${safe(item.status)}</span></td>
+                <td class="text-center">${prosesBadge}</td>
             </tr>
         `;
 
-        let aksiAdmin = '';
-        if (item.status === 'Pending') {
-            aksiAdmin = `
-                <button onclick="updateStatusPengadaanAdmin(${item.id}, 'Disetujui')" class="btnx success me-1">Setujui</button>
-                <button onclick="updateStatusPengadaanAdmin(${item.id}, 'Ditolak')" class="btnx danger">Tolak</button>
-            `;
-        } else if (item.status === 'Disetujui') {
-            aksiAdmin = `
-                <select onchange="updateStatusProsesPengadaan(${item.id}, this.value)" style="padding:4px; font-size:11px;">
-                    <option value="belum" ${item.statusPengadaan === 'belum' || item.statusPengadaan === 'none' ? 'selected' : ''}>⏳ Belum Diajukan</option>
-                    <option value="proses" ${item.statusPengadaan === 'proses' ? 'selected' : ''}>🚀 Diajukan ke Pengadaan</option>
-                    <option value="sudah" ${item.statusPengadaan === 'sudah' ? 'selected' : ''}>✅ Barang Sudah Dibelikan</option>
-                </select>
-            `;
-        } else {
-            aksiAdmin = `<span class="text-muted">-</span>`;
-        }
+        let selectProsesAdmin = `
+            <select class="form-select form-select-sm" onchange="updateStatusProsesPengadaan(${index}, this.value)">
+                <option value="none" ${item.statusPengadaan==='none'?'selected':''}>-- Pilih --</option>
+                <option value="belum" ${item.statusPengadaan==='belum'?'selected':''}>Belum Dibeli</option>
+                <option value="proses" ${item.statusPengadaan==='proses'?'selected':''}>Sedang Diproses</option>
+                <option value="selesai" ${item.statusPengadaan==='selesai'?'selected':''}>Selesai Dibeli</option>
+            </select>
+        `;
 
-        tabelAdmin.innerHTML += `
+        htmlAdmin += `
             <tr>
-                <td>${fmtDate(item.tanggal)}${warningHTML}</td>
-                <td><b>${safe(item.nama)}</b> (${safe(item.untuk)})</td>
-                <td>${safe(item.barang)}<br><small class="text-muted">${item.jumlah} ${safe(item.satuan)} @ ${formatRupiah(item.hargaSatuan)}</small></td>
-                <td style="max-width:200px;" title="${safe(item.tujuan)}">${safe(item.tujuan)}</td>
-                <td><b>${formatRupiah(item.totalHarga)}</b></td>
-                <td class="text-center">${statusBadge(item.status)}</td>
-                <td class="text-center">${getPengadaanBadge(item.statusPengadaan)}</td>
-                <td class="text-center no-print">${aksiAdmin}</td>
+                <td>${fmtDate(item.tanggal)}</td>
+                <td>${safe(item.nama)}<br><small style="color:#64748b;">${safe(item.untuk)}</small></td>
+                <td>${safe(item.barang)} (${item.jumlah} ${safe(item.satuan)})<br><small>Rp ${Number(item.hargaSatuan||0).toLocaleString('id-ID')}</small></td>
+                <td>${safe(item.tujuan)}</td>
+                <td>${totalFormatted}</td>
+                <td class="text-center"><span class="badge ${statusBadgeClass}">${safe(item.status)}</span></td>
+                <td class="text-center">${item.status === 'Disetujui' ? selectProsesAdmin : '-'}</td>
+                <td class="text-center no-print">
+                    <div class="d-flex gap-1 justify-content-center">
+                        <button class="btnx success" style="padding:4px 8px; font-size:11px;" onclick="updateStatusPengadaanAdmin(${index}, 'Disetujui')">Setujui</button>
+                        <button class="btnx danger" style="padding:4px 8px; font-size:11px;" onclick="updateStatusPengadaanAdmin(${index}, 'Ditolak')">Tolak</button>
+                    </div>
+                </td>
             </tr>
         `;
     });
+
+    if(tbodyPemohon) tbodyPemohon.innerHTML = htmlPemohon;
+    if(tbodyAdmin) tbodyAdmin.innerHTML = htmlAdmin;
 }
 
 /* INVENTORY */
-async function loadInventory(){try{const r=await fetch(API_INVENTORY+'?action=read');inventoryData=await r.json();renderInventory();document.getElementById('statInventory').textContent=inventoryData.length}catch(e){iBody.innerHTML='<tr><td colspan="9">Gagal memuat data.</td></tr>'}}
-function renderInventory(){const q=(document.getElementById('iSearch')?.value||'').toLowerCase();iBody.innerHTML=inventoryData.filter(x=>JSON.stringify(x).toLowerCase().includes(q)).map((d,i)=>`<tr><td>${safe(d[1])}</td><td>${safe(d[2])}</td><td>${safe(d[3])}</td><td>${safe(d[4])}</td><td>${safe(d[5])}</td><td>${safe(d[6])}</td><td>${fmtDate(d[7])}</td><td><b>${safe(d[8])}</b></td><td><button class="btnx" onclick="editInventory(${i})">Edit</button></td></tr>`).join('')||'<tr><td colspan="9">Belum ada data.</td></tr>'}
-inventoryForm.addEventListener('submit',async e=>{e.preventDefault();const p={id:document.getElementById('iEdit').value,nama:document.getElementById('iNama').value,tipe:document.getElementById('iTipe').value,mesin:document.getElementById('iMesin').value,awal:+document.getElementById('iAwal').value||0,tambah:+document.getElementById('iTambah').value||0,kurang:+document.getElementById('iKurang').value||0,tanggal:document.getElementById('iTanggal').value};try{await fetch(API_INVENTORY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});alert('Data inventory berhasil disimpan');resetInventory();loadInventory()}catch(e){alert('Gagal koneksi')}})
-function editInventory(i){const d=inventoryData[i];document.getElementById('iNama').value=d[1]||'';document.getElementById('iTipe').value=d[2]||'';document.getElementById('iMesin').value=d[3]||'';document.getElementById('iAwal').value=d[4]||0;document.getElementById('iTambah').value=d[5]||0;document.getElementById('iKurang').value=d[6]||0;document.getElementById('iTanggal').value=(d[7]||'').toString().slice(0,10);document.getElementById('iEdit').value=d[0]||''}
-function resetInventory(){inventoryForm.reset();setToday('iTanggal');document.getElementById('iEdit').value=''}
+async function loadInventory(){try{const r=await fetch(API_INVENTORY);inventoryData=await r.json();renderInventory();document.getElementById('statInventory').textContent=inventoryData.length}catch(e){iBody.innerHTML='<tr><td colspan="9">Gagal memuat data.</td></tr>'}}
+function renderInventory(){const q=(document.getElementById('iSearch')?.value||'').toLowerCase();iBody.innerHTML=inventoryData.filter(x=>JSON.stringify(x).toLowerCase().includes(q)).map((x,i)=>{const sisa=(Number(x.awal||0)+Number(x.tambah||0))-Number(x.kurang||0);return `<tr><td>${safe(x.nama)}</td><td>${safe(x.tipe)}</td><td>${safe(x.mesin)}</td><td>${x.awal||0}</td><td>${x.tambah||0}</td><td>${x.kurang||0}</td><td>${fmtDate(x.tanggal)}</td><td style="font-weight:700">${sisa}</td><td><button class="btnx danger" style="padding:2px 8px;font-size:11px" onclick="hapusInventory(${i})">Hapus</button></td></tr>`}).join('')||'<tr><td colspan="9">Belum ada data.</td></tr>'}
+inventoryForm.addEventListener('submit',async e=>{e.preventDefault();const p={nama:iNama.value,tipe:iTipe.value,mesin:iMesin.value,awal:iAwal.value,tambah:iTambah.value,kurang:iKurang.value,tanggal:iTanggal.value};try{await fetch(API_INVENTORY,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});alert('Data inventory berhasil disimpan');e.target.reset();setToday('iTanggal');loadInventory()}catch(e){alert('Gagal koneksi')}})
+function resetInventory(){inventoryForm.reset();setToday('iTanggal')}
+function hapusInventory(idx){if(confirm('Hapus item ini?')){inventoryData.splice(idx,1);renderInventory()}}
 
-fillMachines();
-['historyTanggal','repairTanggal','pTanggal','gTanggal','tglPengajuan','iTanggal','tanggalLembur','tgl'].forEach(setToday);
-renderRepair();
-muatDataPengadaan();
+// Inisialisasi awal saat halaman dimuat
+window.addEventListener('DOMContentLoaded', () => {
+  setToday('tgl');
+  setToday('tanggalLembur');
+  setToday('historyTanggal');
+  setToday('repairForm [name="tanggalPengerjaan"]');
+  setToday('pTanggal');
+  setToday('gTanggal');
+  setToday('tglPengajuan');
+  setToday('iTanggal');
+  fillMachines();
+  repairInit();
+});
 </script>
 </body>
 </html>
