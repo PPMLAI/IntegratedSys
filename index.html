@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PPM Integrated Control System</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#2563eb;--dark:#0f172a;--bg:#f1f5f9;--card:#fff;--muted:#64748b;--border:#e2e8f0}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:#1e293b}
+.app{min-height:100vh;display:flex}
+.sidebar{width:280px;background:#111827;color:#fff;position:fixed;inset:0 auto 0 0;z-index:1000;overflow-y:auto;transition:.3s}
+.brand{height:82px;display:flex;align-items:center;gap:12px;padding:18px 20px;border-bottom:1px solid #263244}
+.logo{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#2563eb,#06b6d4);display:grid;place-items:center;font-weight:800}
+.brand h2{font-size:16px;margin:0}.brand small{color:#94a3b8}
+.menu{padding:18px 14px}.menu-title{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:1px;margin:18px 12px 9px}
+.menu-item,.menu-parent{width:100%;border:0;background:transparent;color:#cbd5e1;display:flex;align-items:center;gap:11px;padding:12px 14px;border-radius:10px;cursor:pointer;text-align:left;font-size:13px;margin-bottom:4px}
+.menu-item:hover,.menu-parent:hover{background:#1f2937;color:#fff}.menu-item.active{background:linear-gradient(90deg,#2563eb,#1d4ed8);color:#fff}
+.menu-parent{justify-content:space-between}.menu-parent-left{display:flex;gap:11px;align-items:center}.arrow{transition:.3s}.menu-parent.open .arrow{transform:rotate(180deg)}
+.submenu{display:none;padding-left:14px}.submenu.show{display:block}
+.main{margin-left:280px;flex:1;min-width:0}
+.header{height:82px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 30px;position:sticky;top:0;z-index:900}
+.header h1{font-size:20px;margin:0;font-weight:800}.header p{font-size:12px;color:var(--muted);margin:4px 0 0}
+.mobile-menu{display:none;border:0;background:#eff6ff;color:#2563eb;border-radius:10px;width:42px;height:42px;font-size:20px}
+.datetime{text-align:right}.datetime .date{font-size:12px;color:var(--muted)}.datetime .time{font-size:20px;font-weight:800;color:var(--primary)}
+.content{padding:28px}.page{display:none}.page.active{display:block;animation:fade .25s ease}@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.welcome{background:linear-gradient(135deg,#1d4ed8,#2563eb,#06b6d4);color:#fff;border-radius:20px;padding:32px;margin-bottom:24px;box-shadow:0 10px 30px #0f172a14}.welcome h2{font-size:26px}.welcome p{line-height:1.8;max-width:900px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.stat{background:#fff;border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:0 10px 30px #0f172a0d}.stat h3{font-size:28px;margin:0 0 5px}.stat p{font-size:12px;color:var(--muted);margin:0}
+.modules{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:18px}.module{background:#fff;border:1px solid var(--border);border-radius:16px;padding:22px;cursor:pointer;transition:.2s}.module:hover{transform:translateY(-3px);box-shadow:0 14px 30px #0f172a14}.module .icon{font-size:28px;margin-bottom:12px}.module h3{font-size:16px}.module p{font-size:12px;color:var(--muted)}
+.page-head{background:#fff;border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:18px;box-shadow:0 10px 30px #0f172a0d}.page-head h2{font-size:21px;margin:0 0 5px}.page-head p{font-size:13px;color:var(--muted);margin:0}
+.cardx{background:#fff;border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:0 10px 30px #0f172a0d;margin-bottom:18px}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+label{font-size:12px;font-weight:700;margin-bottom:6px;color:#334155}input,select,textarea{width:100%;padding:10px 12px;border:1px solid #cbd5e1;border-radius:9px;background:#fff;font-size:13px}
+.btnx{border:0;border-radius:9px;padding:8px 12px;background:#2563eb;color:#fff;font-weight:700;cursor:pointer;font-size:12px}.btnx.secondary{background:#64748b}.btnx.danger{background:#dc2626}.btnx.success{background:#16a34a}
+.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:12px}th{background:#eff6ff;color:#1e3a8a;padding:10px;text-align:left;white-space:nowrap}td{border-bottom:1px solid #e2e8f0;padding:9px;vertical-align:middle}
+.badge{display:inline-block;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:600}.ok{background:#dcfce7;color:#166534}.warn{background:#fef3c7;color:#92400e}.bad{background:#fee2e2;color:#991b1b}.lama{background:#7c2d12;color:#ffedd5;animation:pulse 1.5s infinite}
+
+/* STYLE STATUS KONEKSI INTERNET & DATABASE */
+.status-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.status-badge.online {
+  background-color: #f0fdf4;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+.status-badge.offline {
+  background-color: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+/* Animasi Titik Berkedip (Pulsing Dot) */
+.pulse-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.status-badge.online .pulse-dot {
+  background-color: #22c55e;
+  box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+  animation: pulse-green 1.6s infinite;
+}
+.status-badge.offline .pulse-dot {
+  background-color: #ef4444;
+  box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  animation: pulse-red 1.6s infinite;
+}
+
+@keyframes pulse-green {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+}
+
+@keyframes pulse-red {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+@keyframes pulse{0%{opacity:1}50%{opacity:.6}100%{opacity:1}}
+.footer{text-align:center;color:#64748b;font-size:11px;padding:24px}
+@media(max-width:1100px){.stats{grid-template-columns:repeat(2,1fr)}.modules{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main{margin-left:0}.mobile-menu{display:block}.header{padding:0 16px}.header h1{font-size:16px}.header p{display:none}.datetime .time{font-size:16px}.content{padding:16px}.grid2,.grid3{grid-template-columns:1fr}.modules{grid-template-columns:1fr}
+  .status-badge span.status-text { display: none; } /* Sembunyikan teks di layar hp kecil agar rapi */
+}
+
+/* Style Modul Cuti Karyawan */
+.cuti-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
+.cuti-card { background: white; border-radius: 12px; padding: 18px; border: 1px solid var(--border); box-shadow: 0 4px 10px rgba(0,0,0,.05); }
+.cuti-card h3 { color: #0d47a1; font-size: 15px; margin: 0; }
+.cuti-card h1 { margin-top: 10px; font-size: 32px; font-weight: 700; color: #1e293b; margin-bottom: 0; }
+.cuti-form-area { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.cuti-form-group { margin-bottom: 12px; }
+.cuti-form-group label { font-size: 12px; font-weight: 600; }
+@media(max-width:900px){
+  .cuti-cards { grid-template-columns: repeat(2, 1fr); }
+  .cuti-form-area { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="brand"><div class="logo">PPM</div><div><h2>Integrated Control</h2><small>PPM LAI System</small></div></div>
+<nav class="menu">
+<div class="menu-title">Utama</div>
+<button class="menu-item active" onclick="showPage('home',this)">🏠 Dashboard / Home</button>
+<div class="menu-title">Sumber Daya Manusia</div>
+<button class="menu-parent open" onclick="toggleMenu(this)"><span class="menu-parent-left">👥 SDM</span><span class="arrow">▼</span></button>
+<div class="submenu show">
+<button class="menu-item" onclick="showPage('cuti',this)">🔒 📅 Cuti Karyawan</button>
+<button class="menu-item" onclick="showPage('lembur',this)">⏱️ Lemburan</button>
+</div>
+<div class="menu-title">Maintenance</div>
+<button class="menu-parent" onclick="toggleMenu(this)"><span class="menu-parent-left">🛠️ Maintenance</span><span class="arrow">▼</span></button>
+<div class="submenu">
+<button class="menu-item" onclick="showPage('histori',this)">📋 Histori Card</button>
+<button class="menu-item" onclick="showPage('mesin',this)">⚙️ Perbaikan Mesin</button>
+<button class="menu-item" onclick="showPage('penerangan',this)">💡 Pemeriksaan Rutin Penerangan</button>
+<button class="menu-item" onclick="showPage('genset',this)">🔋 Pemeriksaan Genset Rutin</button>
+<button class="menu-item" onclick="showPage('pengadaan',this)">🛒 Pengajuan Pembelian Barang</button>
+<button class="menu-item" onclick="showPage('inventory',this)">📦 Inventory Stock Barang Maintenance</button>
+</div>
+</nav>
+</aside>
+
+<main class="main">
+<header class="header">
+<div class="d-flex align-items-center gap-3">
+  <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+  <div>
+    <h1 id="headerTitle">Dashboard PPM</h1>
+    <p>PPM Integrated Control System</p>
+  </div>
+</div>
+
+<div class="d-flex align-items-center gap-3">
+  <!-- Indikator Status Koneksi Internet & Database -->
+  <div class="status-container">
+    <!-- Internet Status -->
+    <div id="netStatus" class="status-badge online" title="Status Internet">
+      <span class="pulse-dot"></span>
+      <span>🌐</span>
+      <span class="status-text" id="netText">Internet: Online</span>
+    </div>
+    <!-- Database Status -->
+    <div id="dbStatus" class="status-badge online" title="Status Database Google AppSheet/Script">
+      <span class="pulse-dot"></span>
+      <span>🗄️</span>
+      <span class="status-text" id="dbText">DB: Connected</span>
+    </div>
+  </div>
+
+  <!-- Tanggal & Jam -->
+  <div class="datetime">
+    <div class="date" id="date"></div>
+    <div class="time" id="time"></div>
+  </div>
+</div>
+</header>
+
+<section class="content">
+<div id="home" class="page active">
+<div class="welcome"><h2>Selamat Datang di Aplikasi Sistem Kontrol Terintegrasi PPM</h2><p>Aplikasi ini menggabungkan pencatatan SDM, pencatatan pekerjaan maintenance dan pengajuan barang ke bagian pengadaan. Dengan adanya aplikasi ini diharapkan bisa memberikan kontribusi pencatatan administrasi pada PPM dengan rapih dan akurat.</p><strong>Terima Kasih dan Salam Hormat<br>Agus Purwanto - PPM LAI</strong></div>
+<div class="stats"><div class="stat"><h3 id="statHistori">0</h3><p>Histori Maintenance</p></div><div class="stat"><h3 id="statGenset">0</h3><p>Inspeksi Genset</p></div><div class="stat"><h3 id="statPenerangan">0</h3><p>Pemeriksaan Penerangan</p></div><div class="stat"><h3 id="statInventory">0</h3><p>Item Inventory</p></div></div>
+<div class="modules"><div class="module" onclick="showPage('histori')"><div class="icon">📋</div><h3>Histori Card</h3><p>Riwayat pekerjaan maintenance seluruh mesin.</p></div><div class="module" onclick="showPage('genset')"><div class="icon">🔋</div><h3>Pemeriksaan Genset</h3><p>Pencatatan pemeriksaan rutin dan status genset.</p></div><div class="module" onclick="showPage('pengadaan')"><div class="icon">🛒</div><h3>Pengajuan Barang</h3><p>Ajukan kebutuhan barang maintenance.</p></div></div>
+</div>
+
+<!-- SUB NAVIGASI SDM: CUTI KARYAWAN -->
+<div id="cuti" class="page">
+<div class="page-head"><h2>📅 Pengajuan & Dashboard Cuti Karyawan</h2><p>Pencatatan, pengajuan, dan riwayat sisa cuti karyawan PPM LAI.</p></div>
+
+<div class="cuti-cards">
+  <div class="cuti-card">
+    <h3>Total Pengajuan</h3>
+    <h1 id="totalData">0</h1>
+  </div>
+  <div class="cuti-card">
+    <h3>Cuti Tahunan</h3>
+    <h1 id="cutiTahunan">0</h1>
+  </div>
+  <div class="cuti-card">
+    <h3>Cuti Besar</h3>
+    <h1 id="cutiBesar">0</h1>
+  </div>
+  <div class="cuti-card">
+    <h3>Sisa Cuti</h3>
+    <h1 id="sisaCuti">12</h1>
+  </div>
+</div>
+
+<div class="cuti-form-area">
+  <!-- FORM PENGAJUAN -->
+  <div class="cardx">
+    <h4 style="color:#0d47a1; margin-bottom:15px; font-weight:700;">Form Pengajuan Cuti</h4>
+    <div class="cuti-form-group">
+      <label>Nama</label>
+      <select id="nama" onchange="isiData()">
+        <option value="">-- Pilih Nama --</option>
+        <option>Sylvester Seno</option>
+        <option>Timur Sukoco</option>
+        <option>Supriyadi</option>
+      </select>
+    </div>
+    <div class="cuti-form-group">
+      <label>NIK</label>
+      <input type="text" id="nik" readonly>
+    </div>
+    <div class="cuti-form-group">
+      <label>Bagian</label>
+      <input type="text" id="bagian" readonly>
+    </div>
+    <div class="cuti-form-group">
+      <label>Tanggal Pengajuan</label>
+      <input type="date" id="tgl">
+    </div>
+    <div class="cuti-form-group">
+      <label>Mulai Cuti</label>
+      <input type="date" id="mulai" onchange="hitungCuti()">
+    </div>
+    <div class="cuti-form-group">
+      <label>Sampai Dengan</label>
+      <input type="date" id="sampai" onchange="hitungCuti()">
+    </div>
+    <div class="cuti-form-group">
+      <label>Jenis Cuti</label>
+      <select id="jenis" onchange="hitungCuti()">
+        <option value="Cuti Tahunan">Cuti Tahunan</option>
+        <option value="Cuti Besar">Cuti Besar</option>
+      </select>
+    </div>
+    <div class="cuti-form-group">
+      <label>Keperluan Cuti</label>
+      <textarea id="keperluan" style="height:70px; resize:none;"></textarea>
+    </div>
+    <div class="cuti-form-group">
+      <label>Lokasi Cuti</label>
+      <input type="text" id="lokasi">
+    </div>
+    <div class="cuti-form-group">
+      <label>Nomor HP yang dapat dihubungi</label>
+      <input type="text" id="hp">
+    </div>
+    <div class="cuti-form-group">
+      <label>Lama Cuti</label>
+      <input type="text" id="lama" value="0 Hari" readonly>
+    </div>
+    <div class="cuti-form-group">
+      <label>Sisa Cuti</label>
+      <input type="text" id="sisa" value="12 Hari" readonly>
+    </div>
+    <div style="margin-top:20px; display:flex; gap:10px; flex-wrap:wrap;">
+      <button class="btnx" onclick="simpan()">💾 Simpan</button>
+      <button class="btnx secondary" type="button" onclick="resetForm()">🔄 Reset</button>
+      <button class="btnx secondary" onclick="window.print()">🖨️ Cetak</button>
+    </div>
+  </div>
+
+  <!-- RIWAYAT & REKAPITULASI -->
+  <div class="cardx">
+    <h4 style="color:#0d47a1; margin-bottom:15px; font-weight:700;">Dashboard Riwayat Pengajuan</h4>
+    <input type="text" id="cari" placeholder="Cari Nama..." onkeyup="cariData()" style="margin-bottom:15px;">
+    
+    <div class="table-wrap mb-3">
+      <table id="tabel">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Nama</th>
+            <th>Mulai</th>
+            <th>Selesai</th>
+            <th>Hari</th>
+            <th>Jenis</th>
+            <th>Sisa</th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <tr><td colspan="7">Memuat data...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:12px;">
+      <div class="cuti-card">
+        <h3>Total Pengajuan</h3>
+        <h1 id="totalPengajuan">0</h1>
+      </div>
+      <div class="cuti-card">
+        <h3>Total Hari Cuti</h3>
+        <h1 id="totalHari">0</h1>
+      </div>
+      <div class="cuti-card">
+        <h3>Cuti Tahunan</h3>
+        <h1 id="jumlahTahunan">0</h1>
+      </div>
+      <div class="cuti-card">
+        <h3>Cuti Besar</h3>
+        <h1 id="jumlahBesar">0</h1>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div id="lembur" class="page">
+<div class="page-head"><h2>⏱️ Lemburan</h2><p>Pencatatan lembur teknisi PPM LAI, statistik frekuensi, dan total jam lembur bulan berjalan.</p></div>
+
+<div class="cardx">
+<form id="overtimeForm">
+<div class="grid3">
+<div><label>Nama Karyawan</label><select id="oNama" required>
+<option>Supriyadi</option><option>Timur</option><option>Agus Setiawan</option><option>Julio</option><option>Joyo S.</option><option>Agus Purwanto</option>
+</select></div>
+<div><label>Tanggal Lembur</label><input type="date" id="oTanggal" required></div>
+<div><label>Jam Mulai</label><input type="time" id="oMulai" required></div>
+<div><label>Jam Pulang</label><input type="time" id="oSelesai" required></div>
+<div><label>Durasi Lembur</label><input type="text" id="oDurasi" readonly></div>
+<div><label>Yang Dikerjakan Saat Lembur</label><textarea id="oPekerjaan" required></textarea></div>
+</div>
+<button class="btnx mt-3">Simpan Data Lembur</button>
+</form>
+</div>
+
+<div class="cardx">
+<h5>Frekuensi Lembur Bulan Ini</h5>
+<div class="stats" id="overtimeFrequency"></div>
+</div>
+
+<div class="cardx">
+<h5>Total Jam Lembur Bulan Ini</h5>
+<div class="stats" id="overtimeHours"></div>
+</div>
+
+<div class="cardx">
+<h5>Data Detail Jam Lembur Bulan Ini</h5>
+<div class="table-wrap"><table><thead><tr><th>Teknisi</th><th>Total Jam</th></tr></thead><tbody id="overtimeMonthly"></tbody></table></div>
+</div>
+
+<div class="cardx">
+<div class="d-flex gap-2 mb-3"><input id="overtimeSearch" placeholder="Cari nama atau pekerjaan..." oninput="renderOvertime()"><button class="btnx" type="button" onclick="loadOvertime()">Refresh</button></div>
+<div class="table-wrap"><table><thead><tr><th>Nama</th><th>Tanggal</th><th>Mulai</th><th>Pulang</th><th>Durasi</th><th>Pekerjaan</th></tr></thead><tbody id="overtimeBody"></tbody></table></div>
+</div>
+</div>
+
+<!-- HISTORI CARD -->
+<div id="histori" class="page">
+<div class="page-head"><h2>📋 Histori Card</h2><p>Riwayat maintenance mesin dan pencatatan pekerjaan teknisi.</p></div>
+<div class="cardx"><form id="historyForm"><input type="hidden" id="historyEditIndex"><div class="grid3">
+<div><label>Mesin</label><select id="historyMesin" required></select></div>
+<div><label>Tanggal</label><input type="date" id="historyTanggal" required></div>
+<div><label>Teknisi</label><input id="historyTeknisi" required></div>
+<div><label>Jenis Pekerjaan</label><select id="historyJenis"><option>Preventive Maintenance</option><option>Corrective Maintenance</option><option>Inspection</option></select></div>
+<div><label>Sparepart</label><input id="historySparepart"></div>
+<div><label>Status</label><select id="historyStatus"><option>Normal</option><option>Perlu Monitoring</option><option>Rusak</option></select></div>
+</div><div class="mt-3"><label>Keterangan</label><textarea id="historyKeterangan"></textarea></div><div class="mt-3"><button class="btnx" type="submit">Simpan History</button><button class="btnx secondary ms-2" type="button" onclick="resetHistory()">Reset</button></div></form></div>
+<div class="cardx"><div class="d-flex gap-2 mb-3"><input id="historySearch" placeholder="Cari histori..." oninput="renderHistory()"><button class="btnx" onclick="loadHistory()">Refresh</button></div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Mesin</th><th>Teknisi</th><th>Jenis</th><th>Sparepart</th><th>Status</th><th>Keterangan</th></tr></thead><tbody id="historyBody"></tbody></table></div></div>
+</div>
+
+<!-- PERBAIKAN MESIN -->
+<div id="mesin" class="page">
+<div class="page-head"><h2>⚙️ Perbaikan Mesin</h2><p>Pencatatan kerusakan dan pekerjaan perbaikan mesin.</p></div>
+<div class="cardx"><form id="repairForm"><div class="grid3"><div><label>Mesin</label><select id="repairMesin" required></select></div><div><label>Tanggal</label><input type="date" id="repairTanggal" required></div><div><label>Teknisi</label><input id="repairTeknisi" required></div><div><label>Kerusakan</label><input id="repairKerusakan" required></div><div><label>Sparepart Diganti</label><input id="repairSparepart"></div><div><label>Status</label><select id="repairStatus"><option>Selesai</option><option>Dalam Proses</option><option>Menunggu Sparepart</option></select></div></div><div class="mt-3"><label>Tindakan Perbaikan</label><textarea id="repairTindakan"></textarea></div><button class="btnx mt-3">Simpan Perbaikan</button></form></div>
+<div class="cardx"><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Mesin</th><th>Teknisi</th><th>Kerusakan</th><th>Sparepart</th><th>Status</th><th>Tindakan</th></tr></thead><tbody id="repairBody"></tbody></table></div></div>
+</div>
+
+<!-- PENERANGAN -->
+<div id="penerangan" class="page">
+<div class="page-head"><h2>💡 Pemeriksaan Rutin Penerangan</h2><p>Form pemeriksaan penerangan Gedung LAI.</p></div>
+<div class="cardx"><form id="peneranganForm"><div class="grid3"><div><label>Nama Petugas</label><select id="pPetugas" required><option value="">-- Pilih --</option><option>Supriyadi</option><option>Timur Sukoco</option><option>Agus Setiawan</option><option>Agus Purwanto</option><option>Ignasius Julio Sasi</option><option>Joyo S.</option></select></div><div><label>Tanggal</label><input type="date" id="pTanggal" required></div><div><label>Area / Ruangan</label><input id="pArea" required></div><div><label>Jenis Lampu</label><input id="pLampu" required></div><div><label>Status</label><select id="pStatus"><option>Normal</option><option>Rusak/Mati</option></select></div><div><label>Keterangan</label><input id="pKeterangan"></div></div><button class="btnx mt-3">Simpan Laporan</button></form></div>
+<div class="cardx"><div class="d-flex gap-2 mb-3"><input id="pSearch" placeholder="Cari petugas atau area..." oninput="renderPenerangan()"><button class="btnx" onclick="loadPenerangan()">Refresh</button></div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Petugas</th><th>Area</th><th>Jenis Lampu</th><th>Status</th><th>Keterangan</th></tr></thead><tbody id="pBody"></tbody></table></div></div>
+</div>
+
+<!-- GENSET -->
+<div id="genset" class="page">
+<div class="page-head"><h2>🔋 Pemeriksaan Genset Rutin</h2><p>Checklist inspeksi genset dan monitoring status unit.</p></div>
+<div class="cardx"><form id="gensetForm"><div class="grid3"><div><label>Unit Genset</label><select id="gUnit" required><option>CUMMINS HIJAU</option><option>CUMMINS CREAM</option><option>GENSET SERVER</option></select></div><div><label>Petugas</label><input id="gPetugas" required></div><div><label>Tanggal</label><input type="date" id="gTanggal" required></div><div><label>Jam Mulai</label><input type="time" id="gMulai"></div><div><label>Jam Selesai</label><input type="time" id="gSelesai"></div><div><label>Kondisi Solar</label><input id="gSolar"></div><div><label>Oli Mesin</label><input id="gOli"></div><div><label>Air Radiator/Aki</label><input id="gAir"></div><div><label>Tegangan Aki</label><input id="gAki"></div><div><label>Output Tegangan</label><input id="gOutput"></div><div><label>Suhu Mesin</label><input id="gSuhu"></div><div><label>Frekuensi</label><input id="gFrekuensi"></div><div><label>Status</label><select id="gStatus"><option>Siap Digunakan</option><option>Perlu Pemeriksaan Lebih Lanjut</option><option>Tidak dapat digunakan</option></select></div></div><div class="mt-3"><label>Catatan Teknisi</label><textarea id="gCatatan"></textarea></div><button class="btnx mt-3">Simpan Data Inspeksi</button></form></div>
+<div class="cardx"><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Genset</th><th>Petugas</th><th>Status</th><th>Catatan</th></tr></thead><tbody id="gBody"></tbody></table></div></div>
+</div>
+
+<!-- PENGADAAN -->
+<div id="pengadaan" class="page">
+<div class="page-head"><h2>🛒 Pengajuan Pembelian Barang</h2><p>Pengajuan kebutuhan barang maintenance kepada bagian pengadaan.</p></div>
+<div class="cardx"><form id="purchaseForm"><div class="grid3"><div><label>Tanggal Pengajuan</label><input type="date" id="bTanggal" required></div><div><label>Nama Pemohon</label><select id="bPemohon" required><option value="">-- Pilih --</option><option>Supriyadi</option><option>Timur Sukoco</option><option>Agus Setiawan</option><option>Julio</option><option>Joyo S.</option><option>Agus Purwanto</option></select></div><div><label>Pengajuan Untuk</label><select id="bUntuk"><option>Maintenance Gedung</option><option>Penggantian Sparepart Mesin Produksi</option><option>Alat Kerja Teknisi</option></select></div><div><label>Nama Barang</label><input id="bBarang" required></div><div><label>Digunakan Untuk</label><input id="bTujuan" required></div><div><label>Jumlah</label><input type="number" id="bJumlah" min="1" required oninput="hitungTotal()"></div><div><label>Satuan</label><input id="bSatuan" required placeholder="Pcs, Unit, Box"></div><div><label>Harga Satuan (Rp)</label><input type="number" id="bHarga" min="0" required oninput="hitungTotal()"></div><div><label>Jumlah Harga</label><input id="bTotal" readonly></div></div><button class="btnx mt-3">Kirim Pengajuan</button></form></div>
+<div class="cardx"><div class="d-flex justify-content-between mb-3"><h5>Riwayat Pengajuan</h5><button class="btnx" onclick="renderPurchase()">Refresh</button></div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Pemohon</th><th>Barang</th><th>Tujuan</th><th>Total</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="bBody"></tbody></table></div></div>
+</div>
+
+<!-- INVENTORY -->
+<div id="inventory" class="page">
+<div class="page-head"><h2>📦 Inventory Stock Barang Maintenance</h2><p>Monitoring persediaan barang ruang teknisi PPM LAI.</p></div>
+<div class="cardx"><form id="inventoryForm"><input type="hidden" id="iEdit"><div class="grid3"><div><label>Nama Barang</label><input id="iNama" required></div><div><label>Tipe Barang</label><input id="iTipe"></div><div><label>Untuk Mesin</label><input id="iMesin"></div><div><label>Stock Awal</label><input type="number" id="iAwal" value="0"></div><div><label>Tambah Stock</label><input type="number" id="iTambah" value="0"></div><div><label>Pengurangan Stock</label><input type="number" id="iKurang" value="0"></div><div><label>Tanggal</label><input type="date" id="iTanggal" required></div></div><button class="btnx mt-3">Simpan Data</button><button type="button" class="btnx secondary mt-3 ms-2" onclick="resetInventory()">Batal</button></form></div>
+<div class="cardx"><div class="d-flex gap-2 mb-3"><input id="iSearch" placeholder="Cari barang..." oninput="renderInventory()"><button class="btnx" onclick="loadInventory()">Refresh</button></div><div class="table-wrap"><table><thead><tr><th>Nama</th><th>Tipe</th><th>Mesin</th><th>Awal</th><th>Tambah</th><th>Kurang</th><th>Tanggal</th><th>Sisa</th><th>Aksi</th></tr></thead><tbody id="iBody"></tbody></table></div></div>
+</div>
+</section>
+<footer class="footer">© 2026 PPM Integrated Control System | PPM LAI</footer>
+</main>
+</div>
+
+<script>
+const API_HISTORI="https://script.google.com/macros/s/AKfycbydxsP718T7L1ngGGmkh5ISLNnd0uj8o3SfNqbOL7f5QF8a56TIx-bNXnU9wIVzOJv2/exec";
+const API_PENERANGAN="https://script.google.com/macros/s/AKfycbzVBYHFMwZqqvTwzQbSqJ81ICz1LGKSNKyhUmk2aHBwLT2iC2I5o2lRnEnxuW8BES7g/exec";
+const API_GENSET="https://script.google.com/macros/s/AKfycbz-WtZP0o35kurFGhHM8EppnnXTMK4QxIHX7I6AMe_J7w4wsTX-XnnOlRFJFJeGnWPt/exec";
+const API_INVENTORY="https://script.google.com/macros/s/AKfycbynKH0xyqe8_7QwIObrtWL6Xh6oYvfkLgzwoK_KfbKXWoGu6hHhjoyhl7gHY9G2k7sn/exec";
+const API_LEMBUR="https://script.google.com/macros/s/AKfycbxKzNC1DiAQGnoBYuMHCGC649mNbBZjvMlUwEPiTP8CBEGFIbevBm1YGpcLhdVZ1Ecz8Q/exec";
+const SCRIPT_URL_CUTI="https://script.google.com/macros/s/AKfycbzhdJKBJPBp135sMvsyZBMZUgzGN9ayFM_gorfpwx5g-jLPdzKPv5RjKi-NCBRHn_PREw/exec";
+
+/* PENGECEKAN STATUS KONEKSI INTERNET & DATABASE */
+function setBadgeState(elementId, textId, isOnline, onlineText, offlineText) {
+  const badge = document.getElementById(elementId);
+  const text = document.getElementById(textId);
+  if (isOnline) {
+    badge.className = 'status-badge online';
+    text.textContent = onlineText;
+  } else {
+    badge.className = 'status-badge offline';
+    text.textContent = offlineText;
+  }
+}
+
+function checkInternetStatus() {
+  const isOnline = navigator.onLine;
+  setBadgeState('netStatus', 'netText', isOnline, 'Internet: Online', 'Internet: Offline');
+  
+  // Jika internet offline, otomatis database juga di-set error/disconnected
+  if (!isOnline) {
+    setBadgeState('dbStatus', 'dbText', false, 'DB: Connected', 'DB: Disconnected');
+  }
+}
+
+async function checkDatabaseConnection() {
+  if (!navigator.onLine) {
+    setBadgeState('dbStatus', 'dbText', false, 'DB: Connected', 'DB: Disconnected');
+    return;
+  }
+  
+  try {
+    // Ping ringan ke salah satu endpoint Apps Script
+    const response = await fetch(API_HISTORI, { method: 'GET', mode: 'cors' });
+    if (response.ok || response.type === 'opaque') {
+      setBadgeState('dbStatus', 'dbText', true, 'DB: Connected', 'DB: Disconnected');
+    } else {
+      setBadgeState('dbStatus', 'dbText', false, 'DB: Connected', 'DB: Error');
+    }
+  } catch (err) {
+    // Mode fallback jika CORS opaque atau fetch terhalang tetap menganggap terhubung selama internet OK
+    setBadgeState('dbStatus', 'dbText', navigator.onLine, 'DB: Connected', 'DB: Disconnected');
+  }
+}
+
+// Event Listeners Koneksi
+window.addEventListener('online', () => { checkInternetStatus(); checkDatabaseConnection(); });
+window.addEventListener('offline', () => { checkInternetStatus(); });
+setInterval(checkDatabaseConnection, 30000); // Cek ulang DB setiap 30 detik
+checkInternetStatus();
+checkDatabaseConnection();
+
+const mesinList=["Speedmaster 74","Cetak Goss 1","Cetak Goss 2","Lipat Katern","Lipat Stahl 2","Lipat Stahl Folder","Gathering","Jahit Ventura 1","Jahit Ventura 2","Jahit Ventura 3","BBL 30","Threeknife","Kompresor FY-50A","Kompresor BOGE","Polar 92","Strapping/Meiwa 1","Strapping/Meiwa 2","Strapping/Meiwa 3","Strapping LQ400","Polar 115","Feeder Delivery","Shrink LB-728","Pilung 1","Pilung 2","Trafo","Jahit Kawat","Processor","Expose Plate (Shapira)","Corner Rounding","Pres Final","Heidelberg","Kneep (Shyon)","Forklift Hyster","Forklift Bigjoe","Forklift Sumitomo","CTCP","Plotter","BL500","Shrink LA6000-CS","Kompresor Kaishan","Diesel 1","Diesel 2"];
+let historyData=[], repairData=[], peneranganData=[], gensetData=[], inventoryData=[];
+
+function setToday(id){const e=document.getElementById(id);if(e)e.value=new Date().toISOString().slice(0,10)}
+function updateDateTime(){const n=new Date();document.getElementById('date').textContent=n.toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});document.getElementById('time').textContent=n.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}
+setInterval(updateDateTime,1000);updateDateTime();
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open')}
+function toggleMenu(btn){btn.classList.toggle('open');btn.nextElementSibling.classList.toggle('show')}
+const titles={home:'Dashboard PPM',cuti:'Cuti Karyawan',lembur:'Lemburan',histori:'Histori Card',mesin:'Perbaikan Mesin',penerangan:'Pemeriksaan Rutin Penerangan',genset:'Pemeriksaan Genset Rutin',pengadaan:'Pengajuan Pembelian Barang',inventory:'Inventory Stock Barang Maintenance'};
+
+/* SHOW PAGE DENGAN PROTEKSI PASSWORD ADMIN UNTUK CUTI */
+function showPage(id,btn){
+  if(id === 'cuti') {
+    const pw = prompt("Masukkan Kata Sandi Admin untuk Mengakses Cuti Karyawan:");
+    if (pw !== "admin123") {
+      alert("Kata sandi salah! Akses ditolak.");
+      return;
+    }
+  }
+  
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.menu-item').forEach(x=>x.classList.remove('active'));
+  if(btn&&btn.classList)btn.classList.add('active');
+  document.getElementById('headerTitle').textContent=titles[id]||'PPM Integrated Control System';
+  
+  if(innerWidth<=768)toggleSidebar();
+  if(id==='cuti')ambilDataCuti();
+  if(id==='histori')loadHistory();
+  if(id==='penerangan')loadPenerangan();
+  if(id==='genset')loadGenset();
+  if(id==='inventory')loadInventory();
+  if(id==='lembur')loadOvertime();
+}
+
+function fillMachines(){['historyMesin','repairMesin'].forEach(id=>{const e=document.getElementById(id);e.innerHTML=mesinList.map(x=>`<option>${x}</option>`).join('')})}
+function safe(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function fmtDate(v){if(!v)return'-';const d=new Date(v);return isNaN(d)?v:d.toLocaleDateString('id-ID')}
+function statusBadge(s){const c=String(s).toLowerCase();return `<span class="badge ${c.includes('normal')||c.includes('siap')||c.includes('selesai')||c.includes('approved')?'ok':c.includes('rusak')||c.includes('tidak')?'bad':'warn'}">${safe(s||'-')}</span>`}
+
+/* LOGIKA MODUL CUTI KARYAWAN */
+let sisaCutiKaryawan = {
+    "Sylvester Seno": 12,
+    "Timur Sukoco": 12,
+    "Supriyadi": 12
+};
+
+function formatTanggalIndo(tanggalString) {
+    if (!tanggalString || tanggalString === "-") return "-";
+    const dateObj = new Date(tanggalString);
+    if (isNaN(dateObj.getTime())) return tanggalString;
+    const bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+    return `${dateObj.getDate()} ${bulan[dateObj.getMonth()]} ${dateObj.getFullYear()}`;
+}
+
+function ambilDataCuti() {
+    fetch(SCRIPT_URL_CUTI)
+        .then(response => response.json())
+        .then(data => {
+            const tbody = document.getElementById("tbody");
+            tbody.innerHTML = "";
+            sisaCutiKaryawan = { "Sylvester Seno": 12, "Timur Sukoco": 12, "Supriyadi": 12 };
+
+            if (!data || data.length === 0) {
+                tbody.innerHTML = "<tr><td colspan='7'>Belum ada data</td></tr>";
+                return;
+            }
+
+            data.forEach((item) => {
+                let dataFormated = {
+                    nama: item.nama || item[0] || "-",
+                    mulai: item.mulai || item[4] || "-",
+                    sampai: item.sampai || item[5] || "-",
+                    lama: item.lama || item[6] || "0 Hari",
+                    jenis: item.jenis || item[7] || "-",
+                    sisa: item.sisa || item[11] || "0 Hari"
+                };
+                if (dataFormated.jenis === "Cuti Tahunan" && sisaCutiKaryawan[dataFormated.nama] !== undefined) {
+                    let durasiHari = parseInt(dataFormated.lama) || 0;
+                    sisaCutiKaryawan[dataFormated.nama] -= durasiHari;
+                }
+                tambahTabelCuti(dataFormated);
+            });
+        })
+        .catch(error => {
+            console.error("Gagal mengambil data:", error);
+            document.getElementById("tbody").innerHTML = "<tr><td colspan='7'>Belum ada data / Gagal terhubung ke Google Script</td></tr>";
+        });
+}
+
+function isiData(){
+    const nama=document.getElementById("nama").value;
+    if(nama=="Sylvester Seno"){
+        document.getElementById("nik").value="LAI 448";
+        document.getElementById("bagian").value="PPM";
+    } else if(nama=="Timur Sukoco"){
+        document.getElementById("nik").value="LAI BR231";
+        document.getElementById("bagian").value="PPM";
+    } else if(nama=="Supriyadi"){
+        document.getElementById("nik").value="LAI BR230";
+        document.getElementById("bagian").value="PPM";
+    } else {
+        document.getElementById("nik").value="";
+        document.getElementById("bagian").value="";
+    }
+    updateTampilanSisa(nama);
+    hitungCuti();
+}
+
+function updateTampilanSisa(nama) {
+    let sisa = 12; 
+    if (nama && sisaCutiKaryawan[nama] !== undefined) {
+        sisa = sisaCutiKaryawan[nama];
+    }
+    document.getElementById("sisaCuti").innerHTML = sisa;
+    document.getElementById("sisa").value = sisa + " Hari";
+}
+
+function hitungHariKerja(startDate, endDate) {
+    let hitung = 0;
+    let curDate = new Date(startDate.getTime());
+    while (curDate <= endDate) {
+        let dayOfWeek = curDate.getDay();
+        if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+            hitung++;
+        }
+        curDate.setDate(curDate.getDate() + 1);
+    }
+    return hitung;
+}
+
+function hitungCuti(){
+    let nama = document.getElementById("nama").value;
+    let mulai = document.getElementById("mulai").value;
+    let sampai = document.getElementById("sampai").value;
+    let jenis = document.getElementById("jenis").value;
+
+    if(nama == "") {
+        document.getElementById("lama").value = "0 Hari";
+        return;
+    }
+    if(mulai=="" || sampai=="") return;
+
+    let t1 = new Date(mulai);
+    let t2 = new Date(sampai);
+
+    if(t1 > t2) {
+        alert("Tanggal mulai tidak boleh melebihi tanggal selesai.");
+        document.getElementById("sampai").value = "";
+        document.getElementById("lama").value = "0 Hari";
+        return;
+    }
+
+    let hari = hitungHariKerja(t1, t2);
+    document.getElementById("lama").value = hari + " Hari";
+
+    let sisaTersedia = sisaCutiKaryawan[nama];
+    
+    if (jenis === "Cuti Tahunan") {
+        let sisaSetelahPotong = sisaTersedia - hari;
+        if (sisaSetelahPotong < 0) {
+            alert("Pengajuan dibatalkan! Sisa cuti tahunan " + nama + " tidak mencukupi.\nSisa saat ini: " + sisaTersedia + " Hari.");
+            document.getElementById("sampai").value = "";
+            document.getElementById("lama").value = "0 Hari";
+            updateTampilanSisa(nama);
+            return;
+        }
+        document.getElementById("sisa").value = sisaSetelahPotong + " Hari";
+        document.getElementById("sisaCuti").innerHTML = sisaSetelahPotong;
+    } else {
+        document.getElementById("sisa").value = sisaTersedia + " Hari";
+        document.getElementById("sisaCuti").innerHTML = sisaTersedia;
+    }
+}
+
+function simpan(){
+    let data={
+        nama:document.getElementById("nama").value,
+        nik:document.getElementById("nik").value,
+        bagian:document.getElementById("bagian").value,
+        tgl:document.getElementById("tgl").value,
+        mulai:document.getElementById("mulai").value,
+        sampai:document.getElementById("sampai").value,
+        lama:document.getElementById("lama").value,
+        jenis:document.getElementById("jenis").value,
+        keperluan:document.getElementById("keperluan").value,
+        lokasi:document.getElementById("lokasi").value,
+        hp:document.getElementById("hp").value,
+        sisa:document.getElementById("sisa").value
+    };
+
+    if(data.nama==""){
+        alert("Pilih nama terlebih dahulu.");
+        return;
+    }
+    if(data.mulai=="" || data.sampai==""){
+        alert("Isi rentang tanggal cuti dengan benar.");
+        return;
+    }
+
+    let hari = parseInt(data.lama);
+
+    if (data.jenis === "Cuti Tahunan" && (sisaCutiKaryawan[data.nama] - hari) < 0) {
+        alert("Gagal menyimpan! Jumlah hari cuti melebihi jatah " + data.nama);
+        return;
+    }
+
+    if (data.jenis === "Cuti Tahunan") {
+        sisaCutiKaryawan[data.nama] -= hari;
+    }
+
+    fetch(SCRIPT_URL_CUTI,{
+        method:"POST",
+        body:JSON.stringify(data)
+    })
+    .then(res=>res.text())
+    .then(r=>{
+        alert("Pengajuan cuti berhasil disimpan.");
+        tambahTabelCuti(data);
+        resetForm();
+    })
+    .catch(err=>{
+        alert("Data tersimpan lokal.\nPeriksa URL Apps Script.");
+        tambahTabelCuti(data);
+        resetForm();
+    });
+}
+
+function resetForm() {
+    document.getElementById("nama").value = "";
+    document.getElementById("nik").value = "";
+    document.getElementById("bagian").value = "";
+    document.getElementById("tgl").value = "";
+    document.getElementById("mulai").value = "";
+    document.getElementById("sampai").value = "";
+    document.getElementById("keperluan").value = "";
+    document.getElementById("lokasi").value = "";
+    document.getElementById("hp").value = "";
+    document.getElementById("lama").value = "0 Hari";
+    document.getElementById("jenis").value = "Cuti Tahunan";
+    document.getElementById("sisaCuti").innerHTML = "12";
+    document.getElementById("sisa").value = "12 Hari";
+    setToday('tgl');
+}
+
+function tambahTabelCuti(data){
+    const tbody=document.getElementById("tbody");
+
+    if(tbody.innerHTML.includes("Belum ada data") || tbody.innerHTML.includes("Memuat data")){
+        tbody.innerHTML="";
+    }
+
+    let no=tbody.rows.length+1;
+
+    let tglMulaiFormatted = formatTanggalIndo(data.mulai);
+    let tglSelesaiFormatted = formatTanggalIndo(data.sampai);
+
+    let row=`
+    <tr>
+        <td>${no}</td>
+        <td>${safe(data.nama)}</td>
+        <td>${tglMulaiFormatted}</td>
+        <td>${tglSelesaiFormatted}</td>
+        <td>${safe(data.lama)}</td>
+        <td>${safe(data.jenis)}</td>
+        <td>${safe(data.sisa)}</td>
+    </tr>
+    `;
+
+    tbody.innerHTML+=row;
+
+    document.getElementById("totalPengajuan").innerHTML=no;
+    document.getElementById("totalData").innerHTML=no;
+
+    let totalHari=0;
+    for(let i=0;i<tbody.rows.length;i++){
+        totalHari+=parseInt(tbody.rows[i].cells[4].innerHTML) || 0;
+    }
+    document.getElementById("totalHari").innerHTML=totalHari;
+
+    let tahunan=0;
+    let besar=0;
+
+    for(let i=0;i<tbody.rows.length;i++){
+        let jenis=tbody.rows[i].cells[5].innerHTML;
+        if(jenis=="Cuti Tahunan") tahunan++;
+        if(jenis=="Cuti Besar") besar++;
+    }
+
+    document.getElementById("jumlahTahunan").innerHTML=tahunan;
+    document.getElementById("jumlahBesar").innerHTML=besar;
+    document.getElementById("cutiTahunan").innerHTML=tahunan;
+    document.getElementById("cutiBesar").innerHTML=besar;
+}
+
+function cariData(){
+    let input=document.getElementById("cari").value.toUpperCase();
+    let tr=document.getElementById("tbody").getElementsByTagName("tr");
+
+    for(let i=0;i<tr.length;i++){
+        let td=tr[i].getElementsByTagName("td")[1];
+        if(td){
+            let txt=td.innerHTML.toUpperCase();
+            if(txt.indexOf(input)>-1){
+                tr[i].style.display="";
+            }else{
+                tr[i].style.display="none";
+            }
+        }
+    }
+}
+
+/* HISTORI CARD */
+async function loadHistory(){try{const r=await fetch(API_HISTORI);historyData=await r.json();renderHistory();document.getElementById('statHistori').textContent=historyData.length}catch(e){document.getElementById('historyBody').innerHTML='<tr><td colspan="7">Gagal memuat data.</td></tr>'}}
+function renderHistory(){const q=(document.getElementById('historySearch')?.value||'').toLowerCase();const d=historyData.filter(x=>JSON.stringify(x).toLowerCase().includes(q));document.getElementById('historyBody').innerHTML=d.map(x=>`<tr><td>${fmtDate(x.tanggal)}</td><td>${safe(x.mesin)}</td><td>${safe(x.teknisi)}</td><td>${safe(x.jenis)}</td><td>${safe(x.sparepart)}</td><td>${statusBadge(x.status)}</td><td>${safe(x.keterangan)}</td></tr>`).join('')||'<tr><td colspan="7">Belum ada data.</td></tr>'}
+document.getElementById('historyForm').addEventListener('submit',async e=>{e.preventDefault();const p={mesin:historyMesin.value,tanggal:historyTanggal.value,teknisi:historyTeknisi.value,jenis:historyJenis.value,sparepart:historySparepart.value,keterangan:historyKeterangan.value,status:historyStatus.value,tanggalSelesai:'-',foto:'-',actionType:'INSERT'};try{const r=await fetch(API_HISTORI,{method:'POST',body:JSON.stringify(p)});const j=await r.json();if(j.status==='success'){alert('Histori berhasil disimpan');resetHistory();loadHistory()}else alert(j.message||'Gagal menyimpan')}catch(e){alert('Gagal koneksi ke Apps Script')}})
+function resetHistory(){document.getElementById('historyForm').reset()}
+
+/* PERBAIKAN MESIN */
+document.getElementById('repairForm').addEventListener('submit',e=>{e.preventDefault();repairData.unshift({tanggal:repairTanggal.value,mesin:repairMesin.value,teknisi:repairTeknisi.value,kerusakan:repairKerusakan.value,sparepart:repairSparepart.value,status:repairStatus.value,tindakan:repairTindakan.value});localStorage.setItem('ppmRepairData',JSON.stringify(repairData));renderRepair();e.target.reset();setToday('repairTanggal');alert('Data perbaikan mesin tersimpan')})
+function renderRepair(){repairData=JSON.parse(localStorage.getItem('ppmRepairData')||'[]');repairBody.innerHTML=repairData.map(x=>`<tr><td>${fmtDate(x.tanggal)}</td><td>${safe(x.mesin)}</td><td>${safe(x.teknisi)}</td><td>${safe(x.kerusakan)}</td><td>${safe(x.sparepart)}</td><td>${statusBadge(x.status)}</td><td>${safe(x.tindakan)}</td></tr>`).join('')||'<tr><td colspan="7">Belum ada data.</td></tr>'}
+
+/* PENERANGAN */
+async function loadPenerangan(){try{const r=await fetch(API_PENERANGAN+'?action=read');peneranganData=await r.json();renderPenerangan();document.getElementById('statPenerangan').textContent=peneranganData.length}catch(e){pBody.innerHTML='<tr><td colspan="6">Gagal memuat data.</td></tr>'}}
+function renderPenerangan(){const q=(pSearch.value||'').toLowerCase();pBody.innerHTML=peneranganData.filter(x=>JSON.stringify(x).toLowerCase().includes(q)).map(x=>`<tr><td>${fmtDate(x[1])}</td><td>${safe(x[0])}</td><td>${safe(x[2])}</td><td>${safe(x[3])}</td><td>${statusBadge(x[5])}</td><td>${safe(x[4])}</td></tr>`).join('')||'<tr><td colspan="6">Belum ada data.</td></tr>'}
+peneranganForm.addEventListener('submit',async e=>{e.preventDefault();const p={petugas:pPetugas.value,tanggal:pTanggal.value,area:pArea.value,jenisLampu:pLampu.value,status:pStatus.value,keterangan:pKeterangan.value||'Aman'};try{const r=await fetch(API_PENERANGAN,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(p)});const j=await r.json();if(j.status==='success'){alert('Laporan berhasil disimpan');e.target.reset();setToday('pTanggal');loadPenerangan()}else alert(j.message||'Gagal menyimpan')}catch(e){alert('Gagal koneksi ke Apps Script')}})
+
+/* GENSET */
+async function loadGenset(){try{const r=await fetch(API_GENSET);gensetData=await r.json();renderGenset();document.getElementById('statGenset').textContent=gensetData.length}catch(e){gBody.innerHTML='<tr><td colspan="5">Gagal memuat data.</td></tr>'}}
+function renderGenset(){gBody.innerHTML=gensetData.map(x=>`<tr><td>${fmtDate(x.Tanggal||x.tanggal)}</td><td>${safe(x.Genset||x.genset)}</td><td>${safe(x.Petugas||x.petugas)}</td><td>${statusBadge(x.Status||x.status)}</td><td>${safe(x.Catatan||x.catatan)}</td></tr>`).join('')||'<tr><td colspan="5">Belum ada data.</td></tr>'}
+gensetForm.addEventListener('submit',async e=>{e.preventDefault();const p={genset:gUnit.value,petugas:gPetugas.value,tanggal:gTanggal.value,jamMulai:gMulai.value,jamSelesai:gSelesai.value,durasi:'',kondisiSolar:gSolar.value,oliMesin:gOli.value,airRadiatorAki:gAir.value,teganganAki:gAki.value,outputTegangan:gOutput.value,suhuMesin:gSuhu.value,frekuensi:gFrekuensi.value,status:gStatus.value,catatan:gCatatan.value};try{await fetch(API_GENSET,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});alert('Data pemeriksaan genset berhasil dikirim');e.target.reset();setToday('gTanggal');loadGenset()}catch(e){alert('Gagal koneksi')}})
+
+/* PENGADAAN (DENGAN WARNING & APPROVAL ADMIN) */
+let purchases=JSON.parse(localStorage.getItem('ppmPurchases')||'[]');
+function hitungTotal(){bTotal.value=new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format((+bJumlah.value||0)*(+bHarga.value||0))}
+
+purchaseForm.addEventListener('submit',e=>{
+  e.preventDefault();
+  const q={
+    id:Date.now(),
+    tanggal:bTanggal.value,
+    nama:bPemohon.value,
+    untuk:bUntuk.value,
+    barang:bBarang.value,
+    tujuan:bTujuan.value,
+    jumlah:+bJumlah.value,
+    satuan:bSatuan.value,
+    hargaSatuan:+bHarga.value,
+    totalHarga:(+bJumlah.value||0)*(+bHarga.value||0),
+    status:'Pending'
+  };
+  purchases.unshift(q);
+  localStorage.setItem('ppmPurchases',JSON.stringify(purchases));
+  renderPurchase();
+  e.target.reset();
+  setToday('bTanggal');
+  alert('Pengajuan berhasil dikirim');
+});
+
+function renderPurchase(){
+  const now = new Date();
+  bBody.innerHTML = purchases.map(x => {
+    const tglPengajuan = new Date(x.tanggal);
+    const selisihHari = Math.floor((now - tglPengajuan) / (1000 * 60 * 60 * 24));
+    
+    // Status Display & Check Terlalu Lama Kumenanti
+    let badgeStatus = statusBadge(x.status);
+    if(x.status === 'Pending' && selisihHari > 3){
+      badgeStatus += `<br><span class="badge lama mt-1">⚠️ Terlalu Lama Kumenanti</span>`;
+    }
+
+    // Tombol Aksi
+    let approveBtn = '';
+    if(x.status === 'Pending'){
+      approveBtn = `<button class="btnx success me-1" onclick="approvePurchase(${x.id})">Approve (Admin)</button>`;
+    }
+
+    return `<tr>
+      <td>${fmtDate(x.tanggal)}</td>
+      <td>${safe(x.nama)}</td>
+      <td>${safe(x.barang)}<br><small>${x.jumlah} ${safe(x.satuan)}</small></td>
+      <td>${safe(x.tujuan)}</td>
+      <td>${new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(x.totalHarga)}</td>
+      <td>${badgeStatus}</td>
+      <td>
+        ${approveBtn}
+        <button class="btnx danger" onclick="deletePurchase(${x.id})">Hapus</button>
+      </td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="7">Belum ada pengajuan.</td></tr>';
+}
+
+function approvePurchase(id){
+  const pw = prompt("Masukkan Kata Sandi Admin PPM untuk Menyetujui:");
+  if (pw === "admin123") {
+    purchases = purchases.map(x => {
+      if(x.id === id) x.status = 'Approved (PPM)';
+      return x;
+    });
+    localStorage.setItem('ppmPurchases', JSON.stringify(purchases));
+    renderPurchase();
+    alert("Pengajuan berhasil disetujui (Approved)!");
+  } else {
+    alert("Kata sandi salah! Persetujuan dibatalkan.");
+  }
+}
+
+function deletePurchase(id){
+  if(confirm('Hapus pengajuan ini?')){
+    purchases=purchases.filter(x=>x.id!==id);
+    localStorage.setItem('ppmPurchases',JSON.stringify(purchases));
+    renderPurchase();
+  }
+}
+
+/* LEMBURAN */
+const overtimeTechnicians=["Supriyadi","Timur","Agus Setiawan","Julio","Joyo S.","Agus Purwanto"];
+let overtimeData=[];
+
+function hitungDurasiLembur(){
+  if(!oMulai.value || !oSelesai.value){oDurasi.value="";return}
+  const [h1,m1]=oMulai.value.split(":").map(Number);
+  const [h2,m2]=oSelesai.value.split(":").map(Number);
+  let awal=h1*60+m1, akhir=h2*60+m2;
+  if(akhir<awal) akhir+=1440;
+  const selisih=akhir-awal;
+  oDurasi.value=Math.floor(selisih/60)+" Jam "+(selisih%60)+" Menit";
+}
+oMulai.addEventListener("change",hitungDurasiLembur);
+oSelesai.addEventListener("change",hitungDurasiLembur);
+
+function parseOvertimeDate(v){
+  if(!v)return null;
+  if(/^\d{2}-\d{2}-\d{4}$/.test(v)){
+    const [d,m,y]=v.split("-").map(Number);
+    return new Date(y,m-1,d);
+  }
+  const d=new Date(v);
+  return isNaN(d)?null:d;
+}
+function parseOvertimeMinutes(v){
+  const m=String(v||"").match(/(\d+)\s*Jam\s*(\d+)\s*Menit/i);
+  return m?(+m[1]*60 + +m[2]):0;
+}
+function formatOvertimeDate(v){
+  const d=parseOvertimeDate(v);
+  return d?d.toLocaleDateString("id-ID",{day:"2-digit",month:"2-digit",year:"numeric"}):safe(v||"-");
+}
+function loadOvertime(){
+  fetch(API_LEMBUR).then(r=>r.json()).then(data=>{
+    overtimeData=Array.isArray(data)?data:[];
+    renderOvertime();
+  }).catch(()=>{
+    overtimeBody.innerHTML='<tr><td colspan="6">Gagal memuat data lembur.</td></tr>';
+  });
+}
+function renderOvertime(){
+  const q=(overtimeSearch.value||"").toLowerCase();
+  const filtered=overtimeData.filter(x=>JSON.stringify(x).toLowerCase().includes(q));
+  overtimeBody.innerHTML=filtered.map(x=>`
+    <tr>
+      <td>${safe(x.nama)}</td>
+      <td>${formatOvertimeDate(x.tanggal)}</td>
+      <td>${safe(x.mulai)}</td>
+      <td>${safe(x.selesai)}</td>
+      <td>${safe(x.durasi)}</td>
+      <td>${safe(x.pekerjaan)}</td>
+    </tr>`).join("") || '<tr><td colspan="6">Belum ada data lembur.</td></tr>';
+  renderOvertimeStats(overtimeData);
+}
+function renderOvertimeStats(data){
+  const now=new Date(), month=now.getMonth()+1, year=now.getFullYear();
+  const count={}, minutes={};
+  overtimeTechnicians.forEach(n=>{count[n]=0;minutes[n]=0});
+  data.forEach(x=>{
+    const d=parseOvertimeDate(x.tanggal);
+    if(!d || d.getMonth()+1!==month || d.getFullYear()!==year || count[x.nama]===undefined)return;
+    count[x.nama]++;
+    minutes[x.nama]+=parseOvertimeMinutes(x.durasi);
+  });
+  overtimeFrequency.innerHTML=overtimeTechnicians.map(n=>`<div class="stat"><h3>${count[n]}</h3><p>${safe(n)} · Kali</p></div>`).join("");
+  overtimeHours.innerHTML=overtimeTechnicians.map(n=>{
+    const h=Math.floor(minutes[n]/60), m=minutes[n]%60;
+    return `<div class="stat"><h3>${h}j ${m}m</h3><p>${safe(n)}</p></div>`;
+  }).join("");
+  overtimeMonthly.innerHTML=overtimeTechnicians.map(n=>{
+    const h=Math.floor(minutes[n]/60), m=minutes[n]%60;
+    return `<tr><td>${safe(n)}</td><td><b>${h} Jam ${m} Menit</b></td></tr>`;
+  }).join("");
+}
+overtimeForm.addEventListener("submit",e=>{
+  e.preventDefault();
+  const payload={
+    nama:oNama.value,
+    tanggal:(()=>{const d=new Date(oTanggal.value);return String(d.getDate()).padStart(2,"0")+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+d.getFullYear()})(),
+    mulai:oMulai.value.replace(":",".")+" WIB",
+    selesai:oSelesai.value.replace(":",".")+" WIB",
+    durasi:oDurasi.value,
+    pekerjaan:oPekerjaan.value
+  };
+  fetch(API_LEMBUR,{method:"POST",body:JSON.stringify(payload)})
+    .then(r=>r.text())
+    .then(()=>{
+      alert("Data lembur berhasil disimpan");
+      overtimeForm.reset();
+      setToday("oTanggal");
+      oDurasi.value="";
+      setTimeout(loadOvertime,1200);
+    })
+    .catch(()=>alert("Gagal menyimpan data lembur"));
+});
+
+/* INVENTORY */
+async function loadInventory(){try{const r=await fetch(API_INVENTORY+'?action=read');inventoryData=await r.json();renderInventory();document.getElementById('statInventory').textContent=inventoryData.length}catch(e){iBody.innerHTML='<tr><td colspan="9">Gagal memuat data.</td></tr>'}}
+function renderInventory(){const q=(iSearch.value||'').toLowerCase();iBody.innerHTML=inventoryData.filter(x=>JSON.stringify(x).toLowerCase().includes(q)).map((d,i)=>`<tr><td>${safe(d[1])}</td><td>${safe(d[2])}</td><td>${safe(d[3])}</td><td>${safe(d[4])}</td><td>${safe(d[5])}</td><td>${safe(d[6])}</td><td>${fmtDate(d[7])}</td><td><b>${safe(d[8])}</b></td><td><button class="btnx" onclick="editInventory(${i})">Edit</button></td></tr>`).join('')||'<tr><td colspan="9">Belum ada data.</td></tr>'}
+inventoryForm.addEventListener('submit',async e=>{e.preventDefault();const p={id:iEdit.value,nama:iNama.value,tipe:iTipe.value,mesin:iMesin.value,awal:+iAwal.value||0,tambah:+iTambah.value||0,kurang:+iKurang.value||0,tanggal:iTanggal.value};try{await fetch(API_INVENTORY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});alert('Data inventory berhasil disimpan');resetInventory();loadInventory()}catch(e){alert('Gagal koneksi')}})
+function editInventory(i){const d=inventoryData[i];iNama.value=d[1]||'';iTipe.value=d[2]||'';iMesin.value=d[3]||'';iAwal.value=d[4]||0;iTambah.value=d[5]||0;iKurang.value=d[6]||0;iTanggal.value=(d[7]||'').toString().slice(0,10);iEdit.value=d[0]||''}
+function resetInventory(){inventoryForm.reset();setToday('iTanggal');iEdit.value=''}
+
+fillMachines();['historyTanggal','repairTanggal','pTanggal','gTanggal','bTanggal','iTanggal','oTanggal','tgl'].forEach(setToday);renderRepair();renderPurchase();
+</script>
+</body>
+</html>
