@@ -513,6 +513,7 @@ button:hover .fa-solid,button:hover .fa-regular,
 .module .icon i{color:inherit !important;font-size:22px}
 .module .icon.icon-history{background:linear-gradient(135deg,#10b981,#06b6d4);box-shadow:0 8px 18px rgba(16,185,129,.22)}
 .module .icon.icon-genset{background:linear-gradient(135deg,#f97316,#f59e0b);box-shadow:0 8px 18px rgba(249,115,22,.22)}
+.module .icon.icon-ac{background:linear-gradient(135deg,#06b6d4,#3b82f6);box-shadow:0 8px 18px rgba(6,182,212,.22)}
 
 /* Ikon judul halaman: warna aksen + sedikit glow */
 .page-head h2 > i{
@@ -662,6 +663,7 @@ button:hover .fa-solid,button:hover .fa-regular,
 <button class="menu-item" onclick="showPage('assets',this)"><i class="fa-solid fa-building"></i> Aset & Ruangan</button>
 <button class="menu-item" onclick="showPage('workorders',this)"><i class="fa-solid fa-list-check"></i> Work Order</button>
 <button class="menu-item" onclick="showPage('schedule',this)"><i class="fa-solid fa-calendar-check"></i> Jadwal Preventive</button>
+<button class="menu-item" onclick="showPage('acSchedule',this)"><i class="fa-solid fa-snowflake"></i> Jadwal Service AC</button>
 <button class="menu-item" onclick="showPage('reports',this)"><i class="fa-solid fa-file-chart-column"></i> Laporan ERP</button>
 
 <div class="menu-title" style="margin-top: 30px;">Sistem</div>
@@ -722,6 +724,7 @@ button:hover .fa-solid,button:hover .fa-regular,
     <div class="module" onclick="showPage('perbaikan')"><div class="icon text-primary"><i class="fa-solid fa-tools"></i></div><h3>Perbaikan Mesin</h3><p>Form dan chart perbaikan mesin produksi.</p></div>
     <div class="module" onclick="showPage('histori')"><div class="icon icon-history"><i class="fa-solid fa-clipboard-list"></i></div><h3>Histori Card</h3><p>Riwayat pekerjaan maintenance seluruh mesin.</p></div>
     <div class="module" onclick="showPage('genset')"><div class="icon icon-genset"><i class="fa-solid fa-bolt"></i></div><h3>Pemeriksaan Genset</h3><p>Pencatatan pemeriksaan rutin dan status genset.</p></div>
+    <div class="module" onclick="showPage('acSchedule')"><div class="icon icon-ac"><i class="fa-solid fa-snowflake"></i></div><h3>Jadwal Service AC</h3><p>Monitoring jadwal cuci/service AC dan status jatuh tempo.</p></div>
 </div>
 </div>
 
@@ -1086,11 +1089,19 @@ button:hover .fa-solid,button:hover .fa-regular,
     <div class="erp-kpi"><div class="ico"><i class="fa-solid fa-screwdriver-wrench"></i></div><strong id="erpKpiWO">0</strong><span>Work Order Terbuka</span></div>
     <div class="erp-kpi"><div class="ico"><i class="fa-solid fa-building"></i></div><strong id="erpKpiAsset">0</strong><span>Total Aset</span></div>
     <div class="erp-kpi"><div class="ico"><i class="fa-solid fa-calendar-check"></i></div><strong id="erpKpiPM">0%</strong><span>Kepatuhan PM</span></div>
+    <div class="erp-kpi"><div class="ico"><i class="fa-solid fa-snowflake"></i></div><strong id="erpKpiAC">0</strong><span>AC Perlu Service</span></div>
   </div>
   <div class="erp-alert"><i class="fa-solid fa-circle-info me-2"></i>ERP terhubung ke database terpusat Google Spreadsheet. Cache browser hanya digunakan sebagai cadangan sementara ketika koneksi server terganggu.</div>
   <div class="grid2">
     <div class="cardx"><h5 class="fw-bold">Ringkasan Status Persediaan</h5><div id="erpStockSummary"></div></div>
     <div class="cardx"><h5 class="fw-bold">Status Work Order</h5><div id="erpWOSummary"></div></div>
+  </div>
+  <div class="cardx">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div><h5 class="fw-bold mb-1"><i class="fa-solid fa-snowflake text-info me-2"></i>Jadwal Service AC</h5><p class="erp-mini mb-0">Monitoring AC yang segera service dan jatuh tempo.</p></div>
+      <button class="btnx" type="button" onclick="showPage('acSchedule')"><i class="fa-solid fa-calendar-check"></i> Buka Modul AC</button>
+    </div>
+    <div id="erpACSummary" class="mt-3"></div>
   </div>
 </div>
 
@@ -1187,6 +1198,58 @@ button:hover .fa-solid,button:hover .fa-regular,
   </div><div class="erp-actions mt-3"><button class="btnx" type="submit">Tambah Jadwal</button><button class="btnx secondary" type="button" onclick="erpReset('pmForm')">Reset</button></div></form></div>
   <div class="cardx"><div class="erp-kpi-grid"><div class="erp-kpi"><strong id="pmTotal">0</strong><span>Total Jadwal</span></div><div class="erp-kpi"><strong id="pmDone">0</strong><span>Sudah Diperiksa</span></div><div class="erp-kpi"><strong id="pmCompliance">0%</strong><span>Kepatuhan</span></div></div>
   <div class="table-wrap"><table><thead><tr><th>Mesin/Aset</th><th>Periode</th><th>Jadwal</th><th>Teknisi</th><th>Status</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="pmBody"></tbody></table></div></div>
+</div>
+
+<!-- ======================= JADWAL SERVICE AC ======================= -->
+<div id="acSchedule" class="page">
+  <div class="page-head">
+    <h2><i class="fa-solid fa-snowflake"></i> Jadwal Service AC</h2>
+    <p>Monitoring asset AC, tanggal terakhir cuci, jadwal berikutnya, status, dan aksi pengelolaan data.</p>
+  </div>
+
+  <div class="erp-kpi-grid">
+    <div class="erp-kpi"><div class="ico"><i class="fa-solid fa-snowflake"></i></div><strong id="acTotal">0</strong><span>Total Asset AC</span></div>
+    <div class="erp-kpi"><div class="ico"><i class="fa-solid fa-circle-check"></i></div><strong id="acAman">0</strong><span>Jadwal Aman</span></div>
+    <div class="erp-kpi"><div class="ico"><i class="fa-solid fa-triangle-exclamation"></i></div><strong id="acSegera">0</strong><span>Segera Service</span></div>
+    <div class="erp-kpi"><div class="ico"><i class="fa-solid fa-calendar-xmark"></i></div><strong id="acJatuhTempo">0</strong><span>Jatuh Tempo</span></div>
+  </div>
+
+  <div class="cardx">
+    <form id="acForm" onsubmit="acSubmit(event)">
+      <input type="hidden" id="acEditIndex" value="">
+      <div class="erp-form-grid">
+        <div><label>NO</label><input id="acNo" type="number" min="1" required placeholder="Otomatis"></div>
+        <div><label>KODE ASSET</label><input id="acKode" required placeholder="Contoh: AC-001"></div>
+        <div><label>NAMA ASSET</label><input id="acNama" required placeholder="Contoh: AC Split Ruang Produksi"></div>
+        <div><label>SPESIFIKASI</label><input id="acSpesifikasi" placeholder="Contoh: 2 PK Inverter"></div>
+        <div><label>LOKASI / USER</label><input id="acLokasi" required placeholder="Ruangan / User"></div>
+        <div><label>TERAKHIR CUCI</label><input id="acTerakhir" type="date" required></div>
+        <div><label>JADWAL BERIKUTNYA</label><input id="acBerikutnya" type="date" required></div>
+        <div><label>STATUS</label><select id="acStatus"><option value="auto">Otomatis berdasarkan tanggal</option><option value="Aman">Aman</option><option value="Segera Service">Segera Service</option><option value="Jatuh Tempo">Jatuh Tempo</option><option value="Selesai Service">Selesai Service</option></select></div>
+      </div>
+      <div class="erp-actions mt-3">
+        <button class="btnx success" type="submit"><i class="fa-solid fa-floppy-disk"></i> Simpan Data</button>
+        <button class="btnx secondary" type="button" onclick="acResetForm()"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="cardx">
+    <div class="erp-toolbar">
+      <input id="acSearch" type="search" placeholder="Cari kode, asset, lokasi/user..." oninput="acRender()">
+      <select id="acFilterStatus" onchange="acRender()">
+        <option value="">Semua Status</option><option value="Aman">Aman</option><option value="Segera Service">Segera Service</option><option value="Jatuh Tempo">Jatuh Tempo</option><option value="Selesai Service">Selesai Service</option>
+      </select>
+      <button class="btnx" type="button" onclick="acAddSample()"><i class="fa-solid fa-plus"></i> Tambah Contoh</button>
+      <button class="btnx secondary" type="button" onclick="acExportCSV()"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>NO</th><th>KODE ASSET</th><th>NAMA ASSET</th><th>SPESIFIKASI</th><th>LOKASI / USER</th><th>TERAKHIR CUCI</th><th>JADWAL BERIKUTNYA</th><th>STATUS</th><th>AKSI</th></tr></thead>
+        <tbody id="acBody"></tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
 <!-- ======================= REPORTS ======================= -->
@@ -1438,7 +1501,8 @@ const titles={
     histori:'Histori Card',
     penerangan:'Pemeriksaan Rutin Penerangan',
     genset:'Pemeriksaan Genset Rutin',
-    perbaikan:'Monitoring & Input Perbaikan Mesin'
+    perbaikan:'Monitoring & Input Perbaikan Mesin',
+    acSchedule:'Jadwal Service AC'
 };
 
 function showPage(id,btn){
@@ -1461,6 +1525,85 @@ function showPage(id,btn){
   if(id==='genset')loadGenset();
   if(id==='lembur')loadDataLembur();
   if(id==='perbaikan')pm_fetchData();
+  if(id==='acSchedule')acRender();
+}
+
+// ======================= JADWAL SERVICE AC =======================
+let acData = JSON.parse(localStorage.getItem('ppm_ac_schedule') || '[]');
+
+function acIsoDate(v){
+  if(!v) return '';
+  const d = new Date(v);
+  if(Number.isNaN(d.getTime())) return String(v).slice(0,10);
+  return d.toISOString().slice(0,10);
+}
+function acDisplayDate(v){
+  if(!v) return '-';
+  const p = acIsoDate(v).split('-');
+  return p.length===3 ? `${p[2]}-${p[1]}-${p[0]}` : v;
+}
+function acDaysUntil(dateStr){
+  const today = new Date(); today.setHours(0,0,0,0);
+  const d = new Date(dateStr); d.setHours(0,0,0,0);
+  return Math.ceil((d-today)/86400000);
+}
+function acEffectiveStatus(row){
+  if(row.status && row.status !== 'auto' && row.status !== 'Otomatis berdasarkan tanggal') return row.status;
+  const days = acDaysUntil(row.berikutnya);
+  if(days < 0) return 'Jatuh Tempo';
+  if(days <= 7) return 'Segera Service';
+  return 'Aman';
+}
+function acStatusBadge(status){
+  const cls = status==='Aman' || status==='Selesai Service' ? 'ok' : status==='Jatuh Tempo' ? 'bad' : 'warn';
+  return `<span class="badge ${cls}">${safe(status)}</span>`;
+}
+function acPersist(){localStorage.setItem('ppm_ac_schedule', JSON.stringify(acData));}
+function acRender(){
+  const body=document.getElementById('acBody'); if(!body) return;
+  const q=(document.getElementById('acSearch')?.value||'').toLowerCase();
+  const filter=document.getElementById('acFilterStatus')?.value||'';
+  const rows=acData.filter(r=>{
+    const st=acEffectiveStatus(r);
+    const hay=[r.kode,r.nama,r.spesifikasi,r.lokasi].join(' ').toLowerCase();
+    return (!q||hay.includes(q)) && (!filter||st===filter);
+  });
+  body.innerHTML=rows.length ? rows.map(r=>{
+    const idx=acData.indexOf(r), st=acEffectiveStatus(r);
+    return `<tr><td>${safe(r.no)}</td><td><strong>${safe(r.kode)}</strong></td><td>${safe(r.nama)}</td><td>${safe(r.spesifikasi||'-')}</td><td>${safe(r.lokasi)}</td><td>${acDisplayDate(r.terakhir)}</td><td>${acDisplayDate(r.berikutnya)}</td><td>${acStatusBadge(st)}</td><td><div class="erp-actions"><button class="btnx" onclick="acEdit(${idx})"><i class="fa-solid fa-pen"></i></button><button class="btnx danger" onclick="acDelete(${idx})"><i class="fa-solid fa-trash"></i></button></div></td></tr>`;
+  }).join('') : '<tr><td colspan="9" class="erp-empty">Belum ada data Jadwal Service AC.</td></tr>';
+  const stats=acData.map(r=>acEffectiveStatus(r));
+  document.getElementById('acTotal').textContent=acData.length;
+  document.getElementById('acAman').textContent=stats.filter(x=>x==='Aman'||x==='Selesai Service').length;
+  document.getElementById('acSegera').textContent=stats.filter(x=>x==='Segera Service').length;
+  document.getElementById('acJatuhTempo').textContent=stats.filter(x=>x==='Jatuh Tempo').length;
+}
+function acSubmit(e){
+  e.preventDefault();
+  const edit=document.getElementById('acEditIndex').value;
+  const row={no:Number(document.getElementById('acNo').value)||acData.length+1,kode:document.getElementById('acKode').value.trim(),nama:document.getElementById('acNama').value.trim(),spesifikasi:document.getElementById('acSpesifikasi').value.trim(),lokasi:document.getElementById('acLokasi').value.trim(),terakhir:acIsoDate(document.getElementById('acTerakhir').value),berikutnya:acIsoDate(document.getElementById('acBerikutnya').value),status:document.getElementById('acStatus').value};
+  if(edit==='') acData.push(row); else acData[Number(edit)]=row;
+  acPersist(); acResetForm(); acRender();
+  alert('Data Jadwal Service AC berhasil disimpan.');
+}
+function acEdit(i){
+  const r=acData[i]; if(!r) return;
+  document.getElementById('acEditIndex').value=i; document.getElementById('acNo').value=r.no; document.getElementById('acKode').value=r.kode; document.getElementById('acNama').value=r.nama; document.getElementById('acSpesifikasi').value=r.spesifikasi||''; document.getElementById('acLokasi').value=r.lokasi; document.getElementById('acTerakhir').value=acIsoDate(r.terakhir); document.getElementById('acBerikutnya').value=acIsoDate(r.berikutnya); document.getElementById('acStatus').value=r.status||'auto';
+  document.getElementById('acForm').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function acDelete(i){if(!confirm('Hapus data Jadwal Service AC ini?'))return;acData.splice(i,1);acPersist();acRender();}
+function acResetForm(){document.getElementById('acForm')?.reset();document.getElementById('acEditIndex').value='';document.getElementById('acNo').value=acData.length+1;}
+function acAddSample(){
+  const next=new Date(); next.setMonth(next.getMonth()+2);
+  const today=new Date();
+  acData.push({no:acData.length+1,kode:`AC-${String(acData.length+1).padStart(3,'0')}`,nama:'AC Split',spesifikasi:'1 PK',lokasi:'Belum diisi',terakhir:today.toISOString().slice(0,10),berikutnya:next.toISOString().slice(0,10),status:'auto'});
+  acPersist(); acRender();
+}
+function acExportCSV(){
+  const headers=['NO','KODE ASSET','NAMA ASSET','SPESIFIKASI','LOKASI / USER','TERAKHIR CUCI','JADWAL BERIKUTNYA','STATUS'];
+  const lines=[headers,...acData.map(r=>[r.no,r.kode,r.nama,r.spesifikasi,r.lokasi,acDisplayDate(r.terakhir),acDisplayDate(r.berikutnya),acEffectiveStatus(r)])].map(row=>row.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(','));
+  const blob=new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8;'}), url=URL.createObjectURL(blob), a=document.createElement('a');
+  a.href=url;a.download='Jadwal_Service_AC.csv';a.click();URL.revokeObjectURL(url);
 }
 
 function safe(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
@@ -1837,7 +1980,19 @@ function renderAssets(){const q=(document.getElementById('assetSearch')?.value||
 function renderWO(){const q=(document.getElementById('woSearch')?.value||'').toLowerCase(),f=document.getElementById('woFilter')?.value||'',b=document.getElementById('woBody');if(!b)return;b.innerHTML=erpState.workorders.map((x,i)=>({...x,i})).filter(x=>!q||JSON.stringify(x).toLowerCase().includes(q)).filter(x=>!f||x.status===f).map(x=>`<tr><td>${esc(x.no)}</td><td>${esc(x.date)}</td><td>${esc(x.asset)}</td><td>${esc(x.type)}</td><td>${erpStatus(x.priority)}</td><td>${esc(x.tech)}</td><td>${erpStatus(x.status)}</td><td>${esc(x.target||'-')}</td><td><button class="btnx danger" onclick="erpDel('workorders',${x.i})">Hapus</button></td></tr>`).join('')||'<tr><td colspan="9" class="erp-empty">Belum ada work order.</td></tr>'}
 function renderSchedule(){const b=document.getElementById('pmBody');if(!b)return;const d=erpState.schedule;const done=d.filter(x=>x.status==='Sudah diperiksa').length,pct=d.length?Math.round(done/d.length*100):0;document.getElementById('pmTotal').textContent=d.length;document.getElementById('pmDone').textContent=done;document.getElementById('pmCompliance').textContent=pct+'%';b.innerHTML=d.map((x,i)=>`<tr><td>${esc(x.asset)}</td><td>${esc(x.period)}</td><td>${esc(x.date)}</td><td>${esc(x.tech)}</td><td>${erpStatus(x.status)}</td><td>${esc(x.note)}</td><td><button class="btnx success" onclick="erpTogglePM(${i})">${x.status==='Sudah diperiksa'?'Buka':'Selesai'}</button> <button class="btnx danger" onclick="erpDel('schedule',${i})">Hapus</button></td></tr>`).join('')||'<tr><td colspan="7" class="erp-empty">Belum ada jadwal.</td></tr>'}
 async function erpTogglePM(i){const r={...erpState.schedule[i]};r.status=r.status==='Sudah diperiksa'?'Belum diperiksa':'Sudah diperiksa';await erpSave('schedule',r)}
-function updateERPDashboard(){const inv=erpState.inventory,po=erpState.procurement.filter(x=>x.status!=='Barang Diterima Oleh PPM'),wo=erpState.workorders.filter(x=>!['Completed','Cancelled'].includes(x.status)),as=erpState.assets,sc=erpState.schedule;const done=sc.filter(x=>x.status==='Sudah diperiksa').length,pct=sc.length?Math.round(done/sc.length*100):0;['erpKpiStock','erpKpiPO','erpKpiWO','erpKpiAsset'].forEach((id,i)=>{const el=document.getElementById(id);if(el)el.textContent=[inv.length,po.length,wo.length,as.length][i]});const pm=document.getElementById('erpKpiPM');if(pm)pm.textContent=pct+'%';const ss=document.getElementById('erpStockSummary');if(ss)ss.innerHTML=inv.length?inv.map(x=>{const bal=Number(x.opening||0)+Number(x.in||0)-Number(x.out||0),min=Number(x.min||0),p=min?Math.min(100,Math.max(5,bal/min*100)):100;return `<div class="mb-3"><div class="d-flex justify-content-between erp-mini"><span>${esc(x.name)}</span><b>${bal} ${esc(x.unit)}</b></div><div class="erp-progress"><span style="width:${p}%"></span></div></div>`}).join(''):'<div class="erp-empty">Belum ada persediaan.</div>';const ws=document.getElementById('erpWOSummary');if(ws){const st=['Open','On Progress','Pending Sparepart','Completed','Cancelled'];ws.innerHTML=st.map(s=>{const n=erpState.workorders.filter(x=>x.status===s).length;return `<div class="d-flex justify-content-between border-bottom py-2"><span>${s}</span><b>${n}</b></div>`}).join('')}}
+function updateERPDashboard(){
+  const inv=erpState.inventory,po=erpState.procurement.filter(x=>x.status!=='Barang Diterima Oleh PPM'),wo=erpState.workorders.filter(x=>!['Completed','Cancelled'].includes(x.status)),as=erpState.assets,sc=erpState.schedule;
+  const done=sc.filter(x=>x.status==='Sudah diperiksa').length,pct=sc.length?Math.round(done/sc.length*100):0;
+  ['erpKpiStock','erpKpiPO','erpKpiWO','erpKpiAsset'].forEach((id,i)=>{const el=document.getElementById(id);if(el)el.textContent=[inv.length,po.length,wo.length,as.length][i]});
+  const pm=document.getElementById('erpKpiPM');if(pm)pm.textContent=pct+'%';
+  const ss=document.getElementById('erpStockSummary');if(ss)ss.innerHTML=inv.length?inv.map(x=>{const bal=Number(x.opening||0)+Number(x.in||0)-Number(x.out||0),min=Number(x.min||0),p=min?Math.min(100,Math.max(5,bal/min*100)):100;return `<div class="mb-3"><div class="d-flex justify-content-between erp-mini"><span>${esc(x.name)}</span><b>${bal} ${esc(x.unit)}</b></div><div class="erp-progress"><span style="width:${p}%"></span></div></div>`}).join(''):'<div class="erp-empty">Belum ada persediaan.</div>';
+  const ws=document.getElementById('erpWOSummary');if(ws){const st=['Open','On Progress','Pending Sparepart','Completed','Cancelled'];ws.innerHTML=st.map(s=>{const n=erpState.workorders.filter(x=>x.status===s).length;return `<div class="d-flex justify-content-between border-bottom py-2"><span>${s}</span><b>${n}</b></div>`}).join('')}
+  const acRows=JSON.parse(localStorage.getItem('ppm_ac_schedule')||'[]');
+  const acStatus=r=>{if(r.status&&r.status!=='auto'&&r.status!=='Otomatis berdasarkan tanggal')return r.status;const t=new Date();t.setHours(0,0,0,0);const d=new Date(r.berikutnya);d.setHours(0,0,0,0);const days=Math.ceil((d-t)/86400000);return days<0?'Jatuh Tempo':days<=7?'Segera Service':'Aman'};
+  const acDue=acRows.filter(r=>['Segera Service','Jatuh Tempo'].includes(acStatus(r)));
+  const acKpi=document.getElementById('erpKpiAC');if(acKpi)acKpi.textContent=acDue.length;
+  const acSummary=document.getElementById('erpACSummary');if(acSummary){const counts={Aman:0,'Segera Service':0,'Jatuh Tempo':0,'Selesai Service':0};acRows.forEach(r=>{const st=acStatus(r);counts[st]=(counts[st]||0)+1});acSummary.innerHTML=acRows.length?`<div class="grid3"><div><b>${counts.Aman||0}</b><div class="erp-mini">Aman</div></div><div><b>${counts['Segera Service']||0}</b><div class="erp-mini">Segera Service</div></div><div><b>${counts['Jatuh Tempo']||0}</b><div class="erp-mini">Jatuh Tempo</div></div></div>`:'<div class="erp-empty">Belum ada data Jadwal Service AC.</div>'}
+}
 function erpRenderAll(){renderInventory();renderProcurement();renderAssets();renderWO();renderSchedule();updateERPDashboard()}
 function generateReport(){const type=document.getElementById('reportType').value,q=(document.getElementById('reportSearch').value||'').toLowerCase(),el=document.getElementById('reportResult');let d=(erpState[type]||[]).filter(x=>!q||JSON.stringify(x).toLowerCase().includes(q));if(!d.length){el.innerHTML='<div class="erp-empty">Tidak ada data.</div>';return}const keys=[...new Set(d.flatMap(x=>Object.keys(x)))].slice(0,10);el.innerHTML=`<div class="table-wrap"><table><thead><tr>${keys.map(k=>`<th>${esc(k)}</th>`).join('')}</tr></thead><tbody>${d.map(x=>`<tr>${keys.map(k=>`<td>${esc(x[k]??'')}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}
 function exportSelectedReport(){exportERP(document.getElementById('reportType').value)}
