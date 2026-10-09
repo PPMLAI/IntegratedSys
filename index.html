@@ -1212,6 +1212,11 @@ button:hover .fa-solid,button:hover .fa-regular,
     <div class="erp-kpi"><div class="ico"><i class="fa-solid fa-circle-check"></i></div><strong id="acAman">0</strong><span>Jadwal Aman</span></div>
     <div class="erp-kpi"><div class="ico"><i class="fa-solid fa-triangle-exclamation"></i></div><strong id="acSegera">0</strong><span>Segera Service</span></div>
     <div class="erp-kpi"><div class="ico"><i class="fa-solid fa-calendar-xmark"></i></div><strong id="acJatuhTempo">0</strong><span>Jatuh Tempo</span></div>
+    <div class="erp-kpi"><div class="ico"><i class="fa-solid fa-chart-line"></i></div><strong id="acCompliance">0%</strong><span>Kepatuhan Service</span></div>
+  </div>
+  <div class="grid2">
+    <div class="cardx"><h5><i class="fa-solid fa-chart-pie text-primary me-2"></i>Diagram Status Service AC</h5><div style="height:260px"><canvas id="acStatusChart"></canvas></div></div>
+    <div class="cardx"><h5><i class="fa-solid fa-chart-column text-primary me-2"></i>Kepatuhan Jadwal</h5><p class="erp-mini">Persentase asset dengan jadwal service yang belum melewati jatuh tempo. Status dihitung otomatis dari tanggal.</p><div id="acComplianceVisual"></div><div id="acScheduleInsight" class="erp-alert mt-3 mb-0"></div></div>
   </div>
 
   <div class="cardx">
@@ -1223,8 +1228,9 @@ button:hover .fa-solid,button:hover .fa-regular,
         <div><label>NAMA ASSET</label><input id="acNama" required placeholder="Contoh: AC Split Ruang Produksi"></div>
         <div><label>SPESIFIKASI</label><input id="acSpesifikasi" placeholder="Contoh: 2 PK Inverter"></div>
         <div><label>LOKASI / USER</label><input id="acLokasi" required placeholder="Ruangan / User"></div>
-        <div><label>TERAKHIR CUCI</label><input id="acTerakhir" type="date" required></div>
-        <div><label>JADWAL BERIKUTNYA</label><input id="acBerikutnya" type="date" required></div>
+        <div><label>INTERVAL SERVICE</label><select id="acInterval" onchange="acCalculateNextDate()"><option value="3">Setiap 3 bulan</option><option value="6">Setiap 6 bulan</option></select></div>
+        <div><label>TERAKHIR SERVICE</label><input id="acTerakhir" type="date" required onchange="acCalculateNextDate()"></div>
+        <div><label>JADWAL BERIKUTNYA (OTOMATIS)</label><input id="acBerikutnya" type="date" required readonly></div>
         <div><label>STATUS</label><select id="acStatus"><option value="auto">Otomatis berdasarkan tanggal</option><option value="Aman">Aman</option><option value="Segera Service">Segera Service</option><option value="Jatuh Tempo">Jatuh Tempo</option><option value="Selesai Service">Selesai Service</option></select></div>
       </div>
       <div class="erp-actions mt-3">
@@ -1245,7 +1251,7 @@ button:hover .fa-solid,button:hover .fa-regular,
     </div>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>NO</th><th>KODE ASSET</th><th>NAMA ASSET</th><th>SPESIFIKASI</th><th>LOKASI / USER</th><th>TERAKHIR CUCI</th><th>JADWAL BERIKUTNYA</th><th>STATUS</th><th>AKSI</th></tr></thead>
+        <thead><tr><th>NO</th><th>KODE ASSET</th><th>NAMA ASSET</th><th>SPESIFIKASI</th><th>LOKASI / USER</th><th>INTERVAL</th><th>TERAKHIR SERVICE</th><th>JADWAL BERIKUTNYA</th><th>STATUS</th><th>AKSI</th></tr></thead>
         <tbody id="acBody"></tbody>
       </table>
     </div>
@@ -1529,7 +1535,8 @@ function showPage(id,btn){
 }
 
 // ======================= JADWAL SERVICE AC =======================
-let acData = JSON.parse(localStorage.getItem('ppm_ac_schedule') || '[]');
+let acData = JSON.parse(localStorage.getItem('ppm_ac_schedule') || '[]').map(r=>({...r,interval:Number(r.interval)||3,berikutnya:r.berikutnya||acComputeDate(r.terakhir,Number(r.interval)||3)}));
+function acComputeDate(v,months){if(!v)return '';const p=String(v).slice(0,10).split('-').map(Number);if(p.length!==3||!p[0])return '';const d=new Date(p[0],p[1]-1,p[2]),day=d.getDate();d.setDate(1);d.setMonth(d.getMonth()+months);d.setDate(Math.min(day,new Date(d.getFullYear(),d.getMonth()+1,0).getDate()));return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
 
 function acIsoDate(v){
   if(!v) return '';
@@ -1570,33 +1577,61 @@ function acRender(){
   });
   body.innerHTML=rows.length ? rows.map(r=>{
     const idx=acData.indexOf(r), st=acEffectiveStatus(r);
-    return `<tr><td>${safe(r.no)}</td><td><strong>${safe(r.kode)}</strong></td><td>${safe(r.nama)}</td><td>${safe(r.spesifikasi||'-')}</td><td>${safe(r.lokasi)}</td><td>${acDisplayDate(r.terakhir)}</td><td>${acDisplayDate(r.berikutnya)}</td><td>${acStatusBadge(st)}</td><td><div class="erp-actions"><button class="btnx" onclick="acEdit(${idx})"><i class="fa-solid fa-pen"></i></button><button class="btnx danger" onclick="acDelete(${idx})"><i class="fa-solid fa-trash"></i></button></div></td></tr>`;
-  }).join('') : '<tr><td colspan="9" class="erp-empty">Belum ada data Jadwal Service AC.</td></tr>';
+    return `<tr><td>${safe(r.no)}</td><td><strong>${safe(r.kode)}</strong></td><td>${safe(r.nama)}</td><td>${safe(r.spesifikasi||'-')}</td><td>${safe(r.lokasi)}</td><td>${Number(r.interval||3)} bulan</td><td>${acDisplayDate(r.terakhir)}</td><td>${acDisplayDate(r.berikutnya)}</td><td>${acStatusBadge(st)}</td><td><div class="erp-actions"><button class="btnx" onclick="acEdit(${idx})"><i class="fa-solid fa-pen"></i></button><button class="btnx danger" onclick="acDelete(${idx})"><i class="fa-solid fa-trash"></i></button></div></td></tr>`;
+  }).join('') : '<tr><td colspan="10" class="erp-empty">Belum ada data Jadwal Service AC.</td></tr>';
   const stats=acData.map(r=>acEffectiveStatus(r));
   document.getElementById('acTotal').textContent=acData.length;
   document.getElementById('acAman').textContent=stats.filter(x=>x==='Aman'||x==='Selesai Service').length;
   document.getElementById('acSegera').textContent=stats.filter(x=>x==='Segera Service').length;
   document.getElementById('acJatuhTempo').textContent=stats.filter(x=>x==='Jatuh Tempo').length;
+  const compliant=stats.filter(x=>x==='Aman'||x==='Selesai Service').length;
+  document.getElementById('acCompliance').textContent=(acData.length?Math.round(compliant/acData.length*100):0)+'%';
+  acRenderAnalytics(stats);
+}
+let acChartInstance=null;
+function acCalculateNextDate(){
+  const last=document.getElementById('acTerakhir')?.value;
+  const interval=Number(document.getElementById('acInterval')?.value||3);
+  const out=document.getElementById('acBerikutnya');
+  if(!last||!out)return;
+  const parts=last.split('-').map(Number), d=new Date(parts[0],parts[1]-1,parts[2]);
+  const day=d.getDate(); d.setDate(1); d.setMonth(d.getMonth()+interval);
+  const lastDay=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();
+  d.setDate(Math.min(day,lastDay));
+  out.value=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function acRenderAnalytics(stats){
+  const total=acData.length, compliant=stats.filter(x=>x==='Aman'||x==='Selesai Service').length;
+  const pct=total?Math.round(compliant/total*100):0;
+  const visual=document.getElementById('acComplianceVisual');
+  if(visual)visual.innerHTML=`<div style="display:flex;justify-content:space-between;margin-bottom:8px"><strong>Kepatuhan keseluruhan</strong><strong style="color:${pct>=90?'#16a34a':pct>=70?'#d97706':'#dc2626'}">${pct}%</strong></div><div class="erp-progress" style="height:16px"><span style="width:${pct}%;background:${pct>=90?'#16a34a':pct>=70?'#f59e0b':'#ef4444'}"></span></div><div class="erp-mini mt-2">${compliant} dari ${total} asset masih sesuai jadwal</div>`;
+  const insight=document.getElementById('acScheduleInsight');
+  if(insight)insight.textContent=total?`${stats.filter(x=>x==='Jatuh Tempo').length} jatuh tempo • ${stats.filter(x=>x==='Segera Service').length} perlu service dalam 7 hari • Interval service 3 atau 6 bulan.`:'Tambahkan data asset AC untuk mulai memantau kepatuhan.';
+  const canvas=document.getElementById('acStatusChart');
+  if(canvas&&window.Chart){
+    if(acChartInstance)acChartInstance.destroy();
+    acChartInstance=new Chart(canvas,{type:'doughnut',data:{labels:['Aman','Segera Service','Jatuh Tempo','Selesai Service'],datasets:[{data:['Aman','Segera Service','Jatuh Tempo','Selesai Service'].map(k=>stats.filter(x=>x===k).length),backgroundColor:['#10b981','#f59e0b','#ef4444','#3b82f6'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}}}});
+  }
 }
 function acSubmit(e){
   e.preventDefault();
+  acCalculateNextDate();
   const edit=document.getElementById('acEditIndex').value;
-  const row={no:Number(document.getElementById('acNo').value)||acData.length+1,kode:document.getElementById('acKode').value.trim(),nama:document.getElementById('acNama').value.trim(),spesifikasi:document.getElementById('acSpesifikasi').value.trim(),lokasi:document.getElementById('acLokasi').value.trim(),terakhir:acIsoDate(document.getElementById('acTerakhir').value),berikutnya:acIsoDate(document.getElementById('acBerikutnya').value),status:document.getElementById('acStatus').value};
+  const row={no:Number(document.getElementById('acNo').value)||acData.length+1,interval:Number(document.getElementById('acInterval').value)||3,kode:document.getElementById('acKode').value.trim(),nama:document.getElementById('acNama').value.trim(),spesifikasi:document.getElementById('acSpesifikasi').value.trim(),lokasi:document.getElementById('acLokasi').value.trim(),terakhir:acIsoDate(document.getElementById('acTerakhir').value),berikutnya:acIsoDate(document.getElementById('acBerikutnya').value),status:document.getElementById('acStatus').value};
   if(edit==='') acData.push(row); else acData[Number(edit)]=row;
   acPersist(); acResetForm(); acRender();
   alert('Data Jadwal Service AC berhasil disimpan.');
 }
 function acEdit(i){
   const r=acData[i]; if(!r) return;
-  document.getElementById('acEditIndex').value=i; document.getElementById('acNo').value=r.no; document.getElementById('acKode').value=r.kode; document.getElementById('acNama').value=r.nama; document.getElementById('acSpesifikasi').value=r.spesifikasi||''; document.getElementById('acLokasi').value=r.lokasi; document.getElementById('acTerakhir').value=acIsoDate(r.terakhir); document.getElementById('acBerikutnya').value=acIsoDate(r.berikutnya); document.getElementById('acStatus').value=r.status||'auto';
+  document.getElementById('acEditIndex').value=i; document.getElementById('acNo').value=r.no; document.getElementById('acKode').value=r.kode; document.getElementById('acNama').value=r.nama; document.getElementById('acSpesifikasi').value=r.spesifikasi||''; document.getElementById('acLokasi').value=r.lokasi; document.getElementById('acTerakhir').value=acIsoDate(r.terakhir); document.getElementById('acBerikutnya').value=acIsoDate(r.berikutnya); document.getElementById('acInterval').value=String(r.interval||3); document.getElementById('acStatus').value=r.status||'auto';
   document.getElementById('acForm').scrollIntoView({behavior:'smooth',block:'start'});
 }
 function acDelete(i){if(!confirm('Hapus data Jadwal Service AC ini?'))return;acData.splice(i,1);acPersist();acRender();}
-function acResetForm(){document.getElementById('acForm')?.reset();document.getElementById('acEditIndex').value='';document.getElementById('acNo').value=acData.length+1;}
+function acResetForm(){document.getElementById('acForm')?.reset();document.getElementById('acEditIndex').value='';document.getElementById('acNo').value=acData.length+1;document.getElementById('acInterval').value='3';document.getElementById('acBerikutnya').value='';}
 function acAddSample(){
-  const next=new Date(); next.setMonth(next.getMonth()+2);
-  const today=new Date();
-  acData.push({no:acData.length+1,kode:`AC-${String(acData.length+1).padStart(3,'0')}`,nama:'AC Split',spesifikasi:'1 PK',lokasi:'Belum diisi',terakhir:today.toISOString().slice(0,10),berikutnya:next.toISOString().slice(0,10),status:'auto'});
+  const today=new Date(); const next=new Date(today); next.setMonth(next.getMonth()+3);
+  acData.push({no:acData.length+1,interval:3,kode:`AC-${String(acData.length+1).padStart(3,'0')}`,nama:'AC Split',spesifikasi:'1 PK',lokasi:'Belum diisi',terakhir:today.toISOString().slice(0,10),berikutnya:next.toISOString().slice(0,10),status:'auto'});
   acPersist(); acRender();
 }
 function acExportCSV(){
