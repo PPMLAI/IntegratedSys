@@ -1236,6 +1236,27 @@ button:hover .fa-solid,button:hover .fa-regular,
     </form>
   </div>
 
+  <div class="grid2" style="align-items:stretch;gap:18px">
+    <div class="cardx" style="background:linear-gradient(145deg,#ffffff,#f2f7ff);border:1px solid #dbeafe;min-width:0">
+      <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+        <div><h5 class="fw-bold mb-1"><i class="fa-solid fa-chart-pie me-2" style="color:#2563eb"></i>Spesifikasi Jenis AC</h5>
+        <p class="erp-mini mb-0">Komposisi jenis/spesifikasi dan jumlah unit AC.</p></div>
+        <span style="background:#dbeafe;color:#1d4ed8;padding:6px 10px;border-radius:999px;font-size:10px;font-weight:700">LIVE DATA</span>
+      </div>
+      <div style="height:300px;position:relative"><canvas id="acSpecificationChart" aria-label="Diagram pie jumlah AC berdasarkan spesifikasi"></canvas></div>
+      <div id="acSpecSummary" class="erp-mini mt-3">Diagram akan tampil setelah data AC tersedia.</div>
+    </div>
+    <div class="cardx" style="background:linear-gradient(145deg,#ffffff,#f0fdfa);border:1px solid #ccfbf1;min-width:0">
+      <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+        <div><h5 class="fw-bold mb-1"><i class="fa-solid fa-location-dot me-2" style="color:#0f766e"></i>Lokasi / Posisi AC</h5>
+        <p class="erp-mini mb-0">Jumlah unit AC pada setiap ruangan atau lokasi.</p></div>
+        <span style="background:#ccfbf1;color:#0f766e;padding:6px 10px;border-radius:999px;font-size:10px;font-weight:700">DISTRIBUSI LOKASI</span>
+      </div>
+      <div style="height:300px;position:relative"><canvas id="acLocationChart" aria-label="Diagram pie jumlah AC berdasarkan lokasi"></canvas></div>
+      <div id="acLocationSummary" class="erp-mini mt-3">Diagram lokasi akan tampil setelah data AC tersedia.</div>
+    </div>
+  </div>
+
   <div class="cardx">
     <div class="grid2 mb-3"><div><h5 class="fw-bold">Analisis Kepatuhan Service</h5><p class="erp-mini">Kepatuhan = service selesai tepat waktu dibanding jadwal yang sudah jatuh tempo.</p><div style="height:260px"><canvas id="acComplianceChart"></canvas></div></div><div><h5 class="fw-bold">Jadwal Service Mendatang</h5><div id="acUpcoming" class="pt-2"></div><div class="erp-progress mt-3"><span id="acComplianceBar" style="width:0%"></span></div><div class="erp-mini mt-2">Kepatuhan: <b id="acCompliancePct">0%</b></div></div></div>
     <div class="erp-toolbar">
@@ -1534,6 +1555,8 @@ function showPage(id,btn){
 // ======================= JADWAL SERVICE AC + DATABASE =======================
 let acData = [];
 let acComplianceChart = null;
+let acSpecificationChart = null;
+let acLocationChart = null;
 function acIsoDate(v){if(!v)return ''; if(typeof v==='string' && /^\d{4}-\d{2}-\d{2}$/.test(v))return v; const d=new Date(v);return Number.isNaN(d.getTime())?String(v).slice(0,10):`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
 function acDisplayDate(v){if(!v)return '-';const p=acIsoDate(v).split('-');return p.length===3?`${p[2]}-${p[1]}-${p[0]}`:v;}
 function acAddMonths(dateStr, months){if(!dateStr)return '';const p=dateStr.split('-').map(Number);const d=new Date(p[0],p[1]-1,p[2]);const day=d.getDate();d.setDate(1);d.setMonth(d.getMonth()+Number(months));const last=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();d.setDate(Math.min(day,last));return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
@@ -1556,6 +1579,30 @@ function acRender(){
  const cp=document.getElementById('acCompliancePct');if(cp)cp.textContent=pct+'%';
  const bar=document.getElementById('acComplianceBar');if(bar)bar.style.width=pct+'%';
  const up=document.getElementById('acUpcoming');if(up){const upcoming=acData.filter(r=>acDaysUntil(r.berikutnya)>=0).sort((a,b)=>a.berikutnya.localeCompare(b.berikutnya)).slice(0,6);up.innerHTML=upcoming.map(r=>`<div class="d-flex justify-content-between border-bottom py-2 gap-2"><span><b>${safe(r.kode)}</b> · ${safe(r.lokasi)}</span><span>${acDisplayDate(r.berikutnya)}</span></div>`).join('')||'<div class="erp-empty">Belum ada jadwal.</div>'}
+ if(typeof Chart!=='undefined'&&document.getElementById('acSpecificationChart')){
+   const palette=['#2563eb','#06b6d4','#8b5cf6','#10b981','#f59e0b','#f97316','#ec4899','#64748b','#14b8a6','#a3e635','#6366f1','#e11d48'];
+   const countBy=(field,emptyLabel)=>{const counts={};acData.forEach(r=>{const key=String(r[field]||emptyLabel).trim()||emptyLabel;counts[key]=(counts[key]||0)+1;});return Object.entries(counts).sort((a,b)=>b[1]-a[1]);};
+   const specs=countBy('spesifikasi','Belum diisi');
+   const specLabels=specs.map(x=>x[0]),specValues=specs.map(x=>x[1]);
+   if(acSpecificationChart)acSpecificationChart.destroy();
+   acSpecificationChart=new Chart(document.getElementById('acSpecificationChart'),{
+     type:'doughnut',
+     data:{labels:specLabels,datasets:[{label:'Jumlah Unit AC',data:specValues,backgroundColor:specLabels.map((_,i)=>palette[i%palette.length]),borderColor:'#ffffff',borderWidth:3,hoverOffset:10}]},
+     options:{responsive:true,maintainAspectRatio:false,cutout:'48%',plugins:{legend:{position:'bottom',labels:{usePointStyle:true,pointStyle:'circle',padding:14,boxWidth:9,font:{size:11}}},tooltip:{backgroundColor:'#0f172a',padding:12,callbacks:{label:ctx=>` ${ctx.label}: ${ctx.parsed} unit (${specValues.reduce((a,b)=>a+b,0)?Math.round(ctx.parsed/specValues.reduce((a,b)=>a+b,0)*100):0}%)`}}}}
+   });
+   const total=specValues.reduce((a,b)=>a+b,0),summary=document.getElementById('acSpecSummary');
+   if(summary)summary.textContent=specLabels.length?`${specLabels.length} jenis spesifikasi · ${total} unit AC terdata.`:'Belum ada data AC untuk ditampilkan.';
+   const locations=countBy('lokasi','Lokasi belum diisi');
+   const locLabels=locations.map(x=>x[0]),locValues=locations.map(x=>x[1]);
+   if(acLocationChart)acLocationChart.destroy();
+   acLocationChart=new Chart(document.getElementById('acLocationChart'),{
+     type:'pie',
+     data:{labels:locLabels,datasets:[{label:'Jumlah AC per Lokasi',data:locValues,backgroundColor:locLabels.map((_,i)=>palette[i%palette.length]),borderColor:'#ffffff',borderWidth:3,hoverOffset:10}]},
+     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,pointStyle:'circle',padding:12,boxWidth:9,font:{size:11}}},tooltip:{backgroundColor:'#0f172a',padding:12,callbacks:{label:ctx=>` ${ctx.label}: ${ctx.parsed} unit (${locValues.reduce((a,b)=>a+b,0)?Math.round(ctx.parsed/locValues.reduce((a,b)=>a+b,0)*100):0}%)`}}}}
+   });
+   const locTotal=locValues.reduce((a,b)=>a+b,0),locSummary=document.getElementById('acLocationSummary');
+   if(locSummary)locSummary.textContent=locLabels.length?`${locLabels.length} lokasi/ruangan · ${locTotal} unit AC terdata. Isi kolom Lokasi / User secara konsisten agar rekap lokasi akurat.`:'Belum ada data lokasi AC untuk ditampilkan.';
+ }
  if(typeof Chart!=='undefined'&&document.getElementById('acComplianceChart')){const labels=['Aman','Segera Service','Jatuh Tempo','Selesai Service'];const vals=labels.map(s=>stats.filter(x=>x===s).length);if(acComplianceChart)acComplianceChart.destroy();acComplianceChart=new Chart(document.getElementById('acComplianceChart'),{type:'doughnut',data:{labels,datasets:[{data:vals,backgroundColor:['#10b981','#f59e0b','#ef4444','#3b82f6'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}}}});}
 }
 async function acSubmit(e){e.preventDefault();acAutoNextDate();const edit=document.getElementById('acEditIndex').value;const row={id:edit!==''?acData[Number(edit)].id:('AC-'+Date.now()),no:Number(document.getElementById('acNo').value)||acData.length+1,kode:acKode.value.trim(),nama:acNama.value.trim(),spesifikasi:acSpesifikasi.value.trim(),lokasi:acLokasi.value.trim(),interval:Number(acInterval.value)||3,terakhir:acIsoDate(acTerakhir.value),berikutnya:acIsoDate(acBerikutnya.value),teknisi:acTeknisi.value.trim(),status:'auto'};if(!row.berikutnya){alert('Isi tanggal terakhir service.');return;}if(edit==='')acData.push(row);else acData[Number(edit)]=row;localStorage.setItem('ppm_ac_schedule',JSON.stringify(acData));acRender();acResetForm();await acPersist('save',row);alert('Data jadwal service AC disimpan ke database.');}
@@ -1970,5 +2017,105 @@ const oldShowPage = showPage;
 showPage = function(id,btn){oldShowPage(id,btn);if(['erpDashboard','inventory','procurement','assets','workorders','schedule','reports'].includes(id)){erpRenderAll();if(id==='reports')generateReport()}};
 document.addEventListener('DOMContentLoaded',()=>{['procDate','woDate','pmDate'].forEach(setToday);const d=new Date();acTerakhir.value=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;acAutoNextDate();erpLoadCache();erpRenderAll();acLoadCentral();setTimeout(()=>{erpPing();erpStartRealtime()},500);});
 </script>
+
+<!-- PPM LAI: Responsive Motion & Interaction Enhancement -->
+<style id="ppm-responsive-motion">
+:root{--motion-fast:180ms;--motion-normal:280ms;--motion-slow:650ms}
+html{scroll-behavior:smooth;scroll-padding-top:95px}
+body{min-height:100vh}
+button,a,input,select,textarea{touch-action:manipulation}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid rgba(56,189,248,.55);outline-offset:2px}
+.sidebar{box-shadow:8px 0 30px rgba(15,23,42,.10)}
+.brand{position:sticky;top:0;background:#111827;z-index:2}
+.menu-item,.menu-parent{position:relative;overflow:hidden}
+.menu-item:after,.menu-parent:after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent,rgba(255,255,255,.08),transparent);transform:translateX(-130%);transition:transform .55s ease;pointer-events:none}
+.menu-item:hover:after,.menu-parent:hover:after{transform:translateX(130%)}
+.module,.stat,.cardx,.page-head,.erp-kpi,.cuti-card,.card-metric,.table-card{transition:transform var(--motion-normal) ease,box-shadow var(--motion-normal) ease,border-color var(--motion-normal) ease}
+.module:hover,.stat:hover,.erp-kpi:hover,.cuti-card:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(15,23,42,.09);border-color:#bfdbfe}
+.welcome{position:relative;overflow:hidden;isolation:isolate}
+.welcome:after{content:"";position:absolute;width:270px;height:270px;border-radius:50%;right:-70px;top:-120px;background:rgba(255,255,255,.12);z-index:-1;animation:floatOrb 8s ease-in-out infinite}
+.welcome:before{content:"";position:absolute;width:150px;height:150px;border-radius:50%;right:110px;bottom:-110px;background:rgba(255,255,255,.10);z-index:-1;animation:floatOrb 10s ease-in-out infinite reverse}
+@keyframes floatOrb{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(-12px,14px,0)}}
+.module .icon{transition:transform .3s cubic-bezier(.2,.8,.2,1),filter .3s ease}
+.module:hover .icon{filter:saturate(1.2) brightness(1.04)}
+.btnx,.login-btn,.mobile-menu{transition:transform .18s ease,box-shadow .18s ease,filter .18s ease}
+.btnx:hover,.login-btn:hover{filter:brightness(1.04);box-shadow:0 7px 18px rgba(37,99,235,.18)}
+.btnx:active,.login-btn:active{transform:scale(.985)}
+.page.active{animation:pageEnter .32s ease both}
+@keyframes pageEnter{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.table-wrap{box-shadow:0 3px 12px rgba(15,23,42,.025)}
+tbody tr{transition:background .15s ease}
+tbody tr:hover{background:#f8fbff}
+input,select,textarea{transition:border-color .2s ease,box-shadow .2s ease}
+.header{gap:12px}
+.header>*,.header .datetime{min-width:0}
+.content{padding-bottom:30px}
+.footer{padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+@media(min-width:769px){.sidebar{transform:translateX(0)}.main{min-height:100vh}}
+@media(max-width:1024px){.header-weather-location{gap:7px;padding:6px 10px}.header-greeting{font-size:12px}.content{padding:20px}}
+@media(max-width:768px){
+ .header{gap:9px;position:sticky}
+ .header h1{line-height:1.25;max-width:55vw}
+ .header .datetime{margin-left:auto}
+ .content{padding:14px}
+ .welcome{margin-bottom:16px}
+ .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .modules{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .module{padding:15px}
+ .module h3{font-size:13px}
+ .module p{font-size:11px}
+ .table-wrap{border-radius:9px}
+ .table-wrap table{min-width:640px}
+ .erp-actions{width:100%}
+ .erp-actions .btnx{width:auto;flex:1}
+}
+@media(max-width:480px){
+ .stats,.modules{grid-template-columns:1fr}
+ .stat{padding:16px}
+ .stat h3{font-size:23px}
+ .module{display:flex;align-items:center;gap:13px}
+ .module .icon{flex:0 0 48px;margin:0}
+ .module h3{margin:0 0 3px}
+ .module p{line-height:1.45}
+ .welcome{padding:18px}
+ .welcome h2{line-height:1.35}
+ .page-head h2{line-height:1.4}
+ .btnx{padding:10px 13px}
+ .login-logo-img{width:105px;height:105px}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+</style>
+<script id="ppm-dynamic-polish">
+(function(){
+  // Motion is progressive enhancement: the app still works if browser APIs are unavailable.
+  function initPolish(){
+    document.querySelectorAll('.module,.stat,.erp-kpi,.cuti-card').forEach((el,i)=>{
+      if(!el.dataset.motionReady){
+        el.dataset.motionReady='1';
+        el.style.animationDelay=Math.min(i%8,7)*35+'ms';
+      }
+    });
+    // Keep mobile navigation easy to close after choosing a page.
+    document.querySelectorAll('.sidebar .menu-item').forEach(btn=>{
+      if(btn.dataset.mobileCloseReady)return;
+      btn.dataset.mobileCloseReady='1';
+      btn.addEventListener('click',()=>{
+        if(window.matchMedia('(max-width: 768px)').matches){
+          document.querySelector('.sidebar')?.classList.remove('open');
+          document.querySelector('.sidebar-overlay')?.classList.remove('open');
+        }
+      });
+    });
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initPolish);
+  else initPolish();
+  // Reapply to cards rendered dynamically by forms/database updates.
+  const observer=new MutationObserver(()=>initPolish());
+  if(document.body)observer.observe(document.body,{childList:true,subtree:true});
+})();
+</script>
+
 </body>
 </html>
