@@ -570,6 +570,19 @@ button:hover .fa-solid,button:hover .fa-regular,
   .module .icon{width:50px;height:50px;font-size:20px}
 }
 
+
+/* Dashboard keseluruhan ERP: grafik dan ringkasan visual */
+.erp-dashboard-charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:0 0 20px}
+.erp-dashboard-charts .chart-card{margin:0;min-width:0;padding:20px}
+.erp-dashboard-charts .chart-wide{grid-column:1/-1}
+.chart-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+.chart-heading h5{font-size:15px;font-weight:700;margin:0 0 5px;color:#0f172a}
+.chart-heading h5 i{color:#2563eb;margin-right:7px}
+.chart-heading p{font-size:11.5px;color:#64748b;margin:0;line-height:1.5}
+.chart-chip{background:#eff6ff;color:#1d4ed8;border:1px solid #dbeafe;border-radius:99px;padding:5px 10px;font-size:10px;font-weight:700}
+.chart-canvas{position:relative;height:265px;width:100%}
+.chart-canvas-sm{height:235px}
+@media(max-width:768px){.erp-dashboard-charts{grid-template-columns:1fr}.erp-dashboard-charts .chart-wide{grid-column:auto}.erp-dashboard-charts .chart-card{padding:15px}.chart-canvas{height:235px}.chart-canvas-sm{height:220px}}
 </style>
 </head>
 <body>
@@ -1090,6 +1103,12 @@ button:hover .fa-solid,button:hover .fa-regular,
     <div class="erp-kpi"><div class="ico"><i class="fa-solid fa-building"></i></div><strong id="erpKpiAsset">0</strong><span>Total Aset</span></div>
     <div class="erp-kpi"><div class="ico"><i class="fa-solid fa-calendar-check"></i></div><strong id="erpKpiPM">0%</strong><span>Kepatuhan PM</span></div>
     <div class="erp-kpi"><div class="ico"><i class="fa-solid fa-snowflake"></i></div><strong id="erpKpiAC">0</strong><span>AC Perlu Service</span></div>
+  </div>
+  <div class="erp-dashboard-charts">
+    <div class="cardx chart-card chart-wide"><div class="chart-heading"><div><h5><i class="fa-solid fa-chart-line"></i> Perkembangan Aktivitas 6 Bulan</h5><p>Tren data pengadaan, work order, dan jadwal pemeliharaan berdasarkan tanggal yang tercatat.</p></div><span class="chart-chip">Tren</span></div><div class="chart-canvas"><canvas id="erpTrendChart"></canvas></div></div>
+    <div class="cardx chart-card"><div class="chart-heading"><div><h5><i class="fa-solid fa-chart-pie"></i> Komposisi Work Order</h5><p>Perbandingan status pekerjaan teknisi.</p></div></div><div class="chart-canvas chart-canvas-sm"><canvas id="erpWOChart"></canvas></div></div>
+    <div class="cardx chart-card"><div class="chart-heading"><div><h5><i class="fa-solid fa-chart-column"></i> Ringkasan Persediaan</h5><p>Saldo stok teratas berdasarkan nama barang.</p></div></div><div class="chart-canvas chart-canvas-sm"><canvas id="erpInventoryChart"></canvas></div></div>
+    <div class="cardx chart-card"><div class="chart-heading"><div><h5><i class="fa-solid fa-calendar-check"></i> Kepatuhan Pemeliharaan</h5><p>Perbandingan checklist sudah dan belum diperiksa.</p></div></div><div class="chart-canvas chart-canvas-sm"><canvas id="erpPMChart"></canvas></div></div>
   </div>
   <div class="erp-alert"><i class="fa-solid fa-circle-info me-2"></i>ERP terhubung ke database terpusat Google Spreadsheet. Cache browser hanya digunakan sebagai cadangan sementara ketika koneksi server terganggu.</div>
   <div class="grid2">
@@ -1987,6 +2006,32 @@ function renderAssets(){const q=(document.getElementById('assetSearch')?.value||
 function renderWO(){const q=(document.getElementById('woSearch')?.value||'').toLowerCase(),f=document.getElementById('woFilter')?.value||'',b=document.getElementById('woBody');if(!b)return;b.innerHTML=erpState.workorders.map((x,i)=>({...x,i})).filter(x=>!q||JSON.stringify(x).toLowerCase().includes(q)).filter(x=>!f||x.status===f).map(x=>`<tr><td>${esc(x.no)}</td><td>${esc(x.date)}</td><td>${esc(x.asset)}</td><td>${esc(x.type)}</td><td>${erpStatus(x.priority)}</td><td>${esc(x.tech)}</td><td>${erpStatus(x.status)}</td><td>${esc(x.target||'-')}</td><td><button class="btnx danger" onclick="erpDel('workorders',${x.i})">Hapus</button></td></tr>`).join('')||'<tr><td colspan="9" class="erp-empty">Belum ada work order.</td></tr>'}
 function renderSchedule(){const b=document.getElementById('pmBody');if(!b)return;const d=erpState.schedule;const done=d.filter(x=>x.status==='Sudah diperiksa').length,pct=d.length?Math.round(done/d.length*100):0;document.getElementById('pmTotal').textContent=d.length;document.getElementById('pmDone').textContent=done;document.getElementById('pmCompliance').textContent=pct+'%';b.innerHTML=d.map((x,i)=>`<tr><td>${esc(x.asset)}</td><td>${esc(x.period)}</td><td>${esc(x.date)}</td><td>${esc(x.tech)}</td><td>${erpStatus(x.status)}</td><td>${esc(x.note)}</td><td><button class="btnx success" onclick="erpTogglePM(${i})">${x.status==='Sudah diperiksa'?'Buka':'Selesai'}</button> <button class="btnx danger" onclick="erpDel('schedule',${i})">Hapus</button></td></tr>`).join('')||'<tr><td colspan="7" class="erp-empty">Belum ada jadwal.</td></tr>'}
 async function erpTogglePM(i){const r={...erpState.schedule[i]};r.status=r.status==='Sudah diperiksa'?'Belum diperiksa':'Sudah diperiksa';await erpSave('schedule',r)}
+
+let erpDashCharts={};
+function erpDashDestroy(key){if(erpDashCharts[key]){erpDashCharts[key].destroy();delete erpDashCharts[key]}}
+function erpDashMakeChart(id,key,type,data,options={}){
+ const canvas=document.getElementById(id);if(!canvas||typeof Chart==='undefined')return;
+ erpDashDestroy(key);
+ erpDashCharts[key]=new Chart(canvas,{type,data,options:{responsive:true,maintainAspectRatio:false,animation:{duration:650},plugins:{legend:{position:'bottom',labels:{usePointStyle:true,boxWidth:8,padding:14,font:{size:11}}},tooltip:{backgroundColor:'#0f172a',padding:10}},...options}});
+}
+function updateERPDashboardCharts(){
+ if(typeof Chart==='undefined')return;
+ const now=new Date(),months=[];
+ for(let i=5;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);months.push({key:`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`,label:d.toLocaleDateString('id-ID',{month:'short'})})}
+ const monthCount=(arr,field)=>months.map(m=>arr.filter(x=>{const v=String(x[field]||'').slice(0,10);return v.slice(0,7)===m.key}).length);
+ const proc=monthCount(erpState.procurement,'date'),wo=monthCount(erpState.workorders,'date'),pm=monthCount(erpState.schedule,'date');
+ erpDashMakeChart('erpTrendChart','trend','line',{labels:months.map(m=>m.label),datasets:[
+ {label:'Pengadaan',data:proc,borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,.12)',fill:true,tension:.35,borderWidth:2},
+ {label:'Work Order',data:wo,borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,.10)',fill:true,tension:.35,borderWidth:2},
+ {label:'Pemeliharaan',data:pm,borderColor:'#10b981',backgroundColor:'rgba(16,185,129,.10)',fill:true,tension:.35,borderWidth:2}
+ ]},{scales:{y:{beginAtZero:true,ticks:{precision:0},grid:{color:'#eef2f7'}},x:{grid:{display:false}}}});
+ const states=['Open','On Progress','Pending Sparepart','Completed','Cancelled'],woColors=['#3b82f6','#f59e0b','#ef4444','#10b981','#94a3b8'];
+ erpDashMakeChart('erpWOChart','wo','doughnut',{labels:states,datasets:[{data:states.map(s=>erpState.workorders.filter(x=>x.status===s).length),backgroundColor:woColors,borderColor:'#fff',borderWidth:3,hoverOffset:7}]},{cutout:'58%'});
+ const top=erpState.inventory.map(x=>({name:x.name||'Barang',balance:Number(x.opening||0)+Number(x.in||0)-Number(x.out||0)})).sort((a,b)=>b.balance-a.balance).slice(0,7).reverse();
+ erpDashMakeChart('erpInventoryChart','inventory','bar',{labels:top.map(x=>x.name.length>18?x.name.slice(0,18)+'…':x.name),datasets:[{label:'Saldo stok',data:top.map(x=>x.balance),backgroundColor:['#60a5fa','#818cf8','#34d399','#fbbf24','#f87171','#22d3ee','#a78bfa'],borderRadius:6,maxBarThickness:28}]},{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{precision:0},grid:{color:'#eef2f7'}},y:{grid:{display:false}}}});
+ const done=erpState.schedule.filter(x=>x.status==='Sudah diperiksa').length,notDone=Math.max(0,erpState.schedule.length-done);
+ erpDashMakeChart('erpPMChart','pm','doughnut',{labels:['Sudah diperiksa','Belum diperiksa'],datasets:[{data:[done,notDone],backgroundColor:['#10b981','#e2e8f0'],borderColor:'#fff',borderWidth:3,hoverOffset:7}]},{cutout:'65%'});
+}
 function updateERPDashboard(){
   const inv=erpState.inventory,po=erpState.procurement.filter(x=>x.status!=='Barang Diterima Oleh PPM'),wo=erpState.workorders.filter(x=>!['Completed','Cancelled'].includes(x.status)),as=erpState.assets,sc=erpState.schedule;
   const done=sc.filter(x=>x.status==='Sudah diperiksa').length,pct=sc.length?Math.round(done/sc.length*100):0;
@@ -1999,6 +2044,7 @@ function updateERPDashboard(){
   const acDue=acRows.filter(r=>['Segera Service','Jatuh Tempo'].includes(acStatus(r)));
   const acKpi=document.getElementById('erpKpiAC');if(acKpi)acKpi.textContent=acDue.length;
   const acSummary=document.getElementById('erpACSummary');if(acSummary){const counts={Aman:0,'Segera Service':0,'Jatuh Tempo':0,'Selesai Service':0};acRows.forEach(r=>{const st=acStatus(r);counts[st]=(counts[st]||0)+1});acSummary.innerHTML=acRows.length?`<div class="grid3"><div><b>${counts.Aman||0}</b><div class="erp-mini">Aman</div></div><div><b>${counts['Segera Service']||0}</b><div class="erp-mini">Segera Service</div></div><div><b>${counts['Jatuh Tempo']||0}</b><div class="erp-mini">Jatuh Tempo</div></div></div>`:'<div class="erp-empty">Belum ada data Jadwal Service AC.</div>'}
+  updateERPDashboardCharts();
 }
 function erpRenderAll(){renderInventory();renderProcurement();renderAssets();renderWO();renderSchedule();updateERPDashboard()}
 function generateReport(){const type=document.getElementById('reportType').value,q=(document.getElementById('reportSearch').value||'').toLowerCase(),el=document.getElementById('reportResult');let d=(erpState[type]||[]).filter(x=>!q||JSON.stringify(x).toLowerCase().includes(q));if(!d.length){el.innerHTML='<div class="erp-empty">Tidak ada data.</div>';return}const keys=[...new Set(d.flatMap(x=>Object.keys(x)))].slice(0,10);el.innerHTML=`<div class="table-wrap"><table><thead><tr>${keys.map(k=>`<th>${esc(k)}</th>`).join('')}</tr></thead><tbody>${d.map(x=>`<tr>${keys.map(k=>`<td>${esc(x[k]??'')}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}
