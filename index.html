@@ -584,6 +584,76 @@ button:hover .fa-solid,button:hover .fa-regular,
 .chart-canvas-sm{height:235px}
 @media(max-width:768px){.erp-dashboard-charts{grid-template-columns:1fr}.erp-dashboard-charts .chart-wide{grid-column:auto}.erp-dashboard-charts .chart-card{padding:15px}.chart-canvas{height:235px}.chart-canvas-sm{height:220px}}
 </style>
+
+<style id="ppm-theme-modes">
+/* Pilihan tema Light/Dark untuk seluruh ERP */
+body[data-theme="light"] { color-scheme:light; }
+body[data-theme="dark"] {
+  color-scheme:dark;
+  --bg:#0b1220; --card:#111c2e; --muted:#a0aec0; --border:#29374b;
+  background:var(--bg)!important; color:#e5edf7!important;
+}
+body[data-theme="dark"] .main,
+body[data-theme="dark"] .content { background:var(--bg)!important; color:#e5edf7; }
+body[data-theme="dark"] .header,
+body[data-theme="dark"] .stat,
+body[data-theme="dark"] .module,
+body[data-theme="dark"] .page-head,
+body[data-theme="dark"] .cardx,
+body[data-theme="dark"] .cuti-card,
+body[data-theme="dark"] .erp-kpi,
+body[data-theme="dark"] .card-metric,
+body[data-theme="dark"] .table-card,
+body[data-theme="dark"] .checkbox-box-container {
+  background:#111c2e!important; color:#e5edf7!important; border-color:#29374b!important;
+}
+body[data-theme="dark"] .header { border-bottom-color:#29374b!important; }
+body[data-theme="dark"] .header h1,
+body[data-theme="dark"] .stat h3,
+body[data-theme="dark"] .module h3,
+body[data-theme="dark"] .page-head h2,
+body[data-theme="dark"] .chart-heading h5,
+body[data-theme="dark"] .erp-kpi strong,
+body[data-theme="dark"] .cuti-card h1,
+body[data-theme="dark"] label,
+body[data-theme="dark"] .checkbox-item { color:#e5edf7!important; }
+body[data-theme="dark"] .header p,
+body[data-theme="dark"] .stat p,
+body[data-theme="dark"] .module p,
+body[data-theme="dark"] .page-head p,
+body[data-theme="dark"] .chart-heading p,
+body[data-theme="dark"] .erp-kpi span,
+body[data-theme="dark"] .erp-mini,
+body[data-theme="dark"] .footer { color:#a0aec0!important; }
+body[data-theme="dark"] input,
+body[data-theme="dark"] select,
+body[data-theme="dark"] textarea {
+  background:#0b1424!important; color:#e5edf7!important; border-color:#35445a!important;
+}
+body[data-theme="dark"] input::placeholder,
+body[data-theme="dark"] textarea::placeholder { color:#8291a6!important; }
+body[data-theme="dark"] .table-wrap { border-color:#29374b!important; }
+body[data-theme="dark"] table { color:#dbe6f4!important; }
+body[data-theme="dark"] th { background:#1a2940!important; color:#bfdbfe!important; border-color:#29374b!important; }
+body[data-theme="dark"] td { border-color:#29374b!important; }
+body[data-theme="dark"] .header-weather-location { background:#17243a!important; color:#dbe6f4!important; border-color:#29374b!important; }
+body[data-theme="dark"] .mobile-menu { background:#1e3150!important; color:#93c5fd!important; }
+body[data-theme="dark"] .erp-db-status { background:#17243a; border-color:#35445a; color:#dbe6f4; }
+body[data-theme="dark"] .last-login-info { background:#17243a!important; color:#dbe6f4!important; border-color:#35445a!important; }
+body[data-theme="dark"] .last-login-info .title { color:#e5edf7!important; }
+body[data-theme="dark"] .alert-resume, body[data-theme="dark"] .erp-alert { background:#382b13!important; color:#fde68a!important; border-color:#76551a!important; }
+body[data-theme="dark"] .erp-progress { background:#29374b!important; }
+.theme-toggle {
+ display:inline-flex; align-items:center; justify-content:center; gap:8px;
+ min-height:38px; padding:8px 12px; border:1px solid #cbd5e1; border-radius:12px;
+ background:#eff6ff; color:#1d4ed8; font:600 12px Poppins, sans-serif; cursor:pointer;
+ white-space:nowrap; transition:all .2s ease;
+}
+.theme-toggle:hover { transform:translateY(-1px); box-shadow:0 4px 12px #2563eb22; }
+body[data-theme="dark"] .theme-toggle { background:#1e293b; color:#fde68a; border-color:#475569; }
+@media(max-width:768px){ .theme-toggle{padding:8px 10px;font-size:0;gap:0}.theme-toggle i{font-size:15px}.theme-toggle .theme-label{display:none} }
+</style>
+
 </head>
 <body>
 
@@ -2163,6 +2233,42 @@ input,select,textarea{transition:border-color .2s ease,box-shadow .2s ease}
   // Reapply to cards rendered dynamically by forms/database updates.
   const observer=new MutationObserver(()=>initPolish());
   if(document.body)observer.observe(document.body,{childList:true,subtree:true});
+})();
+</script>
+
+
+<script id="ppm-theme-controller">
+(function(){
+ const key='ppm-lai-erp-theme';
+ function applyTheme(theme){
+   const t=theme==='dark'?'dark':'light';
+   document.body.setAttribute('data-theme',t);
+   const btn=document.getElementById('themeToggle');
+   if(btn){
+     btn.innerHTML=t==='dark'
+       ? '<i class="fa-solid fa-sun"></i><span class="theme-label">Mode Terang</span>'
+       : '<i class="fa-solid fa-moon"></i><span class="theme-label">Mode Gelap</span>';
+     btn.setAttribute('aria-label',t==='dark'?'Aktifkan mode terang':'Aktifkan mode gelap');
+     btn.title=t==='dark'?'Beralih ke Light Mode':'Beralih ke Dark Mode';
+   }
+ }
+ function initTheme(){
+   let saved='light';
+   try{saved=localStorage.getItem(key)||'light'}catch(e){}
+   const right=document.querySelector('.header .datetime');
+   if(right && !document.getElementById('themeToggle')){
+     const btn=document.createElement('button');
+     btn.type='button';btn.id='themeToggle';btn.className='theme-toggle';
+     btn.onclick=function(){
+       const next=document.body.getAttribute('data-theme')==='dark'?'light':'dark';
+       applyTheme(next);try{localStorage.setItem(key,next)}catch(e){}
+     };
+     right.parentNode.insertBefore(btn,right);
+   }
+   applyTheme(saved);
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initTheme);
+ else initTheme();
 })();
 </script>
 
