@@ -583,6 +583,18 @@ button:hover .fa-solid,button:hover .fa-regular,
 .chart-canvas{position:relative;height:265px;width:100%}
 .chart-canvas-sm{height:235px}
 @media(max-width:768px){.erp-dashboard-charts{grid-template-columns:1fr}.erp-dashboard-charts .chart-wide{grid-column:auto}.erp-dashboard-charts .chart-card{padding:15px}.chart-canvas{height:235px}.chart-canvas-sm{height:220px}}
+
+/* ================= PREVENTIVE MAINTENANCE PER BULAN ================= */
+.pm-month-toolbar{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px;padding:14px 16px;border:1px solid #dbeafe;border-radius:14px;background:linear-gradient(135deg,#f8fbff,#eff6ff)}
+.pm-month-title{display:flex;align-items:center;gap:10px;color:#1e3a8a}.pm-month-title>i{width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:#dbeafe;color:#2563eb;font-size:17px}.pm-month-title strong{display:block;font-size:13px}.pm-month-title small{display:block;color:#64748b;font-size:10.5px;margin-top:2px}
+.pm-month-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.pm-month-controls select{width:auto;min-width:145px;min-height:40px}.pm-month-controls .btnx{min-height:40px}
+.pm-month-tabs{display:grid;grid-template-columns:repeat(12,minmax(72px,1fr));gap:6px;margin:0 0 14px}
+.pm-month-tab{border:1px solid #dbe3ef;background:#fff;color:#475569;border-radius:10px;padding:8px 5px;cursor:pointer;font-size:10.5px;font-weight:700;transition:.2s;text-align:center}.pm-month-tab:hover{border-color:#93c5fd;background:#eff6ff}.pm-month-tab.active{background:linear-gradient(135deg,#2563eb,#1d4ed8);border-color:#2563eb;color:#fff;box-shadow:0 5px 12px rgba(37,99,235,.2)}.pm-month-tab .pm-tab-count{display:block;font-size:9px;font-weight:600;opacity:.78;margin-top:2px}
+.pm-month-summary{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px;padding:10px 13px;border-radius:10px;background:#f8fafc;border:1px solid #e2e8f0;font-size:11px;color:#64748b}.pm-month-summary strong{color:#1e293b}
+body[data-theme="dark"] .pm-month-toolbar{background:#14213a!important;border-color:#29374b!important}.pm-month-title{color:#bfdbfe}.pm-month-title small{color:#a0aec0}.pm-month-tab{background:#111c2e;color:#cbd5e1;border-color:#29374b}.pm-month-tab:hover{background:#172a46;border-color:#3b82f6}.pm-month-summary{background:#17243a;border-color:#29374b;color:#a0aec0}.pm-month-summary strong{color:#e5edf7}
+@media(max-width:900px){.pm-month-tabs{grid-template-columns:repeat(6,1fr)}}
+@media(max-width:576px){.pm-month-tabs{grid-template-columns:repeat(3,1fr)}.pm-month-controls{width:100%}.pm-month-controls select{flex:1;min-width:0;width:100%}.pm-month-controls .btnx{width:100%}}
+
 </style>
 
 <style id="ppm-theme-modes">
@@ -1285,8 +1297,28 @@ body[data-theme="dark"] .theme-toggle { background:#1e293b; color:#fde68a; borde
     <div><label>Status</label><select id="pmStatus"><option>Belum diperiksa</option><option>Sudah diperiksa</option><option>Ditunda</option></select></div>
     <div><label>Catatan</label><input id="pmNote"></div>
   </div><div class="erp-actions mt-3"><button class="btnx" type="submit">Tambah Jadwal</button><button class="btnx secondary" type="button" onclick="erpReset('pmForm')">Reset</button></div></form></div>
-  <div class="cardx"><div class="erp-kpi-grid"><div class="erp-kpi"><strong id="pmTotal">0</strong><span>Total Jadwal</span></div><div class="erp-kpi"><strong id="pmDone">0</strong><span>Sudah Diperiksa</span></div><div class="erp-kpi"><strong id="pmCompliance">0%</strong><span>Kepatuhan</span></div></div>
-  <div class="table-wrap"><table><thead><tr><th>Mesin/Aset</th><th>Periode</th><th>Jadwal</th><th>Teknisi</th><th>Status</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="pmBody"></tbody></table></div></div>
+  <div class="cardx">
+    <div class="pm-month-toolbar">
+      <div class="pm-month-title"><i class="fa-solid fa-calendar-days"></i><div><strong>Pemeriksaan Preventive Maintenance per Bulan</strong><small>Pilih bulan untuk menampilkan jadwal dan memudahkan pemeriksaan.</small></div></div>
+      <div class="pm-month-controls">
+        <select id="pmYearFilter" onchange="renderSchedule()" aria-label="Pilih Tahun"></select>
+        <select id="pmMonthFilter" onchange="renderSchedule()" aria-label="Pilih Bulan">
+          <option value="all">Semua Bulan</option><option value="0">Januari</option><option value="1">Februari</option><option value="2">Maret</option><option value="3">April</option>
+          <option value="4">Mei</option><option value="5">Juni</option><option value="6">Juli</option><option value="7">Agustus</option><option value="8">September</option><option value="9">Oktober</option><option value="10">November</option><option value="11">Desember</option>
+        </select>
+        <button class="btnx secondary" type="button" onclick="pmResetMonthFilter()"><i class="fa-solid fa-list"></i> Semua</button>
+      </div>
+    </div>
+    <div id="pmMonthTabs" class="pm-month-tabs"></div>
+    <div id="pmMonthSummary" class="pm-month-summary"></div>
+    <div class="erp-kpi-grid">
+      <div class="erp-kpi"><strong id="pmTotal">0</strong><span>Total Jadwal Bulan Dipilih</span></div>
+      <div class="erp-kpi"><strong id="pmDone">0</strong><span>Sudah Diperiksa</span></div>
+      <div class="erp-kpi"><strong id="pmPending">0</strong><span>Belum Diperiksa</span></div>
+      <div class="erp-kpi"><strong id="pmCompliance">0%</strong><span>Kepatuhan Bulan</span></div>
+    </div>
+    <div class="table-wrap"><table><thead><tr><th>Mesin/Aset</th><th>Periode</th><th>Jadwal</th><th>Teknisi</th><th>Status</th><th>Catatan</th><th>Aksi</th></tr></thead><tbody id="pmBody"></tbody></table></div>
+  </div>
 </div>
 
 <!-- ======================= JADWAL SERVICE AC ======================= -->
@@ -2077,7 +2109,34 @@ async function erpProcAction(i,status){const x=erpState.procurement[i];if(!x)ret
 
 function renderAssets(){const q=(document.getElementById('assetSearch')?.value||'').toLowerCase(),b=document.getElementById('assetBody');if(!b)return;b.innerHTML=erpState.assets.map((x,i)=>({...x,i})).filter(x=>!q||JSON.stringify(x).toLowerCase().includes(q)).map(x=>`<tr><td>${esc(x.code)}</td><td>${esc(x.name)}</td><td>${esc(x.category)}</td><td>${esc(x.location)}</td><td>${esc(x.brand)}</td><td>${esc(x.year)}</td><td>${erpStatus(x.condition)}</td><td>${esc(x.pic)}</td><td><button class="btnx danger" onclick="erpDel('assets',${x.i})">Hapus</button></td></tr>`).join('')||'<tr><td colspan="9" class="erp-empty">Belum ada data.</td></tr>'}
 function renderWO(){const q=(document.getElementById('woSearch')?.value||'').toLowerCase(),f=document.getElementById('woFilter')?.value||'',b=document.getElementById('woBody');if(!b)return;b.innerHTML=erpState.workorders.map((x,i)=>({...x,i})).filter(x=>!q||JSON.stringify(x).toLowerCase().includes(q)).filter(x=>!f||x.status===f).map(x=>`<tr><td>${esc(x.no)}</td><td>${esc(x.date)}</td><td>${esc(x.asset)}</td><td>${esc(x.type)}</td><td>${erpStatus(x.priority)}</td><td>${esc(x.tech)}</td><td>${erpStatus(x.status)}</td><td>${esc(x.target||'-')}</td><td><button class="btnx danger" onclick="erpDel('workorders',${x.i})">Hapus</button></td></tr>`).join('')||'<tr><td colspan="9" class="erp-empty">Belum ada work order.</td></tr>'}
-function renderSchedule(){const b=document.getElementById('pmBody');if(!b)return;const d=erpState.schedule;const done=d.filter(x=>x.status==='Sudah diperiksa').length,pct=d.length?Math.round(done/d.length*100):0;document.getElementById('pmTotal').textContent=d.length;document.getElementById('pmDone').textContent=done;document.getElementById('pmCompliance').textContent=pct+'%';b.innerHTML=d.map((x,i)=>`<tr><td>${esc(x.asset)}</td><td>${esc(x.period)}</td><td>${esc(x.date)}</td><td>${esc(x.tech)}</td><td>${erpStatus(x.status)}</td><td>${esc(x.note)}</td><td><button class="btnx success" onclick="erpTogglePM(${i})">${x.status==='Sudah diperiksa'?'Buka':'Selesai'}</button> <button class="btnx danger" onclick="erpDel('schedule',${i})">Hapus</button></td></tr>`).join('')||'<tr><td colspan="7" class="erp-empty">Belum ada jadwal.</td></tr>'}
+function pmInitMonthFilter(){
+ const y=document.getElementById('pmYearFilter'),m=document.getElementById('pmMonthFilter');if(!y||!m)return;
+ const now=new Date(),years=new Set([now.getFullYear()]);
+ (erpState.schedule||[]).forEach(x=>{const d=new Date(String(x.date||'')+'T00:00:00');if(!isNaN(d.getTime()))years.add(d.getFullYear())});
+ const current=y.value||String(now.getFullYear());
+ y.innerHTML=[...years].sort((a,b)=>b-a).map(v=>`<option value="${v}">${v}</option>`).join('');
+ y.value=years.has(Number(current))?current:String(now.getFullYear());
+ if(!m.value)m.value=String(now.getMonth());
+}
+function pmGetFilteredData(){
+ pmInitMonthFilter();
+ const y=Number(document.getElementById('pmYearFilter')?.value||new Date().getFullYear()),mv=document.getElementById('pmMonthFilter')?.value||'all';
+ return (erpState.schedule||[]).filter(x=>{const d=new Date(String(x.date||'')+'T00:00:00');if(isNaN(d.getTime())||d.getFullYear()!==y)return false;return mv==='all'||d.getMonth()===Number(mv);});
+}
+function pmResetMonthFilter(){const m=document.getElementById('pmMonthFilter');if(m)m.value='all';renderSchedule();}
+function pmSelectMonth(month){const m=document.getElementById('pmMonthFilter');if(m)m.value=String(month);renderSchedule();}
+function renderSchedule(){
+ const b=document.getElementById('pmBody');if(!b)return;pmInitMonthFilter();
+ const all=erpState.schedule||[],filtered=pmGetFilteredData(),y=Number(document.getElementById('pmYearFilter')?.value||new Date().getFullYear()),mv=document.getElementById('pmMonthFilter')?.value||'all';
+ const monthNames=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'],monthCounts=Array(12).fill(0),monthDone=Array(12).fill(0);
+ all.forEach(x=>{const d=new Date(String(x.date||'')+'T00:00:00');if(!isNaN(d.getTime())&&d.getFullYear()===y){monthCounts[d.getMonth()]++;if(x.status==='Sudah diperiksa')monthDone[d.getMonth()]++;}});
+ const tabs=document.getElementById('pmMonthTabs');if(tabs)tabs.innerHTML=monthNames.map((name,i)=>`<button type="button" class="pm-month-tab ${mv===String(i)?'active':''}" onclick="pmSelectMonth(${i})">${name}<span class="pm-tab-count">${monthCounts[i]} jadwal · ${monthDone[i]} selesai</span></button>`).join('');
+ const selectedLabel=mv==='all'?`Semua Bulan ${y}`:`${monthNames[Number(mv)]} ${y}`,summary=document.getElementById('pmMonthSummary');
+ if(summary)summary.innerHTML=`<span><i class="fa-solid fa-filter me-1"></i> Menampilkan: <strong>${selectedLabel}</strong></span><span>Total data tahun ${y}: <strong>${monthCounts.reduce((a,b)=>a+b,0)}</strong> jadwal</span>`;
+ const done=filtered.filter(x=>x.status==='Sudah diperiksa').length,pending=filtered.filter(x=>x.status!=='Sudah diperiksa').length,pct=filtered.length?Math.round(done/filtered.length*100):0;
+ document.getElementById('pmTotal').textContent=filtered.length;document.getElementById('pmDone').textContent=done;const pend=document.getElementById('pmPending');if(pend)pend.textContent=pending;document.getElementById('pmCompliance').textContent=pct+'%';
+ b.innerHTML=filtered.map(x=>{const i=all.indexOf(x);return `<tr><td>${esc(x.asset)}</td><td>${esc(x.period)}</td><td>${esc(x.date)}</td><td>${esc(x.tech)}</td><td>${erpStatus(x.status)}</td><td>${esc(x.note)}</td><td><button class="btnx success" onclick="erpTogglePM(${i})">${x.status==='Sudah diperiksa'?'Buka':'Selesai'}</button> <button class="btnx danger" onclick="erpDel('schedule',${i})">Hapus</button></td></tr>`}).join('')||`<tr><td colspan="7" class="erp-empty"><i class="fa-solid fa-calendar-xmark fa-2x mb-2"></i><br>Belum ada jadwal untuk ${selectedLabel}.</td></tr>`;
+}
 async function erpTogglePM(i){const r={...erpState.schedule[i]};r.status=r.status==='Sudah diperiksa'?'Belum diperiksa':'Sudah diperiksa';await erpSave('schedule',r)}
 
 let erpDashCharts={};
