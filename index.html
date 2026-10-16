@@ -424,6 +424,14 @@ td { border-bottom: 1px solid #e2e8f0; padding: 10px 12px; vertical-align: middl
 /* =========================================================
    MODERN COLORFUL ICON SYSTEM — PPM LAI ERP
    ========================================================= */
+/* ===== PREVENTIVE MAINTENANCE STATUS VISUAL ===== */
+.pm-status{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border-radius:999px;font-size:11px;font-weight:700;border:1px solid transparent;white-space:nowrap;box-shadow:0 3px 8px rgba(15,23,42,.06)}
+.pm-status i{font-size:12px}.pm-status.done{color:#047857;background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#86efac}.pm-status.soon{color:#c2410c;background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74}.pm-status.overdue{color:#b91c1c;background:linear-gradient(135deg,#fef2f2,#fee2e2);border-color:#fca5a5}.pm-status.normal{color:#1d4ed8;background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#93c5fd}.pm-status.postponed{color:#92400e;background:linear-gradient(135deg,#fffbeb,#fef3c7);border-color:#fcd34d}
+.pm-date-icon{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;margin-right:7px;font-size:13px;vertical-align:middle;box-shadow:0 3px 8px rgba(15,23,42,.08)}.pm-date-icon.done{background:#dcfce7;color:#16a34a}.pm-date-icon.soon{background:#ffedd5;color:#ea580c}.pm-date-icon.overdue{background:#fee2e2;color:#dc2626}.pm-date-icon.normal{background:#dbeafe;color:#2563eb}.pm-date-icon.postponed{background:#fef3c7;color:#d97706}
+.pm-action-btn{border:0;border-radius:10px;padding:8px 10px;display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s ease;box-shadow:0 3px 8px rgba(15,23,42,.08)}.pm-action-btn:hover{transform:translateY(-1px);box-shadow:0 6px 12px rgba(15,23,42,.12)}.pm-action-btn.complete{background:linear-gradient(135deg,#10b981,#059669);color:#fff}.pm-action-btn.reopen{background:#eff6ff;color:#2563eb;border:1px solid #bfdbfe}.pm-action-btn.delete{background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
+.pm-legend{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 14px}.pm-legend-item{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:999px;font-size:10px;font-weight:700;background:#f8fafc;border:1px solid #e2e8f0}.pm-legend-dot{width:9px;height:9px;border-radius:50%}.pm-legend-dot.green{background:#22c55e}.pm-legend-dot.orange{background:#f97316}.pm-legend-dot.red{background:#ef4444}.pm-legend-dot.blue{background:#3b82f6}
+body[data-theme="dark"] .pm-legend-item{background:#17243a;border-color:#29374b;color:#dbe6f4}body[data-theme="dark"] .pm-status.normal{background:#172a46;color:#93c5fd}body[data-theme="dark"] .pm-status.done{background:#123326;color:#6ee7b7}body[data-theme="dark"] .pm-status.soon{background:#3a2515;color:#fdba74}body[data-theme="dark"] .pm-status.overdue{background:#3a1719;color:#fca5a5}body[data-theme="dark"] .pm-status.postponed{background:#382b13;color:#fcd34d}
+
 :root{
   --ico-blue:#3b82f6;
   --ico-indigo:#6366f1;
@@ -1311,6 +1319,12 @@ body[data-theme="dark"] .theme-toggle { background:#1e293b; color:#fde68a; borde
     </div>
     <div id="pmMonthTabs" class="pm-month-tabs"></div>
     <div id="pmMonthSummary" class="pm-month-summary"></div>
+    <div class="pm-legend" aria-label="Legenda status Preventive Maintenance">
+      <span class="pm-legend-item"><span class="pm-legend-dot green"></span> Selesai</span>
+      <span class="pm-legend-item"><span class="pm-legend-dot orange"></span> Mendekati jadwal</span>
+      <span class="pm-legend-item"><span class="pm-legend-dot red"></span> Melewati jadwal</span>
+      <span class="pm-legend-item"><span class="pm-legend-dot blue"></span> Jadwal aman</span>
+    </div>
     <div class="erp-kpi-grid">
       <div class="erp-kpi"><strong id="pmTotal">0</strong><span>Total Jadwal Bulan Dipilih</span></div>
       <div class="erp-kpi"><strong id="pmDone">0</strong><span>Sudah Diperiksa</span></div>
@@ -2135,7 +2149,34 @@ function renderSchedule(){
  if(summary)summary.innerHTML=`<span><i class="fa-solid fa-filter me-1"></i> Menampilkan: <strong>${selectedLabel}</strong></span><span>Total data tahun ${y}: <strong>${monthCounts.reduce((a,b)=>a+b,0)}</strong> jadwal</span>`;
  const done=filtered.filter(x=>x.status==='Sudah diperiksa').length,pending=filtered.filter(x=>x.status!=='Sudah diperiksa').length,pct=filtered.length?Math.round(done/filtered.length*100):0;
  document.getElementById('pmTotal').textContent=filtered.length;document.getElementById('pmDone').textContent=done;const pend=document.getElementById('pmPending');if(pend)pend.textContent=pending;document.getElementById('pmCompliance').textContent=pct+'%';
- b.innerHTML=filtered.map(x=>{const i=all.indexOf(x);return `<tr><td>${esc(x.asset)}</td><td>${esc(x.period)}</td><td>${esc(x.date)}</td><td>${esc(x.tech)}</td><td>${erpStatus(x.status)}</td><td>${esc(x.note)}</td><td><button class="btnx success" onclick="erpTogglePM(${i})">${x.status==='Sudah diperiksa'?'Buka':'Selesai'}</button> <button class="btnx danger" onclick="erpDel('schedule',${i})">Hapus</button></td></tr>`}).join('')||`<tr><td colspan="7" class="erp-empty"><i class="fa-solid fa-calendar-xmark fa-2x mb-2"></i><br>Belum ada jadwal untuk ${selectedLabel}.</td></tr>`;
+ b.innerHTML=filtered.map(x=>{
+    const i=all.indexOf(x);
+    const status=String(x.status||'').toLowerCase();
+    let v={cls:'normal',icon:'fa-calendar-check',label:'Terjadwal',title:'Jadwal aman'};
+    if(status==='sudah diperiksa') v={cls:'done',icon:'fa-circle-check',label:'Selesai',title:'Preventive Maintenance sudah selesai'};
+    else if(status==='ditunda') v={cls:'postponed',icon:'fa-clock-rotate-left',label:'Ditunda',title:'Jadwal ditunda'};
+    else {
+      const today=new Date();today.setHours(0,0,0,0);
+      const d=new Date(String(x.date||'')+'T00:00:00');
+      if(!isNaN(d.getTime())){
+        const days=Math.ceil((d-today)/86400000);
+        if(days<0) v={cls:'overdue',icon:'fa-calendar-xmark',label:'Melewati jadwal',title:`Terlambat ${Math.abs(days)} hari`};
+        else if(days<=7) v={cls:'soon',icon:'fa-triangle-exclamation',label:days===0?'Jatuh tempo':'Mendekati jadwal',title:days===0?'Jadwal hari ini':`H-${days} hari`};
+      }
+    }
+    return `<tr>
+      <td><strong>${esc(x.asset)}</strong></td>
+      <td><span class="badge ${x.period==='Mingguan'?'ok':x.period==='Bulanan'?'warn':'bad'}">${esc(x.period)}</span></td>
+      <td><span class="pm-date-icon ${v.cls}" title="${v.title}"><i class="fa-solid ${v.icon}"></i></span><strong>${esc(x.date)}</strong></td>
+      <td><i class="fa-solid fa-user-gear text-primary me-1"></i>${esc(x.tech)}</td>
+      <td><span class="pm-status ${v.cls}" title="${v.title}"><i class="fa-solid ${v.icon}"></i>${v.label}</span></td>
+      <td>${esc(x.note)}</td>
+      <td><div class="erp-actions">
+        <button class="pm-action-btn ${x.status==='Sudah diperiksa'?'reopen':'complete'}" onclick="erpTogglePM(${i})"><i class="fa-solid ${x.status==='Sudah diperiksa'?'fa-rotate-left':'fa-circle-check'}"></i>${x.status==='Sudah diperiksa'?'Buka':'Selesai'}</button>
+        <button class="pm-action-btn delete" onclick="erpDel('schedule',${i})"><i class="fa-solid fa-trash-can"></i>Hapus</button>
+      </div></td>
+    </tr>`;
+  }).join('')||`<tr><td colspan="7" class="erp-empty"><i class="fa-solid fa-calendar-xmark fa-2x mb-2"></i><br>Belum ada jadwal untuk ${selectedLabel}.</td></tr>`;
 }
 async function erpTogglePM(i){const r={...erpState.schedule[i]};r.status=r.status==='Sudah diperiksa'?'Belum diperiksa':'Sudah diperiksa';await erpSave('schedule',r)}
 
