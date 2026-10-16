@@ -674,6 +674,20 @@ body[data-theme="dark"] .theme-toggle { background:#1e293b; color:#fde68a; borde
 @media(max-width:768px){ .theme-toggle{padding:8px 10px;font-size:0;gap:0}.theme-toggle i{font-size:15px}.theme-toggle .theme-label{display:none} }
 </style>
 
+
+<style id="odoo-launcher-style">
+.odoo-launcher-wrap{margin:22px 0 24px;padding:22px;background:#fff;border:1px solid #e5e7eb;border-radius:14px}
+.odoo-launcher-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}.odoo-launcher-head h3{font-size:18px;font-weight:700;margin:0;color:#263238}.odoo-launcher-head p{margin:4px 0 0;color:#7c8795;font-size:12px}.odoo-launcher-head>span{font-size:11px;color:#7c8795;background:#f5f6f7;padding:8px 10px;border-radius:8px}
+.odoo-launcher{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.odoo-app{min-width:0;border:1px solid transparent;background:#fff;border-radius:12px;padding:16px 8px 13px;display:flex;align-items:center;flex-direction:column;text-align:center;gap:7px;cursor:pointer;transition:.18s}
+.odoo-app:hover{background:#f8fafc;border-color:#e2e8f0;transform:translateY(-2px);box-shadow:0 6px 16px #0f172a0d}
+.odoo-app-icon{width:54px;height:54px;border-radius:15px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:23px;box-shadow:0 5px 12px #0f172a14}
+.odoo-app b{font-size:12px;color:#374151;font-weight:600}.odoo-app small{font-size:10px;color:#8993a1;line-height:1.4}
+.odoo-app-icon.c1{background:#714b67}.odoo-app-icon.c2{background:#875a7b}.odoo-app-icon.c3{background:#e09f3e}.odoo-app-icon.c4{background:#00a09d}.odoo-app-icon.c5{background:#5b8def}.odoo-app-icon.c6{background:#875a7b}.odoo-app-icon.c7{background:#5271a8}.odoo-app-icon.c8{background:#20a39e}.odoo-app-icon.c9{background:#3b9cba}.odoo-app-icon.c10{background:#e5a13d}.odoo-app-icon.c11{background:#c58b18}.odoo-app-icon.c12{background:#df6b38}.odoo-app-icon.c13{background:#5b6db1}.odoo-app-icon.c14{background:#4c956c}
+.module-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:21px;margin-bottom:12px}
+body[data-theme="dark"] .odoo-launcher-wrap,body[data-theme="dark"] .odoo-app{background:#111c2e;border-color:#29374b}body[data-theme="dark"] .odoo-launcher-head h3,body[data-theme="dark"] .odoo-app b{color:#e5edf7}body[data-theme="dark"] .odoo-app:hover{background:#17243a}
+@media(max-width:576px){.odoo-launcher-wrap{padding:14px}.odoo-launcher{grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}.odoo-app{padding:12px 3px}.odoo-app-icon{width:46px;height:46px;font-size:19px}.odoo-app b{font-size:10.5px}.odoo-app small{font-size:9px}}
+</style>
 </head>
 <body>
 
@@ -769,6 +783,8 @@ body[data-theme="dark"] .theme-toggle { background:#1e293b; color:#fde68a; borde
 <button class="menu-item" onclick="showPage('acSchedule',this)"><i class="fa-solid fa-snowflake"></i> Jadwal Service AC</button>
 <button class="menu-item" onclick="showPage('reports',this)"><i class="fa-solid fa-file-chart-column"></i> Laporan ERP</button>
 
+<div class="menu-title">Administrasi Sistem</div>
+<button class="menu-item" onclick="showPage('backup',this)"><i class="fa-solid fa-database"></i> Backup & Restore Data</button>
 <div class="menu-title" style="margin-top: 30px;">Sistem</div>
 <button class="menu-item text-danger" onclick="handleLogout()" style="color: #f87171 !important;"><i class="fa-solid fa-right-from-bracket me-2"></i> Keluar (Logout)</button>
 </nav>
@@ -823,6 +839,25 @@ body[data-theme="dark"] .theme-toggle { background:#1e293b; color:#fde68a; borde
 <div id="home" class="page active">
 <div class="welcome"><h2>Selamat Datang di Aplikasi Sistem Kontrol Terintegrasi PPM</h2><p>Aplikasi ini menggabungkan pencatatan SDM, pencatatan pekerjaan maintenance yang rutin dilakukan oleh tim teknisi PPM LAI. Dengan adanya aplikasi ini diharapkan bisa memberikan kontribusi pencatatan administrasi pada bagian PPM dengan rapih dan akurat, serta mempercepat proses pencarian data yang dibutuhkan.</p><strong>Terima Kasih dan Salam Hormat<br>Agus Purwanto - PPM LAI</strong></div>
 <div class="stats"><div class="stat"><h3 id="statHistori">0</h3><p>Histori Maintenance</p></div><div class="stat"><h3 id="statGenset">0</h3><p>Inspeksi Genset</p></div><div class="stat"><h3 id="statPenerangan">0</h3><p>Pemeriksaan Penerangan</p></div></div>
+<div class="odoo-launcher-wrap">
+  <div class="odoo-launcher-head"><div><h3>Aplikasi PPM</h3><p>Pilih modul untuk mulai bekerja</p></div><span><i class="fa-solid fa-grip"></i> App Launcher</span></div>
+  <div class="odoo-launcher">
+    <button class="odoo-app" onclick="showPage('erpDashboard')"><span class="odoo-app-icon c1"><i class="fa-solid fa-chart-pie"></i></span><b>Dashboard ERP</b><small>Ringkasan operasional</small></button>
+    <button class="odoo-app" onclick="showPage('inventory')"><span class="odoo-app-icon c2"><i class="fa-solid fa-boxes-stacked"></i></span><b>Persediaan</b><small>Stok & sparepart</small></button>
+    <button class="odoo-app" onclick="showPage('procurement')"><span class="odoo-app-icon c3"><i class="fa-solid fa-cart-shopping"></i></span><b>Pengadaan</b><small>Barang & logistik</small></button>
+    <button class="odoo-app" onclick="showPage('assets')"><span class="odoo-app-icon c4"><i class="fa-solid fa-building"></i></span><b>Aset</b><small>Aset & ruangan</small></button>
+    <button class="odoo-app" onclick="showPage('workorders')"><span class="odoo-app-icon c5"><i class="fa-solid fa-list-check"></i></span><b>Work Order</b><small>Permintaan pekerjaan</small></button>
+    <button class="odoo-app" onclick="showPage('schedule')"><span class="odoo-app-icon c6"><i class="fa-solid fa-calendar-check"></i></span><b>Preventive</b><small>Jadwal pemeliharaan</small></button>
+    <button class="odoo-app" onclick="showPage('perbaikan')"><span class="odoo-app-icon c7"><i class="fa-solid fa-screwdriver-wrench"></i></span><b>Perbaikan Mesin</b><small>Gangguan & perbaikan</small></button>
+    <button class="odoo-app" onclick="showPage('histori')"><span class="odoo-app-icon c8"><i class="fa-solid fa-clock-rotate-left"></i></span><b>Histori Card</b><small>Riwayat maintenance</small></button>
+    <button class="odoo-app" onclick="showPage('acSchedule')"><span class="odoo-app-icon c9"><i class="fa-solid fa-snowflake"></i></span><b>Service AC</b><small>Jadwal & lokasi AC</small></button>
+    <button class="odoo-app" onclick="showPage('lembur')"><span class="odoo-app-icon c10"><i class="fa-solid fa-clock"></i></span><b>Lemburan</b><small>Jam kerja teknisi</small></button>
+    <button class="odoo-app" onclick="showPage('penerangan')"><span class="odoo-app-icon c11"><i class="fa-solid fa-lightbulb"></i></span><b>Penerangan</b><small>Inspeksi lampu</small></button>
+    <button class="odoo-app" onclick="showPage('genset')"><span class="odoo-app-icon c12"><i class="fa-solid fa-bolt"></i></span><b>Genset</b><small>Pemeriksaan rutin</small></button>
+    <button class="odoo-app" onclick="showPage('reports')"><span class="odoo-app-icon c13"><i class="fa-solid fa-chart-column"></i></span><b>Laporan</b><small>Laporan ERP</small></button>
+    <button class="odoo-app" onclick="showPage('backup')"><span class="odoo-app-icon c14"><i class="fa-solid fa-database"></i></span><b>Backup Data</b><small>Cadangkan & pulihkan</small></button>
+  </div>
+</div>
 <div class="modules">
     <div class="module" onclick="showPage('perbaikan')"><div class="icon text-primary"><i class="fa-solid fa-tools"></i></div><h3>Perbaikan Mesin</h3><p>Form dan chart perbaikan mesin produksi.</p></div>
     <div class="module" onclick="showPage('histori')"><div class="icon icon-history"><i class="fa-solid fa-clipboard-list"></i></div><h3>Histori Card</h3><p>Riwayat pekerjaan maintenance seluruh mesin.</p></div>
@@ -1421,6 +1456,15 @@ body[data-theme="dark"] .theme-toggle { background:#1e293b; color:#fde68a; borde
   <div class="cardx"><div id="reportResult" class="erp-empty">Pilih laporan lalu klik Tampilkan.</div></div>
 </div>
 
+<div id="backup" class="page">
+  <div class="page-head"><h2><i class="fa-solid fa-database"></i> Backup & Restore Data</h2><p>Arsipkan data browser, nilai formulir, ringkasan tabel, dan metadata aplikasi.</p></div>
+  <div class="erp-alert"><i class="fa-solid fa-circle-info"></i> <strong>Catatan:</strong> Backup ini mencakup data yang tersedia pada browser. Data Google Spreadsheet/server pusat harus diekspor terpisah dari sumbernya; file ini tidak otomatis mengunduh seluruh database server.</div>
+  <div class="grid2">
+    <div class="cardx"><div class="module-icon" style="background:#e0f2fe;color:#0369a1"><i class="fa-solid fa-file-export"></i></div><h3>Backup Keseluruhan</h3><p class="text-muted">Unduh file JSON berisi localStorage, nilai formulir, ringkasan tabel dan metadata aplikasi.</p><button class="btnx" onclick="ppmCreateBackup()"><i class="fa-solid fa-download"></i> Download Backup JSON</button><button class="btnx secondary mt-2" onclick="ppmCreateHtmlSnapshot()"><i class="fa-solid fa-file-code"></i> Simpan Snapshot HTML</button></div>
+    <div class="cardx"><div class="module-icon" style="background:#dcfce7;color:#15803d"><i class="fa-solid fa-file-import"></i></div><h3>Restore Backup Browser</h3><p class="text-muted">Pilih file JSON untuk memulihkan localStorage dari cadangan.</p><input type="file" id="ppmBackupFile" accept=".json,application/json"><button class="btnx success mt-3" onclick="ppmRestoreBackup()"><i class="fa-solid fa-rotate-left"></i> Pulihkan Backup</button></div>
+  </div>
+  <div class="cardx"><h3><i class="fa-solid fa-shield-halved text-primary"></i> Panduan</h3><div id="ppmBackupStatus" class="erp-alert">Backup belum dibuat pada sesi ini.</div><ul><li>Lakukan backup berkala dan simpan file di lokasi aman.</li><li>Restore mengganti key localStorage yang ada di file backup.</li><li>Restore browser tidak mengubah data Google Spreadsheet.</li><li>Untuk cadangan pusat, ekspor spreadsheet dari Google Sheets sesuai izin akses.</li></ul></div>
+</div>
 </section>
 <footer class="footer">&copy; 2026 GusPur PPM-LAI | ERP Operasional</footer>
 </main>
@@ -1655,6 +1699,7 @@ function toggleMenu(btn){btn.classList.toggle('open');btn.nextElementSibling.cla
 
 const titles={
     home:'Dashboard PPM',
+    backup:'Backup & Restore Data',
     cuti:'Cuti Karyawan',
     lembur:'Lemburan',
     histori:'Histori Card',
@@ -2372,5 +2417,18 @@ input,select,textarea{transition:border-color .2s ease,box-shadow .2s ease}
 })();
 </script>
 
+
+<script id="ppm-backup-tools">
+(function(){
+ const escName='ppm-lai-erp-backup';
+ function getBrowserStore(){const o={};try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);o[k]=localStorage.getItem(k)}}catch(e){}return o}
+ function gather(){const forms=[];document.querySelectorAll('form').forEach((f,fi)=>{const fields=[];f.querySelectorAll('input,select,textarea').forEach((el,i)=>{if(!el.name&&!el.id)return;fields.push({name:el.name||'',id:el.id||'',type:el.type||el.tagName,value:el.type==='checkbox'||el.type==='radio'?el.checked:el.value})});if(fields.length)forms.push({formId:f.id||'form-'+fi,fields})});
+ const tables=[];document.querySelectorAll('table').forEach((t,i)=>{const rows=[...t.querySelectorAll('tr')].map(r=>[...r.querySelectorAll('th,td')].map(c=>c.innerText.trim()));if(rows.length)tables.push({tableId:t.id||'table-'+i,rows})});
+ return {format:'PPM-LAI-ERP-backup',version:1,createdAt:new Date().toISOString(),source:'browser-local-export',localStorage:getBrowserStore(),forms,tables,applicationTitle:document.title};}
+ window.ppmCreateBackup=function(){try{const data=gather(),blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='PPM_LAI_ERP_Backup_'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);const st=document.getElementById('ppmBackupStatus');if(st)st.textContent='Backup JSON berhasil disiapkan pada '+new Date().toLocaleString('id-ID')+'. Simpan file di lokasi aman.';}catch(e){alert('Backup gagal dibuat: '+e.message)}};
+ window.ppmCreateHtmlSnapshot=function(){try{const html='<!DOCTYPE html>\n'+document.documentElement.outerHTML;const blob=new Blob([html],{type:'text/html;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='PPM_LAI_ERP_Snapshot_'+new Date().toISOString().slice(0,10)+'.html';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);alert('Snapshot HTML berhasil diunduh. Snapshot ini adalah salinan tampilan, bukan pengganti backup database.')}catch(e){alert('Snapshot gagal: '+e.message)}};
+ window.ppmRestoreBackup=function(){const f=document.getElementById('ppmBackupFile')?.files?.[0];if(!f){alert('Pilih file backup JSON terlebih dahulu.');return}if(!confirm('Restore akan mengganti nilai localStorage yang memiliki key sama dengan file backup. Lanjutkan?'))return;const r=new FileReader();r.onload=function(){try{const data=JSON.parse(r.result);if(!data||data.format!=='PPM-LAI-ERP-backup'||!data.localStorage)throw new Error('Format file bukan backup PPM LAI ERP.');Object.entries(data.localStorage).forEach(([k,v])=>localStorage.setItem(k,String(v)));alert('Restore localStorage selesai. Halaman akan dimuat ulang. Data server/Google Sheets tidak diubah.');location.reload()}catch(e){alert('Restore gagal: '+e.message)}};r.readAsText(f)};
+})();
+</script>
 </body>
 </html>
