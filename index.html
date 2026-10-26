@@ -688,6 +688,175 @@ body[data-theme="dark"] .theme-toggle { background:#1e293b; color:#fde68a; borde
 body[data-theme="dark"] .odoo-launcher-wrap,body[data-theme="dark"] .odoo-app{background:#111c2e;border-color:#29374b}body[data-theme="dark"] .odoo-launcher-head h3,body[data-theme="dark"] .odoo-app b{color:#e5edf7}body[data-theme="dark"] .odoo-app:hover{background:#17243a}
 @media(max-width:576px){.odoo-launcher-wrap{padding:14px}.odoo-launcher{grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}.odoo-app{padding:12px 3px}.odoo-app-icon{width:46px;height:46px;font-size:19px}.odoo-app b{font-size:10.5px}.odoo-app small{font-size:9px}}
 </style>
+<style id="header-grid-modern">
+/* =========================================================
+   MODERN HEADER GRID — PPM LAI ERP
+   Lebih lega, teratur, nyaman di PC / Laptop / Tablet / HP
+   ========================================================= */
+.header{
+  min-height:82px;
+  height:auto;
+  padding:12px 20px;
+  display:grid;
+  grid-template-columns:minmax(220px,1fr) auto minmax(420px,1.35fr);
+  grid-template-areas:"brand greeting tools";
+  align-items:center;
+  gap:14px 20px;
+  background:rgba(255,255,255,.97);
+  box-shadow:0 2px 12px rgba(15,23,42,.04);
+}
+.header > .d-flex:first-child{grid-area:brand;min-width:0;}
+.header > .header-greeting{grid-area:greeting;min-width:130px;}
+.header > .d-flex:last-child{
+  grid-area:tools;
+  display:grid !important;
+  grid-template-columns:minmax(175px,1fr) auto auto auto;
+  align-items:center;
+  gap:9px;
+  min-width:0;
+}
+.header h1{font-size:17px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.header p{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.header-greeting{padding:7px 12px;border-radius:10px;background:#f8fafc;border:1px solid #e2e8f0;color:#334155;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.header-weather-location{width:100%;justify-content:space-between;gap:9px;padding:7px 11px;border-radius:11px;font-size:10.5px;min-width:0;}
+.header-weather-location .loc-item,.header-weather-location .weather-item{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.status-container{display:grid;grid-template-columns:repeat(2,auto);gap:6px;align-items:center;}
+.status-badge{padding:6px 9px;font-size:10.5px;white-space:nowrap;}
+.theme-toggle{min-height:34px;padding:7px 10px;border-radius:10px;font-size:11px !important;}
+.datetime{min-width:70px;text-align:right;line-height:1.15;}
+.datetime .date{font-size:9.5px;white-space:nowrap;}
+.datetime .time{font-size:16px;white-space:nowrap;}
+
+/* Tablet: pecah menjadi grid 2 baris agar tidak padat */
+@media(max-width:1180px){
+  .header{grid-template-columns:minmax(220px,1fr) auto;grid-template-areas:"brand greeting" "tools tools";gap:8px 14px;padding:10px 16px;}
+  .header > .d-flex:last-child{grid-template-columns:minmax(240px,1fr) auto auto auto;}
+  .header-greeting{text-align:right;}
+}
+
+@media(max-width:768px){
+  .header{
+    min-height:70px;height:auto;padding:8px 12px;
+    grid-template-columns:1fr auto;
+    grid-template-areas:"brand tools";
+    gap:8px;
+  }
+  .header > .header-greeting{display:none;}
+  .header > .d-flex:first-child{gap:8px !important;}
+  .header h1{font-size:14px;}
+  .header p{display:block;font-size:9.5px;}
+  .mobile-menu{display:flex;width:38px;height:38px;font-size:19px;border-radius:9px;}
+  .header > .d-flex:last-child{
+    grid-template-columns:auto auto auto;
+    gap:6px;
+    justify-content:end;
+  }
+  .header-weather-location{display:none;}
+  .status-container{grid-template-columns:repeat(2,auto);gap:4px;}
+  .status-badge{padding:6px 7px;}
+  .status-badge .status-text{display:none;}
+  .theme-toggle{width:36px;height:36px;min-height:36px;padding:0;font-size:0 !important;}
+  .theme-toggle i{font-size:14px;}
+  .datetime{min-width:55px;}
+  .datetime .date{display:none;}
+  .datetime .time{font-size:14px;}
+}
+
+@media(max-width:480px){
+  .header{padding:7px 10px;}
+  .header > .d-flex:last-child{gap:4px;}
+  .header h1{font-size:13px;}
+  .header p{font-size:8.5px;}
+  .mobile-menu{width:36px;height:36px;}
+  .status-badge{padding:5px 6px;}
+  .datetime .time{font-size:13px;}
+}
+
+body[data-theme="dark"] .header-greeting{background:#17243a;border-color:#29374b;color:#dbe6f4;}
+body[data-theme="dark"] .header{box-shadow:0 2px 12px rgba(0,0,0,.16);}
+</style>
+
+<style id="header-two-row-modern">
+/* Header modern dua baris: identitas di atas, status & utilitas di bawah */
+.header{
+  position:sticky;top:0;z-index:900;
+  display:flex!important;flex-direction:column;align-items:stretch;justify-content:center;
+  gap:10px;padding:12px 24px!important;height:auto!important;min-height:112px;
+  background:rgba(255,255,255,.97);border-bottom:1px solid #e2e8f0;
+  box-shadow:0 4px 18px rgba(15,23,42,.045);backdrop-filter:blur(12px);
+}
+.header-row{display:flex;align-items:center;justify-content:space-between;gap:16px;min-width:0;width:100%}
+.header-row-primary{min-height:42px}
+.header-brand{display:flex;align-items:center;gap:12px;min-width:0}
+.header-brand-icon{width:42px;height:42px;flex:0 0 42px;display:flex;align-items:center;justify-content:center;border-radius:13px;color:#fff;background:linear-gradient(135deg,#2563eb,#06b6d4);box-shadow:0 5px 12px #2563eb30;font-size:18px}
+.header-brand-text{min-width:0}
+.header h1{font-size:17px!important;line-height:1.3;margin:0!important;color:#0f172a;font-weight:700}
+.header p{font-size:11px!important;margin:3px 0 0!important;color:#64748b}
+.header-primary-actions,.header-secondary-actions{display:flex;align-items:center;justify-content:flex-end;gap:12px;min-width:0}
+.header-greeting{display:flex;align-items:center;gap:8px;padding:9px 13px;border:1px solid #dbeafe;border-radius:12px;background:linear-gradient(135deg,#f8fbff,#eff6ff);color:#1e40af;font-size:12px;font-weight:600;max-width:360px}
+.header-greeting:empty{display:none}
+.datetime{min-width:100px;text-align:right;line-height:1.3}
+.datetime .date{font-size:10px;color:#64748b;white-space:nowrap}
+.datetime .time{font-size:16px;font-weight:700;color:#2563eb;white-space:nowrap}
+.datetime .time i{font-size:12px;margin-right:4px}
+.header-row-secondary{padding-top:9px;border-top:1px solid #f1f5f9}
+.header-weather-location{display:flex;align-items:center;gap:10px;padding:7px 11px;border-radius:11px;background:#f8fafc;border:1px solid #e2e8f0;font-size:11px;color:#475569;min-width:0;width:max-content;max-width:min(100%,340px);flex:0 1 auto;box-sizing:border-box}
+.header-weather-location i{color:#2563eb;flex:0 0 auto}
+.header-weather-location .loc-item,.header-weather-location .weather-item{display:flex;align-items:center;gap:6px;white-space:nowrap;min-width:0;max-width:100%}
+.header-weather-location .loc-item span,.header-weather-location .weather-item span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.header-weather-location .weather-item{max-width:185px}
+.header-separator{color:#cbd5e1;flex:0 0 auto}
+.status-container{display:flex;align-items:center;gap:7px}
+.status-badge{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:10px;font-size:10.5px;font-weight:700;white-space:nowrap}
+.status-badge.online{background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d}
+.status-badge.offline{background:#fef2f2;border:1px solid #fecaca;color:#b91c1c}
+.theme-toggle{min-height:36px;padding:8px 11px;border-radius:10px;background:#eff6ff;border:1px solid #dbeafe;color:#1d4ed8}
+.mobile-menu{width:40px;height:40px;border-radius:11px;font-size:17px}
+body[data-theme="dark"] .header{background:rgba(17,28,46,.97)!important;border-color:#29374b!important}
+body[data-theme="dark"] .header-brand-icon{box-shadow:none}
+body[data-theme="dark"] .header h1{color:#e5edf7!important}
+body[data-theme="dark"] .header-row-secondary{border-top-color:#29374b}
+body[data-theme="dark"] .header-greeting,body[data-theme="dark"] .header-weather-location{background:#17243a;border-color:#29374b;color:#dbe6f4}
+@media(max-width:900px){
+ .header{padding:10px 16px!important;gap:8px}
+ .header-row{gap:10px}
+ .header-greeting{max-width:230px}
+ .header-weather-location{gap:8px;max-width:min(100%,300px)}
+}
+@media(max-width:768px){
+ .header{min-height:unset;padding:9px 12px!important;gap:8px}
+ .header-row-primary{align-items:center}
+ .header-brand{gap:8px}
+ .header-brand-icon{display:none}
+ .header h1{font-size:14px!important;max-width:42vw}
+ .header p{font-size:9px!important;white-space:normal}
+ .header-primary-actions{gap:6px}
+ .header-greeting{display:none}
+ .datetime{min-width:62px}
+ .datetime .date{display:none}
+ .datetime .time{font-size:13px}
+ .header-row-secondary{align-items:center}
+ .header-weather-location{padding:6px 8px;font-size:10px;gap:7px;max-width:230px}
+ .header-weather-location .weather-item{display:flex;max-width:110px}
+ .header-separator{display:none}
+ .header-secondary-actions{gap:6px}
+ .status-container{gap:4px}
+ .status-badge{padding:6px 7px;gap:4px}
+ .status-badge .status-text{display:none}
+ .theme-toggle{width:35px;height:35px;min-height:35px;padding:0;font-size:0!important;display:inline-flex;align-items:center;justify-content:center}
+ .theme-toggle i{font-size:14px}
+ .mobile-menu{display:flex;width:35px;height:35px;font-size:15px;flex:0 0 35px}
+}
+@media(max-width:480px){
+ .header{padding:8px 9px!important}
+ .header h1{font-size:12px!important;max-width:39vw}
+ .header p{font-size:8px!important}
+ .header-weather-location{font-size:9px;padding:6px;max-width:190px;gap:5px}
+ .header-weather-location .weather-item{max-width:75px;gap:4px}
+ .datetime .time{font-size:12px}
+ .status-badge{padding:5px 6px}
+}
+</style>
 </head>
 <body>
 
@@ -792,47 +961,37 @@ body[data-theme="dark"] .odoo-launcher-wrap,body[data-theme="dark"] .odoo-app{ba
 
 <main class="main">
 <header class="header">
-<div class="d-flex align-items-center gap-2">
-  <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
-  <div>
-    <h1 id="headerTitle">Dashboard PPM</h1>
-    <p>PPM Integrated Control System</p>
-  </div>
-</div>
-
-<div class="header-greeting" id="headerGreetingText"></div>
-
-<div class="d-flex align-items-center gap-3">
-  <div class="header-weather-location">
-    <div class="loc-item" title="Lokasi Saat Ini">
-      <i class="fa-solid fa-location-dot"></i>
-      <span id="currentLocationText">Cibinong</span>
+  <div class="header-row header-row-primary">
+    <div class="header-brand">
+      <button class="mobile-menu" onclick="toggleSidebar()" aria-label="Buka menu"><i class="fa-solid fa-bars"></i></button>
+      <div class="header-brand-icon"><i class="fa-solid fa-gauge-high"></i></div>
+      <div class="header-brand-text">
+        <h1 id="headerTitle">Dashboard PPM</h1>
+        <p>PPM Integrated Control System</p>
+      </div>
     </div>
-    <span class="text-muted">|</span>
-    <div class="weather-item" id="weatherWidget" title="Keterangan Cuaca Realtime">
-      <i class="fa-solid fa-cloud-sun text-warning" id="weatherIcon"></i>
-      <span id="weatherText">Memuat...</span>
+    <div class="header-primary-actions">
+      <div class="header-greeting" id="headerGreetingText"><i class="fa-solid fa-hand-sparkles"></i> Selamat datang</div>
+      <div class="datetime">
+        <div class="date" id="date"></div>
+        <div class="time"><i class="fa-regular fa-clock"></i> <span id="time"></span></div>
+      </div>
     </div>
   </div>
-
-  <div class="status-container">
-    <div id="netStatus" class="status-badge online" title="Status Internet">
-      <span class="pulse-dot"></span>
-      <span><i class="fa-solid fa-globe"></i></span>
-      <span class="status-text" id="netText">Online</span>
+  <div class="header-row header-row-secondary">
+    <div class="header-weather-location">
+      <div class="loc-item" title="Lokasi Saat Ini"><i class="fa-solid fa-location-dot"></i><span id="currentLocationText">Cibinong</span></div>
+      <span class="header-separator">•</span>
+      <div class="weather-item" id="weatherWidget" title="Keterangan Cuaca Realtime"><i class="fa-solid fa-cloud-sun" id="weatherIcon"></i><span id="weatherText">Memuat...</span></div>
     </div>
-    <div id="dbStatus" class="status-badge online" title="Status Database Google AppSheet/Script">
-      <span class="pulse-dot"></span>
-      <span><i class="fa-solid fa-database"></i></span>
-      <span class="status-text" id="dbText">DB Connected</span>
+    <div class="header-secondary-actions">
+      <div class="status-container">
+        <div id="netStatus" class="status-badge online" title="Status Internet"><span class="pulse-dot"></span><i class="fa-solid fa-globe"></i><span class="status-text" id="netText">Online</span></div>
+        <div id="dbStatus" class="status-badge online" title="Status Database Google AppSheet/Script"><span class="pulse-dot"></span><i class="fa-solid fa-database"></i><span class="status-text" id="dbText">DB Connected</span></div>
+      </div>
+      <button type="button" id="languageToggle" class="theme-toggle" style="font-size:12px" onclick="toggleLanguage()"><i class="fa-solid fa-language"></i> <span id="languageLabel">🇬🇧 English</span></button>
     </div>
   </div>
-
-  <div class="datetime">
-    <div class="date" id="date"></div>
-    <div class="time" id="time"></div>
-  </div>
-</div>
 </header>
 
 <section class="content">
@@ -1164,7 +1323,7 @@ body[data-theme="dark"] .odoo-launcher-wrap,body[data-theme="dark"] .odoo-app{ba
     <div class="lembur-column-left">
         <div class="cardx">
             <h4 style="color:#1565C0; margin-bottom:15px; font-weight:700; border-bottom:2px solid #eef2f6; padding-bottom:10px;">Form Input Lembur</h4>
-            <label>Nama Karyawan</label><select id="namaLembur"><option value="" disabled selected>-- Pilih Nama Teknisi --</option><option>Supriyadi</option><option>Timur</option><option>Agus Setiawan</option><option>Julio</option><option>Joyo S.</option><option>Agus Purwanto</option></select>
+            <label>Nama Karyawan</label><select id="namaLembur"><option value="" disabled selected>-- Pilih Nama Teknisi --</option><option value="Supriyadi">Supriyadi</option><option value="Timur">Timur</option><option value="Agus Setiawan">Agus Setiawan</option><option value="Julio">Julio</option><option value="Joyo S.">Joyo S.</option><option value="Agus Purwanto">Agus Purwanto</option></select>
             <label>Tanggal Lembur</label><input type="date" id="tanggalLembur">
             <label>Jam Mulai</label><input type="time" id="mulaiLembur">
             <label>Jam Pulang</label><input type="time" id="selesaiLembur">
@@ -1200,19 +1359,19 @@ body[data-theme="dark"] .odoo-launcher-wrap,body[data-theme="dark"] .odoo-app{ba
 
 <div id="histori" class="page">
 <div class="page-head"><h2><i class="fa-solid fa-clipboard-list"></i> Histori Card</h2><p>Riwayat maintenance mesin dan pencatatan pekerjaan teknisi.</p></div>
-<div class="cardx"><form id="historyForm"><input type="hidden" id="historyEditIndex"><div class="grid3"><div><label>Mesin</label><select id="historyMesin" required></select></div><div><label>Tanggal</label><input type="date" id="historyTanggal" required></div><div><label>Teknisi</label><input id="historyTeknisi" required></div><div><label>Jenis Pekerjaan</label><select id="historyJenis"><option>Preventive Maintenance</option><option>Corrective Maintenance</option><option>Inspection</option></select></div><div><label>Sparepart</label><input id="historySparepart"></div><div><label>Status</label><select id="historyStatus"><option>Normal</option><option>Perlu Monitoring</option><option>Rusak</option></select></div></div><div class="mt-3"><label>Keterangan</label><textarea id="historyKeterangan"></textarea></div><div class="mt-3 d-flex gap-2"><button class="btnx" type="submit">Simpan History</button><button class="btnx secondary" type="button" onclick="resetHistory()">Reset</button></div></form></div>
+<div class="cardx"><form id="historyForm"><input type="hidden" id="historyEditIndex"><div class="grid3"><div><label>Mesin</label><select id="historyMesin" required></select></div><div><label>Tanggal</label><input type="date" id="historyTanggal" required></div><div><label>Teknisi</label><input id="historyTeknisi" required></div><div><label>Jenis Pekerjaan</label><select id="historyJenis"><option value="Preventive Maintenance">Preventive Maintenance</option><option value="Corrective Maintenance">Corrective Maintenance</option><option value="Inspection">Inspection</option></select></div><div><label>Sparepart</label><input id="historySparepart"></div><div><label>Status</label><select id="historyStatus"><option value="Normal">Normal</option><option value="Perlu Monitoring">Perlu Monitoring</option><option value="Rusak">Rusak</option></select></div></div><div class="mt-3"><label>Keterangan</label><textarea id="historyKeterangan"></textarea></div><div class="mt-3 d-flex gap-2"><button class="btnx" type="submit">Simpan History</button><button class="btnx secondary" type="button" onclick="resetHistory()">Reset</button></div></form></div>
 <div class="cardx"><div class="d-flex gap-2 mb-3"><input id="historySearch" placeholder="Cari histori..." oninput="renderHistory()"><button class="btnx" onclick="loadHistory()">Refresh</button></div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Mesin</th><th>Teknisi</th><th>Jenis</th><th>Sparepart</th><th>Status</th><th>Keterangan</th></tr></thead><tbody id="historyBody"></tbody></table></div></div>
 </div>
 
 <div id="penerangan" class="page">
 <div class="page-head"><h2><i class="fa-solid fa-lightbulb"></i> Pemeriksaan Rutin Penerangan</h2><p>Form pemeriksaan penerangan Gedung LAI.</p></div>
-<div class="cardx"><form id="peneranganForm"><div class="grid3"><div><label>Nama Petugas</label><select id="pPetugas" required><option value="">-- Pilih --</option><option>Supriyadi</option><option>Timur Sukoco</option><option>Agus Setiawan</option><option>Agus Purwanto</option><option>Ignasius Julio Sasi</option><option>Joyo S.</option></select></div><div><label>Tanggal</label><input type="date" id="pTanggal" required></div><div><label>Area / Ruangan</label><input id="pArea" required></div><div><label>Jenis Lampu</label><input id="pLampu" required></div><div><label>Status</label><select id="pStatus"><option>Normal</option><option>Rusak/Mati</option></select></div><div><label>Keterangan</label><input id="pKeterangan"></div></div><button class="btnx mt-3">Simpan Laporan</button></form></div>
+<div class="cardx"><form id="peneranganForm"><div class="grid3"><div><label>Nama Petugas</label><select id="pPetugas" required><option value="">-- Pilih --</option><option value="Supriyadi">Supriyadi</option><option value="Timur Sukoco">Timur Sukoco</option><option value="Agus Setiawan">Agus Setiawan</option><option value="Agus Purwanto">Agus Purwanto</option><option value="Ignasius Julio Sasi">Ignasius Julio Sasi</option><option value="Joyo S.">Joyo S.</option></select></div><div><label>Tanggal</label><input type="date" id="pTanggal" required></div><div><label>Area / Ruangan</label><input id="pArea" required></div><div><label>Jenis Lampu</label><input id="pLampu" required></div><div><label>Status</label><select id="pStatus"><option value="Normal">Normal</option><option value="Rusak/Mati">Rusak/Mati</option></select></div><div><label>Keterangan</label><input id="pKeterangan"></div></div><button class="btnx mt-3">Simpan Laporan</button></form></div>
 <div class="cardx"><div class="d-flex gap-2 mb-3"><input id="pSearch" placeholder="Cari petugas atau area..." oninput="renderPenerangan()"><button class="btnx" onclick="loadPenerangan()">Refresh</button></div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Petugas</th><th>Area</th><th>Jenis Lampu</th><th>Status</th><th>Keterangan</th></tr></thead><tbody id="pBody"></tbody></table></div></div>
 </div>
 
 <div id="genset" class="page">
 <div class="page-head"><h2><i class="fa-solid fa-bolt"></i> Pemeriksaan Genset Rutin</h2><p>Checklist inspeksi genset dan monitoring status unit.</p></div>
-<div class="cardx"><form id="gensetForm"><div class="grid3"><div><label>Unit Genset</label><select id="gUnit" required><option>CUMMINS HIJAU</option><option>CUMMINS CREAM</option><option>GENSET SERVER</option></select></div><div><label>Petugas</label><input id="gPetugas" required></div><div><label>Tanggal</label><input type="date" id="gTanggal" required></div><div><label>Jam Mulai</label><input type="time" id="gMulai"></div><div><label>Jam Selesai</label><input type="time" id="gSelesai"></div><div><label>Kondisi Solar</label><input id="gSolar"></div><div><label>Oli Mesin</label><input id="gOli"></div><div><label>Air Radiator/Aki</label><input id="gAir"></div><div><label>Tegangan Aki</label><input id="gAki"></div><div><label>Output Tegangan</label><input id="gOutput"></div><div><label>Suhu Mesin</label><input id="gSuhu"></div><div><label>Frekuensi</label><input id="gFrekuensi"></div><div><label>Status</label><select id="gStatus"><option>Siap Digunakan</option><option>Perlu Pemeriksaan Lebih Lanjut</option><option>Tidak dapat digunakan</option></select></div></div><div class="mt-3"><label>Catatan Teknisi</label><textarea id="gCatatan"></textarea></div><button class="btnx mt-3">Simpan Data Inspeksi</button></form></div>
+<div class="cardx"><form id="gensetForm"><div class="grid3"><div><label>Unit Genset</label><select id="gUnit" required><option value="CUMMINS HIJAU">CUMMINS HIJAU</option><option value="CUMMINS CREAM">CUMMINS CREAM</option><option value="GENSET SERVER">GENSET SERVER</option></select></div><div><label>Petugas</label><input id="gPetugas" required></div><div><label>Tanggal</label><input type="date" id="gTanggal" required></div><div><label>Jam Mulai</label><input type="time" id="gMulai"></div><div><label>Jam Selesai</label><input type="time" id="gSelesai"></div><div><label>Kondisi Solar</label><input id="gSolar"></div><div><label>Oli Mesin</label><input id="gOli"></div><div><label>Air Radiator/Aki</label><input id="gAir"></div><div><label>Tegangan Aki</label><input id="gAki"></div><div><label>Output Tegangan</label><input id="gOutput"></div><div><label>Suhu Mesin</label><input id="gSuhu"></div><div><label>Frekuensi</label><input id="gFrekuensi"></div><div><label>Status</label><select id="gStatus"><option value="Siap Digunakan">Siap Digunakan</option><option value="Perlu Pemeriksaan Lebih Lanjut">Perlu Pemeriksaan Lebih Lanjut</option><option value="Tidak dapat digunakan">Tidak dapat digunakan</option></select></div></div><div class="mt-3"><label>Catatan Teknisi</label><textarea id="gCatatan"></textarea></div><button class="btnx mt-3">Simpan Data Inspeksi</button></form></div>
 <div class="cardx"><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Genset</th><th>Petugas</th><th>Status</th><th>Catatan</th></tr></thead><tbody id="gBody"></tbody></table></div></div>
 </div>
 
@@ -1257,7 +1416,7 @@ body[data-theme="dark"] .odoo-launcher-wrap,body[data-theme="dark"] .odoo-app{ba
       <div class="erp-form-grid">
         <div><label>Kode Barang</label><input id="invCode" required placeholder="SP-0001"></div>
         <div><label>Nama Barang</label><input id="invName" required placeholder="Bearing / Belt / Oli"></div>
-        <div><label>Tipe Barang</label><select id="invType"><option>Sparepart Mesin</option><option>Consumable</option><option>Alat Kerja</option><option>ATK</option><option>Lainnya</option></select></div>
+        <div><label>Tipe Barang</label><select id="invType"><option value="Sparepart Mesin">Sparepart Mesin</option><option value="Consumable">Consumable</option><option value="Alat Kerja">Alat Kerja</option><option value="ATK">ATK</option><option value="Lainnya">Lainnya</option></select></div>
         <div><label>Untuk Mesin</label><input id="invMachine"></div>
         <div><label>Satuan</label><input id="invUnit" value="Pcs"></div>
         <div><label>Stok Awal</label><input id="invOpening" type="number" min="0" value="0"></div>
@@ -1269,7 +1428,7 @@ body[data-theme="dark"] .odoo-launcher-wrap,body[data-theme="dark"] .odoo-app{ba
     </form>
   </div>
   <div class="cardx">
-    <div class="erp-toolbar"><input id="invSearch" placeholder="Cari kode/nama/mesin..." oninput="renderInventory()"><select id="invFilter" onchange="renderInventory()"><option value="">Semua Status</option><option>AMAN</option><option>MENIPIS</option><option>HABIS</option></select><button class="btnx secondary" onclick="exportERP('inventory')"><i class="fa-solid fa-download"></i> Export CSV</button></div>
+    <div class="erp-toolbar"><input id="invSearch" placeholder="Cari kode/nama/mesin..." oninput="renderInventory()"><select id="invFilter" onchange="renderInventory()"><option value="">Semua Status</option><option value="AMAN">AMAN</option><option value="MENIPIS">MENIPIS</option><option value="HABIS">HABIS</option></select><button class="btnx secondary" onclick="exportERP('inventory')"><i class="fa-solid fa-download"></i> Export CSV</button></div>
     <div class="table-wrap"><table><thead><tr><th>Kode</th><th>Barang</th><th>Tipe</th><th>Mesin</th><th>Satuan</th><th>Saldo</th><th>Min.</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="inventoryBody"></tbody></table></div>
   </div>
 </div>
@@ -1282,13 +1441,13 @@ body[data-theme="dark"] .odoo-launcher-wrap,body[data-theme="dark"] .odoo-app{ba
       <div><label>No. Permohonan</label><input id="procNo" required placeholder="PPM-2026-001"></div>
       <div><label>Tanggal Pengajuan</label><input id="procDate" type="date" required></div>
       <div><label>Nama Pemohon</label><input id="procRequester" required></div>
-      <div><label>Pengajuan Untuk</label><select id="procPurpose"><option>Alat Kerja Teknisi</option><option>Maintenance Gedung</option><option>Sparepart Mesin Produksi</option><option>Umum</option></select></div>
+      <div><label>Pengajuan Untuk</label><select id="procPurpose"><option value="Alat Kerja Teknisi">Alat Kerja Teknisi</option><option value="Maintenance Gedung">Maintenance Gedung</option><option value="Sparepart Mesin Produksi">Sparepart Mesin Produksi</option><option value="Umum">Umum</option></select></div>
       <div><label>Nama Barang</label><input id="procItem" required></div>
       <div><label>Digunakan Untuk</label><input id="procUse"></div>
       <div><label>Jumlah</label><input id="procQty" type="number" min="1" value="1"></div>
       <div><label>Satuan</label><input id="procUnit" value="Pcs"></div>
       <div><label>Harga Satuan</label><input id="procPrice" type="number" min="0" value="0"></div>
-      <div><label>Status</label><select id="procStatus"><option>Diajukan Ke Pengadaan</option><option>Menunggu Penawaran</option><option>Belum dibuat PO</option><option>Sudah dibuat PO</option><option>Barang Diterima Oleh PPM</option><option>Barang Dipakai</option></select></div>
+      <div><label>Status</label><select id="procStatus"><option value="Diajukan Ke Pengadaan">Diajukan Ke Pengadaan</option><option value="Menunggu Penawaran">Menunggu Penawaran</option><option value="Belum dibuat PO">Belum dibuat PO</option><option value="Sudah dibuat PO">Sudah dibuat PO</option><option value="Barang Diterima Oleh PPM">Barang Diterima Oleh PPM</option><option value="Barang Dipakai">Barang Dipakai</option></select></div>
     </div><div class="erp-actions mt-3"><button class="btnx" type="submit">Simpan Pengajuan</button><button class="btnx secondary" type="button" onclick="erpReset('procurementForm')">Reset</button></div></form>
   </div>
   <div class="cardx"><div class="erp-toolbar"><input id="procSearch" placeholder="Cari pengajuan..." oninput="renderProcurement()"><button class="btnx secondary" onclick="exportERP('procurement')">Export CSV</button></div>
@@ -1301,11 +1460,11 @@ body[data-theme="dark"] .odoo-launcher-wrap,body[data-theme="dark"] .odoo-app{ba
   <div class="cardx"><form id="assetForm"><div class="erp-form-grid">
     <div><label>Kode Aset</label><input id="assetCode" required placeholder="AST-2026-001"></div>
     <div><label>Nama Aset</label><input id="assetName" required></div>
-    <div><label>Kategori</label><select id="assetCategory"><option>Mesin Produksi</option><option>Peralatan Teknik</option><option>Gedung</option><option>Elektrikal</option><option>IT</option><option>Kendaraan</option><option>Lainnya</option></select></div>
+    <div><label>Kategori</label><select id="assetCategory"><option value="Mesin Produksi">Mesin Produksi</option><option value="Peralatan Teknik">Peralatan Teknik</option><option value="Gedung">Gedung</option><option value="Elektrikal">Elektrikal</option><option value="IT">IT</option><option value="Kendaraan">Kendaraan</option><option value="Lainnya">Lainnya</option></select></div>
     <div><label>Ruangan/Lokasi</label><input id="assetLocation" required></div>
     <div><label>Merk/Tipe</label><input id="assetBrand"></div>
     <div><label>Tahun Perolehan</label><input id="assetYear" type="number" value="2026"></div>
-    <div><label>Kondisi</label><select id="assetCondition"><option>Baik</option><option>Perlu Monitoring</option><option>Rusak</option></select></div>
+    <div><label>Kondisi</label><select id="assetCondition"><option value="Baik">Baik</option><option value="Perlu Monitoring">Perlu Monitoring</option><option value="Rusak">Rusak</option></select></div>
     <div><label>Penanggung Jawab</label><input id="assetPIC"></div>
   </div><div class="erp-actions mt-3"><button class="btnx" type="submit">Simpan Aset</button><button class="btnx secondary" type="button" onclick="erpReset('assetForm')">Reset</button></div></form></div>
   <div class="cardx"><div class="erp-toolbar"><input id="assetSearch" placeholder="Cari aset/lokasi..." oninput="renderAssets()"><button class="btnx secondary" onclick="exportERP('assets')">Export CSV</button></div>
@@ -1319,13 +1478,13 @@ body[data-theme="dark"] .odoo-launcher-wrap,body[data-theme="dark"] .odoo-app{ba
     <div><label>No. WO</label><input id="woNo" required placeholder="WO-2026-001"></div>
     <div><label>Tanggal</label><input id="woDate" type="date" required></div>
     <div><label>Mesin/Aset</label><input id="woAsset" required></div>
-    <div><label>Prioritas</label><select id="woPriority"><option>Normal</option><option>Urgent</option><option>Critical</option></select></div>
-    <div><label>Jenis Pekerjaan</label><select id="woType"><option>Preventive</option><option>Corrective</option><option>Breakdown</option><option>Inspection</option></select></div>
+    <div><label>Prioritas</label><select id="woPriority"><option value="Normal">Normal</option><option value="Urgent">Urgent</option><option value="Critical">Critical</option></select></div>
+    <div><label>Jenis Pekerjaan</label><select id="woType"><option value="Preventive">Preventive</option><option value="Corrective">Corrective</option><option value="Breakdown">Breakdown</option><option value="Inspection">Inspection</option></select></div>
     <div><label>Teknisi</label><input id="woTech" required></div>
-    <div><label>Status</label><select id="woStatus"><option>Open</option><option>On Progress</option><option>Pending Sparepart</option><option>Completed</option><option>Cancelled</option></select></div>
+    <div><label>Status</label><select id="woStatus"><option value="Open">Open</option><option value="On Progress">On Progress</option><option value="Pending Sparepart">Pending Sparepart</option><option value="Completed">Completed</option><option value="Cancelled">Cancelled</option></select></div>
     <div><label>Target Selesai</label><input id="woTarget" type="date"></div>
   </div><div class="mt-3"><label>Uraian Pekerjaan</label><textarea id="woDesc" required></textarea></div><div class="erp-actions mt-3"><button class="btnx" type="submit">Buat Work Order</button><button class="btnx secondary" type="button" onclick="erpReset('woForm')">Reset</button></div></form></div>
-  <div class="cardx"><div class="erp-toolbar"><input id="woSearch" placeholder="Cari WO/mesin/teknisi..." oninput="renderWO()"><select id="woFilter" onchange="renderWO()"><option value="">Semua Status</option><option>Open</option><option>On Progress</option><option>Pending Sparepart</option><option>Completed</option><option>Cancelled</option></select><button class="btnx secondary" onclick="exportERP('workorders')">Export CSV</button></div>
+  <div class="cardx"><div class="erp-toolbar"><input id="woSearch" placeholder="Cari WO/mesin/teknisi..." oninput="renderWO()"><select id="woFilter" onchange="renderWO()"><option value="">Semua Status</option><option value="Open">Open</option><option value="On Progress">On Progress</option><option value="Pending Sparepart">Pending Sparepart</option><option value="Completed">Completed</option><option value="Cancelled">Cancelled</option></select><button class="btnx secondary" onclick="exportERP('workorders')">Export CSV</button></div>
   <div class="table-wrap"><table><thead><tr><th>WO</th><th>Tanggal</th><th>Mesin/Aset</th><th>Jenis</th><th>Prioritas</th><th>Teknisi</th><th>Status</th><th>Target</th><th>Aksi</th></tr></thead><tbody id="woBody"></tbody></table></div></div>
 </div>
 
@@ -1334,10 +1493,10 @@ body[data-theme="dark"] .odoo-launcher-wrap,body[data-theme="dark"] .odoo-app{ba
   <div class="page-head"><h2><i class="fa-solid fa-calendar-check text-primary me-2"></i>Jadwal Preventive Maintenance</h2><p>Jadwal mingguan, bulanan dan tahunan beserta status kepatuhan.</p></div>
   <div class="cardx"><form id="pmForm"><div class="erp-form-grid">
     <div><label>Mesin/Aset</label><input id="pmAsset" required></div>
-    <div><label>Periode</label><select id="pmPeriod"><option>Mingguan</option><option>Bulanan</option><option>Triwulanan</option><option>Tahunan</option></select></div>
+    <div><label>Periode</label><select id="pmPeriod"><option value="Mingguan">Mingguan</option><option value="Bulanan">Bulanan</option><option value="Triwulanan">Triwulanan</option><option value="Tahunan">Tahunan</option></select></div>
     <div><label>Jadwal</label><input id="pmDate" type="date" required></div>
     <div><label>Teknisi</label><input id="pmTech" required></div>
-    <div><label>Status</label><select id="pmStatus"><option>Belum diperiksa</option><option>Sudah diperiksa</option><option>Ditunda</option></select></div>
+    <div><label>Status</label><select id="pmStatus"><option value="Belum diperiksa">Belum diperiksa</option><option value="Sudah diperiksa">Sudah diperiksa</option><option value="Ditunda">Ditunda</option></select></div>
     <div><label>Catatan</label><input id="pmNote"></div>
   </div><div class="erp-actions mt-3"><button class="btnx" type="submit">Tambah Jadwal</button><button class="btnx secondary" type="button" onclick="erpReset('pmForm')">Reset</button></div></form></div>
   <div class="cardx">
@@ -2120,7 +2279,7 @@ async function loadHistory(){try{const r=await fetch(API_HISTORI);historyData=aw
 function renderHistory(){const q=(document.getElementById('historySearch')?.value||'').toLowerCase();const d=historyData.filter(x=>JSON.stringify(x).toLowerCase().includes(q));document.getElementById('historyBody').innerHTML=d.map(x=>`<tr><td>${fmtDate(x.tanggal)}</td><td>${safe(x.mesin)}</td><td>${safe(x.teknisi)}</td><td>${safe(x.jenis)}</td><td>${safe(x.sparepart)}</td><td>${statusBadge(x.status)}</td><td>${safe(x.keterangan)}</td></tr>`).join('')||'<tr><td colspan="7">Belum ada data.</td></tr>'}
 document.getElementById('historyForm').addEventListener('submit',async e=>{e.preventDefault();const p={mesin:historyMesin.value,tanggal:historyTanggal.value,teknisi:historyTeknisi.value,jenis:historyJenis.value,sparepart:historySparepart.value,keterangan:historyKeterangan.value,status:historyStatus.value,tanggalSelesai:'-',foto:'-',actionType:'INSERT'};try{const r=await fetch(API_HISTORI,{method:'POST',body:JSON.stringify(p)});const j=await r.json();if(j.status==='success'){alert('Histori berhasil disimpan');resetHistory();loadHistory()}else alert(j.message||'Gagal menyimpan')}catch(e){alert('Gagal koneksi')}})
 function resetHistory(){document.getElementById('historyForm').reset();setToday('historyTanggal');}
-function fillMachines(){const e=document.getElementById('historyMesin');if(e)e.innerHTML=mesinList.map(x=>`<option>${x}</option>`).join('')}
+function fillMachines(){const e=document.getElementById('historyMesin');if(e)e.innerHTML=mesinList.map(x=>`<option value="${x}">${x}</option>`).join('')}
 
 async function loadPenerangan(){try{const r=await fetch(API_PENERANGAN+'?action=read');peneranganData=await r.json();renderPenerangan();document.getElementById('statPenerangan').textContent=peneranganData.length}catch(e){pBody.innerHTML='<tr><td colspan="6">Gagal memuat data.</td></tr>'}}
 function renderPenerangan(){const q=(pSearch.value||'').toLowerCase();pBody.innerHTML=peneranganData.filter(x=>JSON.stringify(x).toLowerCase().includes(q)).map(x=>`<tr><td>${fmtDate(x[1])}</td><td>${safe(x[0])}</td><td>${safe(x[2])}</td><td>${safe(x[3])}</td><td>${statusBadge(x[5])}</td><td>${safe(x[4])}</td></tr>`).join('')||'<tr><td colspan="6">Belum ada data.</td></tr>'}
@@ -2430,5 +2589,75 @@ input,select,textarea{transition:border-color .2s ease,box-shadow .2s ease}
  window.ppmRestoreBackup=function(){const f=document.getElementById('ppmBackupFile')?.files?.[0];if(!f){alert('Pilih file backup JSON terlebih dahulu.');return}if(!confirm('Restore akan mengganti nilai localStorage yang memiliki key sama dengan file backup. Lanjutkan?'))return;const r=new FileReader();r.onload=function(){try{const data=JSON.parse(r.result);if(!data||data.format!=='PPM-LAI-ERP-backup'||!data.localStorage)throw new Error('Format file bukan backup PPM LAI ERP.');Object.entries(data.localStorage).forEach(([k,v])=>localStorage.setItem(k,String(v)));alert('Restore localStorage selesai. Halaman akan dimuat ulang. Data server/Google Sheets tidak diubah.');location.reload()}catch(e){alert('Restore gagal: '+e.message)}};r.readAsText(f)};
 })();
 </script>
+
+<script id="ppm-bilingual-controller">
+(function(){
+ const dict = {"Silakan masuk untuk mengakses sistem": "Please sign in to access the system", "Username": "Username", "Password": "Password", "Masukkan username": "Enter username", "Lihat/Sembunyikan Password": "Show/Hide Password", "Username atau Password salah!": "Incorrect username or password!", "Utama": "Main", "Sumber Daya Manusia": "Human Resources", "SDM": "HR", "Cuti Karyawan": "Employee Leave", "Lemburan": "Overtime", "Maintenance": "Maintenance", "Perbaikan Mesin": "Machine Repair", "Histori Card": "History Card", "Pemeriksaan Rutin Penerangan": "Routine Lighting Inspection", "Pemeriksaan Genset Rutin": "Routine Generator Inspection", "ERP OPERASIONAL": "ERP OPERATIONS", "ERP Dashboard": "ERP Dashboard", "Persediaan & Sparepart": "Inventory & Spare Parts", "Pengadaan & Logistik": "Procurement & Logistics", "Aset & Ruangan": "Assets & Rooms", "Work Order": "Work Order", "Jadwal Preventive": "Preventive Maintenance Schedule", "Jadwal Service AC": "AC Service Schedule", "Laporan ERP": "ERP Reports", "Administrasi Sistem": "System Administration", "Backup & Restore Data": "Backup & Restore Data", "Sistem": "System", "Keluar (Logout)": "Log Out", "Dashboard PPM": "PPM Dashboard", "Lokasi Saat Ini": "Current Location", "Keterangan Cuaca Realtime": "Real-Time Weather", "Status Internet": "Internet Status", "Status Database Google AppSheet/Script": "Google AppSheet/Script Database Status", "Selamat Datang di Aplikasi Sistem Kontrol Terintegrasi PPM": "Welcome to the PPM Integrated Control System", "Aplikasi PPM": "PPM Applications", "Pilih modul untuk mulai bekerja": "Select a module to get started", "App Launcher": "App Launcher", "Dashboard ERP": "ERP Dashboard", "Ringkasan operasional": "Operational overview", "Persediaan": "Inventory", "Stok & sparepart": "Stock & spare parts", "Pengadaan": "Procurement", "Barang & logistik": "Goods & logistics", "Aset": "Assets", "Aset & ruangan": "Assets & rooms", "Permintaan pekerjaan": "Work requests", "Histori Maintenance": "Maintenance History", "Inspeksi Genset": "Generator Inspections", "Pemeriksaan Penerangan": "Lighting Inspections", "Nama Petugas": "Staff Name", "Petugas": "Staff", "Tanggal": "Date", "Mesin": "Machine", "Teknisi": "Technician", "Jenis": "Type", "Status": "Status", "Catatan": "Notes", "Simpan": "Save", "Simpan Data": "Save Data", "Simpan Barang": "Save Item", "Simpan Pengajuan": "Save Request", "Simpan Aset": "Save Asset", "Buat Work Order": "Create Work Order", "Tambah Jadwal": "Add Schedule", "Reset": "Reset", "Refresh": "Refresh", "Cari": "Search", "Cari pengajuan...": "Search requests...", "Cari kode/nama/mesin...": "Search code/name/machine...", "Cari aset/lokasi...": "Search assets/location...", "Cari WO/mesin/teknisi...": "Search WO/machine/technician...", "Semua Status": "All Statuses", "Semua Bulan": "All Months", "Januari": "January", "Februari": "February", "Maret": "March", "April": "April", "Mei": "May", "Juni": "June", "Juli": "July", "Agustus": "August", "September": "September", "Oktober": "October", "November": "November", "Desember": "December", "Mingguan": "Weekly", "Bulanan": "Monthly", "Triwulanan": "Quarterly", "Tahunan": "Yearly", "Belum diperiksa": "Not Inspected", "Sudah diperiksa": "Inspected", "Ditunda": "Postponed", "Selesai": "Completed", "Baik": "Good", "Perlu Monitoring": "Needs Monitoring", "Rusak": "Damaged", "Normal": "Normal", "Urgent": "Urgent", "Critical": "Critical", "Open": "Open", "On Progress": "In Progress", "Pending Sparepart": "Waiting for Spare Parts", "Completed": "Completed", "Cancelled": "Cancelled", "Preventive": "Preventive", "Corrective": "Corrective", "Breakdown": "Breakdown", "Inspection": "Inspection", "Kode Barang": "Item Code", "Nama Barang": "Item Name", "Tipe Barang": "Item Type", "Untuk Mesin": "For Machine", "Satuan": "Unit", "Stok Awal": "Opening Stock", "Tambah Stok": "Stock In", "Pengurangan": "Stock Out", "Stok Minimum": "Minimum Stock", "AMAN": "SAFE", "MENIPIS": "LOW STOCK", "HABIS": "OUT OF STOCK", "No. Permohonan": "Request No.", "Tanggal Pengajuan": "Request Date", "Nama Pemohon": "Requester Name", "Pengajuan Untuk": "Requested For", "Digunakan Untuk": "Used For", "Jumlah": "Quantity", "Harga Satuan": "Unit Price", "Barang Diterima Oleh PPM": "Goods Received by PPM", "Barang Dipakai": "Goods Used", "Diajukan Ke Pengadaan": "Submitted to Procurement", "Menunggu Penawaran": "Awaiting Quotation", "Belum dibuat PO": "PO Not Created", "Sudah dibuat PO": "PO Created", "Kode Aset": "Asset Code", "Nama Aset": "Asset Name", "Kategori": "Category", "Ruangan/Lokasi": "Room/Location", "Merk/Tipe": "Brand/Type", "Tahun Perolehan": "Acquisition Year", "Kondisi": "Condition", "Penanggung Jawab": "Person in Charge", "No. WO": "WO No.", "Mesin/Aset": "Machine/Asset", "Prioritas": "Priority", "Jenis Pekerjaan": "Job Type", "Target Selesai": "Target Completion", "Uraian Pekerjaan": "Work Description", "Periode": "Period", "Jadwal": "Schedule", "Tambahkan Jadwal": "Add Schedule", "Jadwal mingguan, bulanan dan tahunan beserta status kepatuhan.": "Weekly, monthly, and yearly schedules with compliance status.", "Kontrol stok awal, penerimaan, pengeluaran, saldo dan batas minimum.": "Manage opening stock, receipts, issues, balances, and minimum levels.", "Permintaan barang, approval, PO dan penerimaan barang.": "Goods requests, approvals, purchase orders, and goods receipt.", "Register aset, lokasi, kondisi dan penanggung jawab.": "Asset register, location, condition, and person in charge.", "Pengendalian permintaan pekerjaan maintenance dari penerimaan sampai selesai.": "Track maintenance work requests from receipt through completion.", "Jenis Laporan": "Report Type", "Pencarian": "Search", "Tampilkan": "Display", "Export CSV": "Export CSV", "Backup Keseluruhan": "Full Backup", "Restore Backup Browser": "Restore Browser Backup", "Unduh file JSON berisi localStorage, nilai formulir, ringkasan tabel dan metadata aplikasi.": "Download a JSON file containing localStorage, form values, table summaries, and application metadata.", "Pilih file JSON untuk memulihkan localStorage dari cadangan.": "Select a JSON file to restore localStorage from a backup.", "Panduan": "Guide", "Lakukan backup berkala dan simpan file di lokasi aman.": "Back up regularly and store the file in a safe location.", "Restore mengganti key localStorage yang ada di file backup.": "Restore replaces the localStorage keys contained in the backup file.", "Monitoring AC yang segera service dan jatuh tempo.": "Monitor AC units due for service or approaching their service date.", "Spesifikasi Jenis AC": "AC Type Specifications", "Lokasi / Posisi AC": "AC Location / Position", "Analisis Kepatuhan Service": "Service Compliance Analysis", "Kepatuhan = service selesai tepat waktu dibanding jadwal yang sudah jatuh tempo.": "Compliance = services completed on time compared with schedules that are due.", "TERAKHIR SERVICE": "LAST SERVICE", "JADWAL BERIKUTNYA (OTOMATIS)": "NEXT SCHEDULE (AUTOMATIC)", "TEKNISI / PIC": "TECHNICIAN / PERSON IN CHARGE", "INTERVAL SERVICE": "SERVICE INTERVAL", "Setiap 3 Bulan": "Every 3 Months", "Setiap 6 Bulan": "Every 6 Months", "Aman": "Safe", "Segera Service": "Service Soon", "Jatuh Tempo": "Overdue", "Selesai Service": "Service Completed", "Otomatis berdasarkan tanggal": "Automatic based on date", "Tambah Contoh": "Add Sample", "Semua": "All", "Buka Modul AC": "Open AC Module", "Perkembangan Aktivitas 6 Bulan": "Activity Trends Over 6 Months", "Tren data pengadaan, work order, dan jadwal pemeliharaan berdasarkan tanggal yang tercatat.": "Trends in procurement, work orders, and maintenance schedules based on recorded dates.", "Komposisi Work Order": "Work Order Composition", "Perbandingan status pekerjaan teknisi.": "Comparison of technician work statuses.", "Ringkasan Persediaan": "Inventory Summary", "Saldo stok teratas berdasarkan nama barang.": "Highest stock balances by item name.", "Kepatuhan Pemeliharaan": "Maintenance Compliance", "Perbandingan checklist sudah dan belum diperiksa.": "Comparison of inspected and not-inspected checklists.", "Ringkasan Status Persediaan": "Inventory Status Summary", "Status Work Order": "Work Order Status", "Ringkasan operasional SDM, maintenance, persediaan, pengadaan, aset dan pekerjaan teknisi.": "Operational summary of HR, maintenance, inventory, procurement, assets, and technician work.", "Form pemeriksaan penerangan Gedung LAI.": "LAI Building lighting inspection form.", "Checklist inspeksi genset dan monitoring status unit.": "Generator inspection checklist and unit status monitoring.", "Cari petugas atau area...": "Search staff or area...", "Memuat...": "Loading...", "Pilih": "Select", "-- Pilih --": "-- Select --", "Nama Mesin": "Machine Name", "Tanggal Periksa": "Inspection Date", "Nama Teknisi": "Technician Name", "Sparepart": "Spare Part", "Status Mesin": "Machine Status", "Hasil Perbaikan Mesin": "Machine Repair Results", "Uraian": "Description", "Analisa Kerusakan Mesin": "Machine Failure Analysis", "Uraian Perbaikan": "Repair Description", "Kondisi Mesin": "Machine Condition", "Jam Pemeriksaan": "Inspection Time", "Jam Permintaan Perbaikan Diterima": "Repair Request Received Time", "Jam Ditemukan Kerusakan": "Time Fault Was Found", "Unit Genset": "Generator Unit", "GENSET SERVER": "SERVER GENERATOR", "CUMMINS HIJAU": "GREEN CUMMINS", "CUMMINS CREAM": "CREAM CUMMINS"};
+ let language = 'id';
+ const originalText = new WeakMap(), originalAttrs = new WeakMap();
+ const skipTags = new Set(['SCRIPT','STYLE','NOSCRIPT']);
+ function translateString(value, lang){
+   if(lang==='id') return value;
+   if(Object.prototype.hasOwnProperty.call(dict,value.trim())) {
+     const lead=(value.match(/^\s*/) || [''])[0], trail=(value.match(/\s*$/)||[''])[0];
+     return lead+dict[value.trim()]+trail;
+   }
+   let out=value;
+   Object.keys(dict).sort((a,b)=>b.length-a.length).forEach(k=>{
+     if(k.length>2) out=out.split(k).join(dict[k]);
+   });
+   return out;
+ }
+ function process(root){
+   if(language==='id') return;
+   const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+   let n;
+   while((n=walker.nextNode())){
+     if(!n.parentElement || skipTags.has(n.parentElement.tagName)) continue;
+     if(!originalText.has(n)) originalText.set(n,n.nodeValue);
+     n.nodeValue=translateString(originalText.get(n),'en');
+   }
+   const els=(root.nodeType===1?[root]:[]).concat(root.querySelectorAll?Array.from(root.querySelectorAll('[placeholder],[title],[aria-label]')):[]);
+   els.forEach(el=>{
+     if(skipTags.has(el.tagName)) return;
+     if(!originalAttrs.has(el)) originalAttrs.set(el,{});
+     ['placeholder','title','aria-label'].forEach(a=>{
+       if(el.hasAttribute(a)){
+         const rec=originalAttrs.get(el);
+         if(!(a in rec)) rec[a]=el.getAttribute(a);
+         el.setAttribute(a,translateString(rec[a],'en'));
+       }
+     });
+   });
+ }
+ function restore(root){
+   const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+   let n; while((n=walker.nextNode())) if(originalText.has(n)) n.nodeValue=originalText.get(n);
+   const els=(root.nodeType===1?[root]:[]).concat(root.querySelectorAll?Array.from(root.querySelectorAll('[placeholder],[title],[aria-label]')):[]);
+   els.forEach(el=>{const rec=originalAttrs.get(el);if(rec) Object.keys(rec).forEach(a=>el.setAttribute(a,rec[a]));});
+ }
+ window.toggleLanguage=function(){
+   language=language==='id'?'en':'id';
+   document.documentElement.lang=language;
+   if(language==='en') process(document.body); else restore(document.body);
+   const label=document.getElementById('languageLabel');
+   if(label) label.textContent=language==='en'?'🇮🇩 Bahasa Indonesia':'🇬🇧 English';
+   document.querySelectorAll('#languageToggle').forEach(b=>b.title=language==='en'?'Switch to Indonesian':'Ganti ke Bahasa Inggris');
+ };
+ const observer=new MutationObserver(records=>{
+   if(language!=='en') return;
+   records.forEach(r=>r.addedNodes.forEach(node=>{
+     if(node.nodeType===Node.TEXT_NODE){
+       if(node.parentElement && !skipTags.has(node.parentElement.tagName)){
+         if(!originalText.has(node)) originalText.set(node,node.nodeValue);
+         node.nodeValue=translateString(originalText.get(node),'en');
+       }
+     } else if(node.nodeType===Node.ELEMENT_NODE) process(node);
+   }));
+ });
+ observer.observe(document.body,{childList:true,subtree:true});
+})();
+</script>
+
 </body>
 </html>
