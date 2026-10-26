@@ -688,30 +688,6 @@ body[data-theme="dark"] .theme-toggle { background:#1e293b; color:#fde68a; borde
 body[data-theme="dark"] .odoo-launcher-wrap,body[data-theme="dark"] .odoo-app{background:#111c2e;border-color:#29374b}body[data-theme="dark"] .odoo-launcher-head h3,body[data-theme="dark"] .odoo-app b{color:#e5edf7}body[data-theme="dark"] .odoo-app:hover{background:#17243a}
 @media(max-width:576px){.odoo-launcher-wrap{padding:14px}.odoo-launcher{grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}.odoo-app{padding:12px 3px}.odoo-app-icon{width:46px;height:46px;font-size:19px}.odoo-app b{font-size:10.5px}.odoo-app small{font-size:9px}}
 </style>
-<style id="ppm-header-bilingual-v2">
-/* Header v2: clear zones, no overlapping, responsive and bilingual */
-.ppm-header{height:auto!important;min-height:94px;padding:14px 22px!important;display:grid!important;grid-template-columns:minmax(190px,1fr) minmax(180px,1fr) auto;gap:18px!important;align-items:center!important}
-.ppm-header-brand,.ppm-header-tools{display:flex;align-items:center;gap:12px;min-width:0}
-.ppm-heading{min-width:0}.ppm-eyebrow{display:block;color:#64748b;font-size:9px;font-weight:700;letter-spacing:1.4px;margin-bottom:4px}
-.ppm-header .header h1,.ppm-header h1{font-size:18px;line-height:1.25;overflow-wrap:anywhere}
-.ppm-heading p{font-size:11px;margin:4px 0 0;color:#64748b}
-.ppm-header-center{min-width:0;display:flex;flex-direction:column;align-items:center;gap:9px}
-.ppm-header .header-greeting{font-size:12px;line-height:1.4}
-.ppm-header .header-greeting span{padding:6px 10px!important;white-space:normal}
-.ppm-header .header-weather-location{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:7px 11px;max-width:100%;font-size:11px}
-.ppm-header-tools{justify-content:flex-end;flex-wrap:wrap;gap:10px}
-.ppm-header .status-container{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
-.ppm-header .status-badge{padding:7px 9px;font-size:10px;white-space:nowrap}
-.ppm-header .datetime{text-align:right;white-space:nowrap}
-.ppm-header .datetime .date{font-size:10px}
-.ppm-header .datetime .time{font-size:17px}
-.ppm-language-toggle{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 10px;border:1px solid #bfdbfe;border-radius:10px;background:#eff6ff;color:#1d4ed8;font-size:11px;font-weight:700;white-space:nowrap;cursor:pointer;min-height:36px}
-.ppm-language-toggle:hover{background:#dbeafe}
-body[data-theme="dark"] .ppm-language-toggle{background:#1e3150;color:#bfdbfe;border-color:#35445a}
-@media(max-width:1200px){.ppm-header{grid-template-columns:minmax(170px,1fr) auto;gap:12px!important}.ppm-header-center{grid-column:1/-1;grid-row:2;flex-direction:row;justify-content:flex-start;flex-wrap:wrap;align-items:center}.ppm-header-tools{grid-column:2;grid-row:1}.ppm-header .header-greeting{text-align:left}}
-@media(max-width:768px){.ppm-header{grid-template-columns:minmax(0,1fr) auto;padding:12px!important;gap:10px!important;min-height:unset}.ppm-header-center{display:none}.ppm-header-tools{grid-column:2;grid-row:1;gap:7px}.ppm-header .status-container{display:none}.ppm-header .datetime .date{display:block;font-size:9px;white-space:normal;max-width:130px}.ppm-header .datetime .time{font-size:15px}.ppm-heading .ppm-eyebrow{font-size:8px}.ppm-header h1{font-size:15px!important;max-width:48vw!important}.ppm-heading p{display:block!important;font-size:10px;line-height:1.3}.ppm-language-toggle{padding:8px;font-size:10px}.ppm-language-toggle span{display:inline}.ppm-header .mobile-menu{width:38px;height:38px;font-size:17px}}
-@media(max-width:420px){.ppm-header{padding:10px!important}.ppm-header-brand{gap:8px}.ppm-heading p{max-width:155px}.ppm-header-tools{gap:5px}.ppm-header .datetime .date{max-width:100px;font-size:8px}.ppm-header .datetime .time{font-size:14px}.ppm-language-toggle{gap:4px;padding:7px}.ppm-language-toggle span{font-size:9px}}
-</style>
 </head>
 <body>
 
@@ -815,30 +791,47 @@ body[data-theme="dark"] .ppm-language-toggle{background:#1e3150;color:#bfdbfe;bo
 </aside>
 
 <main class="main">
-<header class="header ppm-header">
-<div class="ppm-header-brand">
-  <button class="mobile-menu" onclick="toggleSidebar()" aria-label="Buka menu / Open menu"><i class="fa-solid fa-bars"></i></button>
-  <div class="ppm-heading">
-    <span class="ppm-eyebrow">PPM LAI · ENTERPRISE SYSTEM</span>
+<header class="header">
+<div class="d-flex align-items-center gap-2">
+  <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+  <div>
     <h1 id="headerTitle">Dashboard PPM</h1>
-    <p id="headerSubtitle">PPM Integrated Control System</p>
+    <p>PPM Integrated Control System</p>
   </div>
 </div>
-<div class="ppm-header-center">
-  <div class="header-greeting" id="headerGreetingText"></div>
+
+<div class="header-greeting" id="headerGreetingText"></div>
+
+<div class="d-flex align-items-center gap-3">
   <div class="header-weather-location">
-    <div class="loc-item" title="Lokasi Saat Ini / Current Location"><i class="fa-solid fa-location-dot"></i><span id="currentLocationText">Cibinong</span></div>
-    <span class="ppm-separator">•</span>
-    <div class="weather-item" id="weatherWidget" title="Keterangan Cuaca Realtime / Live Weather"><i class="fa-solid fa-cloud-sun text-warning" id="weatherIcon"></i><span id="weatherText">Memuat...</span></div>
+    <div class="loc-item" title="Lokasi Saat Ini">
+      <i class="fa-solid fa-location-dot"></i>
+      <span id="currentLocationText">Cibinong</span>
+    </div>
+    <span class="text-muted">|</span>
+    <div class="weather-item" id="weatherWidget" title="Keterangan Cuaca Realtime">
+      <i class="fa-solid fa-cloud-sun text-warning" id="weatherIcon"></i>
+      <span id="weatherText">Memuat...</span>
+    </div>
   </div>
-</div>
-<div class="ppm-header-tools">
+
   <div class="status-container">
-    <div id="netStatus" class="status-badge online" title="Status Internet"><span class="pulse-dot"></span><i class="fa-solid fa-globe"></i><span class="status-text" id="netText">Online</span></div>
-    <div id="dbStatus" class="status-badge online" title="Status Database Google AppSheet/Script"><span class="pulse-dot"></span><i class="fa-solid fa-database"></i><span class="status-text" id="dbText">DB Connected</span></div>
+    <div id="netStatus" class="status-badge online" title="Status Internet">
+      <span class="pulse-dot"></span>
+      <span><i class="fa-solid fa-globe"></i></span>
+      <span class="status-text" id="netText">Online</span>
+    </div>
+    <div id="dbStatus" class="status-badge online" title="Status Database Google AppSheet/Script">
+      <span class="pulse-dot"></span>
+      <span><i class="fa-solid fa-database"></i></span>
+      <span class="status-text" id="dbText">DB Connected</span>
+    </div>
   </div>
-  <button type="button" class="ppm-language-toggle" id="languageToggle" onclick="toggleLanguage()" aria-label="Switch language"><i class="fa-solid fa-language"></i><span id="languageToggleText">English</span></button>
-  <div class="datetime"><div class="date" id="date"></div><div class="time" id="time"></div></div>
+
+  <div class="datetime">
+    <div class="date" id="date"></div>
+    <div class="time" id="time"></div>
+  </div>
 </div>
 </header>
 
@@ -907,46 +900,12 @@ body[data-theme="dark"] .ppm-language-toggle{background:#1e3150;color:#bfdbfe;bo
                     <h5 class="fw-bold mb-2"><i class="fa-solid fa-clipboard-list text-primary me-2"></i>Form Input Laporan</h5>
                     <p class="text-muted small mb-4">Isi data di bawah ini untuk langsung menyimpannya ke Google Sheets.</p>
                     
-                    <form id="repairForm" onsubmit="submitFormPerbaikan(event)">
-                            <div class="row g-3 mb-3">
-                                <div class="col-12 col-md-6">
-                                    <label class="form-label small fw-semibold">Nama Mesin</label>
-                                    <select class="form-select form-select-sm" name="namaMesin" required>
-                                        <option value="" disabled selected>Pilih Mesin...</option>
-                                        <option value="CTCP">CTCP</option>
-                                        <option value="Polar 115">Polar 115</option>
-                                        <option value="SM 74">SM 74</option>
-                                        <option value="Goss 1">Goss 1</option>
-                                        <option value="Goss 2">Goss 2</option>
-                                        <option value="Counter Stacker">Counter Stacker</option>
-                                        <option value="Stahl Folder">Stahl Folder</option>
-                                        <option value="Gathering">Gathering</option>
-                                        <option value="Ventura 1">Ventura 1</option>
-                                        <option value="Ventura 2">Ventura 2</option>
-                                        <option value="Ventura 3">Ventura 3</option>
-                                        <option value="Press BBL">Press BBL</option>
-                                        <option value="Mesin BBL">Mesin BBL</option>
-                                        <option value="Pemanas BBL">Pemanas BBL</option>
-                                        <option value="Polar 92">Polar 92</option>
-                                        <option value="Potong sudut 1">Potong sudut 1</option>
-                                        <option value="Potong sudut 2">Potong sudut 2</option>
-                                        <option value="Pilung">Pilung</option>
-                                        <option value="BL 500">BL 500</option>
-                                        <option value="BL 500-EP">BL 500-EP</option>
-                                        <option value="Meiwa">Meiwa</option>
-                                        <option value="Shrink LC6000">Shrink LC6000</option>
-                                        <option value="Shrink">Shrink</option>
-                                        <option value="Genset Cummins Cream">Genset Cummins Cream</option>
-                                        <option value="Genset CUMMINS Hijau">Genset CUMMINS Hijau</option>
-                                        <option value="Genset Server">Genset Server</option>
-                                        <option value="Kompresor Boge">Kompresor Boge</option>
-                                        <option value="Kompresor MMI 1">Kompresor MMI 1</option>
-                                        <option value="KOmpresor MMI 2">KOmpresor MMI 2</option>
-                                        <option value="Kompresor Kaishan">Kompresor Kaishan</option>
-                                        <option value="Mesin jahit kawat">Mesin jahit kawat</option>
-                                        <option value="Mesin 3 Knife">Mesin 3 Knife</option>
-                                    </select>
-                                </div>
+                    <form id="pm_repairForm" onsubmit="pm_submitForm(event)">
+                        <div class="row g-3 mb-3">
+                            <div class="col-12 col-md-6">
+                                <label class="form-label small fw-semibold">Nama Mesin</label>
+                                <input type="text" class="form-control form-control-sm" name="namaMesin" placeholder="Contoh: Mesin Press A-01" required>
+                            </div>
                             <div class="col-12 col-md-6">
                                 <label class="form-label small fw-semibold">Tanggal Pengerjaan</label>
                                 <input type="date" class="form-control form-control-sm" name="tanggalPengerjaan" required>
@@ -1657,7 +1616,7 @@ function updateDateTime(){
   const n=new Date();
   const dateEl = document.getElementById('date');
   const timeEl = document.getElementById('time');
-  if(dateEl) dateEl.textContent=n.toLocaleDateString(window.ppmGetLanguage&&window.ppmGetLanguage()==='en'?'en-US':'id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  if(dateEl) dateEl.textContent=n.toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   if(timeEl) timeEl.textContent=n.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
   
   updateHeaderGreeting(n);
@@ -1688,9 +1647,6 @@ function updateHeaderGreeting(now) {
     colorStyle = "color: #7c3aed; background: #f3e8ff; padding: 6px 14px; border-radius: 20px; border: 1px solid #e9d5ff;";
   }
 
-  if(window.ppmGetLanguage && window.ppmGetLanguage()==='en'){
-    greetingText = timeDecimal >= 4 && timeDecimal < 10 ? "Good morning, PPM Engineering Team!" : timeDecimal < 15 ? "Good afternoon, PPM Engineering Team!" : timeDecimal < 18 ? "Good afternoon, PPM Engineering Team!" : "Good evening, PPM Engineering Team!";
-  }
   greetingEl.innerHTML = `<span style="${colorStyle} display: inline-block; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">${greetingText}</span>`;
 }
 
@@ -2474,50 +2430,5 @@ input,select,textarea{transition:border-color .2s ease,box-shadow .2s ease}
  window.ppmRestoreBackup=function(){const f=document.getElementById('ppmBackupFile')?.files?.[0];if(!f){alert('Pilih file backup JSON terlebih dahulu.');return}if(!confirm('Restore akan mengganti nilai localStorage yang memiliki key sama dengan file backup. Lanjutkan?'))return;const r=new FileReader();r.onload=function(){try{const data=JSON.parse(r.result);if(!data||data.format!=='PPM-LAI-ERP-backup'||!data.localStorage)throw new Error('Format file bukan backup PPM LAI ERP.');Object.entries(data.localStorage).forEach(([k,v])=>localStorage.setItem(k,String(v)));alert('Restore localStorage selesai. Halaman akan dimuat ulang. Data server/Google Sheets tidak diubah.');location.reload()}catch(e){alert('Restore gagal: '+e.message)}};r.readAsText(f)};
 })();
 </script>
-
-<script id="ppm-bilingual-controller">
-(function(){
- const dict={
- "Dashboard PPM":"PPM Dashboard","Selamat Datang di Aplikasi Sistem Kontrol Terintegrasi PPM":"Welcome to the PPM Integrated Control System",
- "Selamat Pagi, Tim Teknisi PPM!":"Good morning, PPM Engineering Team!","Selamat Siang, Tim Teknisi PPM!":"Good afternoon, PPM Engineering Team!",
- "Selamat Sore, Tim Teknisi PPM!":"Good afternoon, PPM Engineering Team!","Selamat Malam, Tim Teknisi PPM!":"Good evening, PPM Engineering Team!",
- "Memuat...":"Loading...","Online":"Online","DB Connected":"DB Connected","DB Disconnected":"DB Disconnected","DB Error":"DB Error",
- "Lokasi Saat Ini":"Current Location","Keterangan Cuaca Realtime":"Live Weather","Selamat Datang":"Welcome",
- "Aplikasi ini menggabungkan pencatatan SDM, pencatatan pekerjaan maintenance yang rutin dilakukan oleh tim teknisi PPM LAI. Dengan adanya aplikasi ini diharapkan bisa memberikan kontribusi pencatatan administrasi pada bagian PPM dengan rapih dan akurat, serta mempercepat proses pencarian data yang dibutuhkan.":"This application brings together personnel records and routine maintenance work logs managed by the PPM LAI engineering team. It supports accurate, organized administration and helps users find required information faster.",
- "Terima Kasih dan Salam Hormat":"Thank you and best regards","Mode Terang":"Light Mode","Mode Gelap":"Dark Mode",
- "Beranda":"Home","Dashboard":"Dashboard","Pengaturan":"Settings","Keluar":"Log out","Simpan":"Save","Batal":"Cancel","Tambah":"Add","Edit":"Edit","Hapus":"Delete","Cari":"Search","Filter":"Filter","Tanggal":"Date","Status":"Status","Nama":"Name","Keterangan":"Description","Pilih":"Select","Kirim":"Submit","Unduh":"Download","Cetak":"Print","Riwayat":"History","Laporan":"Reports","Karyawan":"Employees","Mesin":"Machines","Perawatan":"Maintenance","Pemeliharaan":"Maintenance","Persediaan":"Inventory","Pembelian":"Purchasing","Pengguna":"Users","Data":"Data","Total":"Total","Belum ada data":"No data available","Pilih file backup JSON terlebih dahulu.":"Please select a JSON backup file first."
- };
- let lang='id';
- function walk(root){
-  const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;
-  while(n=w.nextNode()){
-   if(!n.nodeValue.trim()||!n.parentElement||['SCRIPT','STYLE','TEXTAREA'].includes(n.parentElement.tagName))continue;
-   if(!n.__ppmOriginal)n.__ppmOriginal=n.nodeValue;
-   const original=n.__ppmOriginal.trim();
-   let value=original;
-   if(lang==='en'){
-    if(dict[original])value=dict[original];
-    else { for(const [id,en] of Object.entries(dict)){if(id.length>5&&value.includes(id))value=value.replaceAll(id,en)} }
-   }
-   n.nodeValue=n.__ppmOriginal.replace(original,value);
-  }
- }
- window.toggleLanguage=function(){
-  lang=lang==='id'?'en':'id';document.documentElement.lang=lang;
-  const btn=document.getElementById('languageToggleText');if(btn)btn.textContent=lang==='id'?'English':'Bahasa Indonesia';
-  const subtitle=document.getElementById('headerSubtitle');if(subtitle)subtitle.textContent=lang==='id'?'PPM Integrated Control System':'PPM Integrated Control System';
-  document.querySelectorAll('[title]').forEach(el=>{if(!el.dataset.ppmTitle)el.dataset.ppmTitle=el.title;el.title=lang==='en'?(dict[el.dataset.ppmTitle]||el.dataset.ppmTitle):el.dataset.ppmTitle});
-  walk(document.body);if(typeof updateDateTime==='function')updateDateTime();
-  try{localStorage.setItem('ppm-lai-language',lang)}catch(e){}
- };
- window.ppmGetLanguage=()=>lang;
- document.addEventListener('DOMContentLoaded',()=>{
-  try{lang=localStorage.getItem('ppm-lai-language')==='en'?'en':'id'}catch(e){}
-  const btn=document.getElementById('languageToggleText');if(btn)btn.textContent=lang==='id'?'English':'Bahasa Indonesia';
-  if(lang==='en'){document.documentElement.lang='en';walk(document.body);if(typeof updateDateTime==='function')updateDateTime()}
- });
-})();
-</script>
-
 </body>
 </html>
