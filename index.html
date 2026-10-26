@@ -907,12 +907,46 @@ body[data-theme="dark"] .ppm-language-toggle{background:#1e3150;color:#bfdbfe;bo
                     <h5 class="fw-bold mb-2"><i class="fa-solid fa-clipboard-list text-primary me-2"></i>Form Input Laporan</h5>
                     <p class="text-muted small mb-4">Isi data di bawah ini untuk langsung menyimpannya ke Google Sheets.</p>
                     
-                    <form id="pm_repairForm" onsubmit="pm_submitForm(event)">
-                        <div class="row g-3 mb-3">
-                            <div class="col-12 col-md-6">
-                                <label class="form-label small fw-semibold">Nama Mesin</label>
-                                <input type="text" class="form-control form-control-sm" name="namaMesin" placeholder="Contoh: Mesin Press A-01" required>
-                            </div>
+                    <form id="repairForm" onsubmit="submitFormPerbaikan(event)">
+                            <div class="row g-3 mb-3">
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label small fw-semibold">Nama Mesin</label>
+                                    <select class="form-select form-select-sm" name="namaMesin" required>
+                                        <option value="" disabled selected>Pilih Mesin...</option>
+                                        <option value="CTCP">CTCP</option>
+                                        <option value="Polar 115">Polar 115</option>
+                                        <option value="SM 74">SM 74</option>
+                                        <option value="Goss 1">Goss 1</option>
+                                        <option value="Goss 2">Goss 2</option>
+                                        <option value="Counter Stacker">Counter Stacker</option>
+                                        <option value="Stahl Folder">Stahl Folder</option>
+                                        <option value="Gathering">Gathering</option>
+                                        <option value="Ventura 1">Ventura 1</option>
+                                        <option value="Ventura 2">Ventura 2</option>
+                                        <option value="Ventura 3">Ventura 3</option>
+                                        <option value="Press BBL">Press BBL</option>
+                                        <option value="Mesin BBL">Mesin BBL</option>
+                                        <option value="Pemanas BBL">Pemanas BBL</option>
+                                        <option value="Polar 92">Polar 92</option>
+                                        <option value="Potong sudut 1">Potong sudut 1</option>
+                                        <option value="Potong sudut 2">Potong sudut 2</option>
+                                        <option value="Pilung">Pilung</option>
+                                        <option value="BL 500">BL 500</option>
+                                        <option value="BL 500-EP">BL 500-EP</option>
+                                        <option value="Meiwa">Meiwa</option>
+                                        <option value="Shrink LC6000">Shrink LC6000</option>
+                                        <option value="Shrink">Shrink</option>
+                                        <option value="Genset Cummins Cream">Genset Cummins Cream</option>
+                                        <option value="Genset CUMMINS Hijau">Genset CUMMINS Hijau</option>
+                                        <option value="Genset Server">Genset Server</option>
+                                        <option value="Kompresor Boge">Kompresor Boge</option>
+                                        <option value="Kompresor MMI 1">Kompresor MMI 1</option>
+                                        <option value="KOmpresor MMI 2">KOmpresor MMI 2</option>
+                                        <option value="Kompresor Kaishan">Kompresor Kaishan</option>
+                                        <option value="Mesin jahit kawat">Mesin jahit kawat</option>
+                                        <option value="Mesin 3 Knife">Mesin 3 Knife</option>
+                                    </select>
+                                </div>
                             <div class="col-12 col-md-6">
                                 <label class="form-label small fw-semibold">Tanggal Pengerjaan</label>
                                 <input type="date" class="form-control form-control-sm" name="tanggalPengerjaan" required>
