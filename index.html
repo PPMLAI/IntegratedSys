@@ -1766,7 +1766,7 @@ window.addEventListener('online', () => { checkInternetStatus(); checkDatabaseCo
 window.addEventListener('offline', () => { checkInternetStatus(); });
 setInterval(checkDatabaseConnection, 30000);
 
-const mesinList=["Speedmaster 74","Cetak Goss 1","Cetak Goss 2","Lipat Katern","Lipat Stahl 2","Lipat Stahl Folder","Gathering","Jahit Ventura 1","Jahit Ventura 2","Jahit Ventura 3","BBL 30","Threeknife","Kompresor FY-50A","Kompresor BOGE","Polar 92","Strapping/Meiwa 1","Strapping/Meiwa 2","Strapping/Meiwa 3","Strapping LQ400","Polar 115","Feeder Delivery","Shrink LB-728","Pilung 1","Pilung 2","Trafo","Jahit Kawat","Processor","Expose Plate (Shapira)","Corner Rounding","Pres Final","Heidelberg","Kneep (Shyon)","Forklift Hyster","Forklift Bigjoe","Forklift Sumitomo","CTCP","Plotter","BL500","Shrink LA6000-CS","Kompresor Kaishan","Diesel 1","Diesel 2"];
+const mesinList=["Genset Server","Speedmaster 74","Cetak Goss 1","Cetak Goss 2","Lipat Katern","Lipat Stahl 2","Lipat Stahl Folder","Gathering","Jahit Ventura 1","Jahit Ventura 2","Jahit Ventura 3","BBL 30","Threeknife","Kompresor FY-50A","Kompresor BOGE","Polar 92","Strapping/Meiwa 1","Strapping/Meiwa 2","Strapping/Meiwa 3","Strapping LQ400","Polar 115","Feeder Delivery","Shrink LB-728","Pilung 1","Pilung 2","Trafo","Jahit Kawat","Processor","Expose Plate (Shapira)","Corner Rounding","Pres Final","Heidelberg","Kneep (Shyon)","Forklift Hyster","Forklift Bigjoe","Forklift Sumitomo","CTCP","Plotter","BL500","Shrink LA6000-CS","Kompresor Kaishan","Diesel 1","Diesel 2"];
 let historyData=[], peneranganData=[], gensetData=[];
 
 function setToday(id){const e=document.getElementById(id);if(e)e.value=new Date().toISOString().slice(0,10)}
